@@ -22,7 +22,7 @@ for model in rj:
 #Now, let's try to get the schema for a single model.
 response = requests.get(API_BASE_URL + rj['essay']['schema'] + "?format=json")
 
-#This should get a 401 error because you are not logged in.
+#This should get a 401 error if you are not logged in.
 print("Status Code: {0}".format(response.status_code))
 
 

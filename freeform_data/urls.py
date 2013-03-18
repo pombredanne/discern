@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 from api import OrganizationResource, UserProfileResource, CourseResource, ProblemResource, EssayResource, EssayGradeResource, UserResource, CreateUserResource, MembershipResource
 from tastypie.api import Api
 
@@ -15,4 +15,9 @@ v1_api.register(MembershipResource())
 
 urlpatterns = patterns('',
     (r'^api/', include(v1_api.urls)),
+)
+
+urlpatterns+=patterns('freeform_data.views',
+      url(r'^login/$','login'),
+      url(r'^logout/$','logout'),
 )
