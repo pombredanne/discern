@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.http import HttpResponse
 
 @csrf_exempt
 def login(request):
@@ -37,4 +38,4 @@ def error_response(message):
 
 def generic_response(message, success):
     message = {'success' : success, 'message' : message}
-    return json.dumps(message)
+    return HttpResponse(json.dumps(message))
