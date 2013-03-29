@@ -16,6 +16,10 @@ Feedback is a major part of this process, the feedback system has been left very
 Note that you will need the machine-learning repository to use all of the functionality here.  This repo is currently internal to edX, but will
 hopefully be open sourced shortly.  Until then, the API can be used, but the celery tasks will not work.
 
+Examples and getting started
+-----------------------
+Please see docs/installation for installation information.  Examples can be found in docs/examples.  A built version of these can be found at [ReadtheDocs](http://ml-api.readthedocs.org/en/latest/), or you can feel free to clone the repo and build these yourself.
+
 How to Contribute
 -----------------------
 Contributions are very welcome.  The easiest way is to fork this repo, and then make a pull request from your fork.
