@@ -21,6 +21,7 @@ def login(request):
         pass
 
     log.debug(p)
+    log.debug(request)
 
     if not p.has_key('username') or not p.has_key('password'):
         return error_response('Insufficient login info')
