@@ -3,6 +3,9 @@
     {% load compressed %}
     {% compressed_js 'user' %}
 {% endblock %}
+{% block header %}
+    <h4>User</h4>
+{% endblock %}
 {% block content %}
     <section class="user-view">
         {%  verbatim %}
