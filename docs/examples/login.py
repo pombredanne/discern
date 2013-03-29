@@ -18,7 +18,9 @@ data = {
 headers = {'content-type': 'application/json'}
 
 #Now, let's try to login with our credentials.
-response = requests.post(login_url, data=json.dumps(data),headers=headers)
+response = requests.post(login_url, json.dumps(data),headers=headers)
 
 # If the user with username test and password test has been created, this should return a 200 code.
 print("Status Code: {0}".format(response.status_code))
+#This should show us a json dictionary with "message" : "Logged in."
+print("Response from server: {0}".format(response.text))

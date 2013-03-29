@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login, logout
+import django.contrib.auth
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import HttpResponse
@@ -14,21 +14,21 @@ def login(request):
     if request.method != 'POST':
         return error_response('Must query using HTTP POST.')
 
-    p = request.POST.copy()
+    p = dict(request.POST.copy())
+    if p == {}:
+        p = request.body
+
     try:
         p = json.loads(p)
     except:
         pass
 
-    log.debug(p)
-    log.debug(request)
-
     if not p.has_key('username') or not p.has_key('password'):
         return error_response('Insufficient login info')
 
-    user = authenticate(username=p['username'], password=p['password'])
+    user = django.contrib.auth.authenticate(username=p['username'], password=p['password'])
     if user is not None:
-        login(request, user)
+        django.contrib.auth.login(request, user)
         return success_response('Logged in.')
     else:
         return error_response('Incorrect login credentials.')
@@ -37,7 +37,7 @@ def logout(request):
     """
     Uses django auth to handle a logout request
     """
-    logout(request)
+    django.contrib.auth.logout(request)
     return success_response('Goodbye')
 
 def success_response(message):
