@@ -5,7 +5,7 @@ API_BASE_URL = "http://127.0.0.1:7999"
 
 #We can use api key authentication or django session authentication.  In this case, we will login with the django session.
 
-login_url = API_BASE_URL + "/frontend/login/"
+login_url = API_BASE_URL + "/essay_site/login/"
 
 #In order to create a user, we need to define a username and a password
 data = {

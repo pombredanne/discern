@@ -2,6 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import HttpResponse
+import logging
+
+log=logging.getLogger(__name__)
 
 @csrf_exempt
 def login(request):
@@ -12,6 +15,12 @@ def login(request):
         return error_response('Must query using HTTP POST.')
 
     p = request.POST.copy()
+    try:
+        p = json.loads(p)
+    except:
+        pass
+
+    log.debug(p)
 
     if not p.has_key('username') or not p.has_key('password'):
         return error_response('Insufficient login info')

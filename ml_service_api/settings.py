@@ -103,6 +103,7 @@ PIPELINE_JS = {
             'js/jquery-1.9.1.js',
             'js/json2.js',
             'js/underscore.js',
+            'js/bootstrap.js',
             'js/backbone.js',
             'js/backbone.validations.js',
             'js/backbone-tastypie.js',
@@ -126,14 +127,20 @@ for model in API_MODELS:
     }
 
 PIPELINE_CSS = {
-    'skeleton': {
+    'bootstrap': {
         'source_filenames': [
-            'css/skeleton.css',
-            'css/base.css',
-            'css/layout.css',
+            'css/bootstrap.css',
+            'css/bootstrap-responsive.css',
+            'css/bootstrap-extensions.css',
             ],
-        'output_filename': 'css/skeleton.css',
+        'output_filename': 'css/bootstrap.css',
         },
+    'util_css' : {
+        'source_filenames': [
+            'css/jquery-ui-1.10.2.custom.css',
+            ],
+        'output_filename': 'css/util_css.css',
+        }
 }
 
 
