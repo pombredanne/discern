@@ -25,6 +25,17 @@ Installation and Usage
    installation/install_notes
    installation/usage
 
+Examples
+---------------------------------
+.. toctree::
+    :maxdepth: 1
+
+    examples/connect_to_api
+    examples/create_user
+    examples/login
+    examples/query_organization
+    examples/create_related_model
+
 API
 ---------------------------------
 .. toctree::
