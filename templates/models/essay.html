@@ -3,6 +3,9 @@
     {% load compressed %}
     {% compressed_js 'essay' %}
 {% endblock %}
+{% block header %}
+    <h4>Essay</h4>
+{% endblock %}
 {% block content %}
     <section class="essay-view">
         {%  verbatim %}

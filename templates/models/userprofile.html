@@ -3,6 +3,9 @@
     {% load compressed %}
     {% compressed_js 'userprofile' %}
 {% endblock %}
+{% block header %}
+    <h4>User Profile</h4>
+{% endblock %}
 {% block content %}
     <section class="userprofile-view">
         {%  verbatim %}
