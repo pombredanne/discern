@@ -4,6 +4,11 @@ from haystack import site
 from models import Organization, Course, Problem, Essay, EssayGrade
 
 class BaseIndex(SearchIndex):
+    """
+    Define a base search index class for all models.  Fields text, created, and modified are generic across all models.
+    See haystack documentation for what the text field and document=True mean.  Templates have to be added to
+    templates/search/indexes/freeform_data.
+    """
     text = CharField(document=True, use_template=True)
     created = DateTimeField(model_attr='created')
     modified = DateTimeField(model_attr='modified')
@@ -13,7 +18,9 @@ class BaseIndex(SearchIndex):
         return self.model_type
 
     def index_queryset(self, using=None):
-        """Used when the entire index for model is updated."""
+        """
+        Used when the entire index for model is updated.
+        """
         return self.get_model().objects.all()
 
 class OrganizationIndex(BaseIndex):
@@ -35,6 +42,7 @@ class EssayGradeIndex(BaseIndex):
     confidence = DecimalField(model_attr="confidence")
     model_type = EssayGrade
 
+#Register all of the search indexes.  Must be done in pairs.
 site.register(Organization, OrganizationIndex)
 site.register(Course, CourseIndex)
 site.register(Problem, ProblemIndex)

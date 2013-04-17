@@ -58,8 +58,12 @@ def default_serialization():
     return Serializer(formats=['json', 'jsonp', 'xml', 'yaml', 'html', 'plist'])
 
 def run_search(request,obj):
-    # Do the query.
-    sqs = SearchQuerySet().models(obj).load_all().auto_query(request.GET.get('query', ''))
+    """
+    Runs a search via haystack.
+    request - user search request object
+    obj - the model for which search is being done
+    """
+    sqs = SearchQuerySet().models(obj).load_all().auto_query(request.GET.get('q', ''))
     paginator = Paginator(sqs, 20)
 
     try:
@@ -70,12 +74,22 @@ def run_search(request,obj):
     return page.object_list
 
 class MockQuerySet(Iterator):
+    """
+    Mock a query set so that it can be used with default authorization
+    """
     def __init__(self, model,data):
+        """
+        model - a model class
+        data - list of data to hold in the mock query set
+        """
         self.data = data
         self.model = model
         self.current_elem = 0
 
     def next(self):
+        """
+        Fetches the next element in the mock query set
+        """
         if self.current_elem>=len(self.data):
             self.current_elem=0
             raise StopIteration
@@ -84,26 +98,44 @@ class MockQuerySet(Iterator):
         return dat
 
 class SearchModelResource(ModelResource):
+    """
+    Extends model resource to add search capabilities
+    """
     def prepend_urls(self):
+        """
+        Adds in a search url for each model that accepts query terms and pages.
+        """
         return [
             url(r"^(?P<resource_name>%s)/search%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_search'), name="api_get_search"),
             ]
 
     def get_search(self, request, **kwargs):
+        """
+        Gets search results for each of the models that inherit from this class
+        request - user request object
+        """
         self.method_check(request, allowed=['get'])
         self.is_authenticated(request)
         self.throttle_check(request)
 
+        #Run search via haystack and get list of objects
         object_list = run_search(request,self._meta.model_type)
         objects = []
 
+        #Create bundle and authorization
         auth = default_authorization()
         bundle = None
 
+        #Convert search result list into a list of django models
         object_list = [result.object for result in object_list]
+
+        #If there is more than one object, then apply authorization limits to the list
         if len(object_list)>0:
+            #Mock a bundle, needed to apply auth limits
             bundle = self.build_bundle(obj=object_list[0], request=request)
             bundle = self.full_dehydrate(bundle)
+
+            #Apply authorization limits via auth object that we previously created
             object_list = auth.read_list(MockQuerySet(self._meta.model_type, object_list),bundle)
 
         for result in object_list:
