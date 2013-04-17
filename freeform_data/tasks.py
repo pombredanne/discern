@@ -13,4 +13,4 @@ log = logging.getLogger(__name__)
 
 @periodic_task(run_every=timedelta(seconds=settings.TIME_BETWEEN_INDEX_REBUILDS))
 def create_ml_models():
-    call_command('rebuild_index', interactive=False)
+    call_command('update_index', interactive=False)

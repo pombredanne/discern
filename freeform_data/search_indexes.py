@@ -29,4 +29,8 @@ class EssayIndex(BaseIndex):
 class EssayGradeIndex(BaseIndex):
     model_type = EssayGrade
 
-site.register(Organization, OrganizationIndex, Course, CourseIndex, Problem, ProblemIndex, Essay, EssayIndex, EssayGrade, EssayGradeIndex)
+site.register(Organization, OrganizationIndex)
+site.register(Course, CourseIndex)
+site.register(Problem, ProblemIndex)
+site.register(Essay, EssayIndex)
+site.register(EssayGrade, EssayGradeIndex)
