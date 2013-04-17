@@ -229,6 +229,7 @@ INSTALLED_APPS = (
     'djcelery',
     'pipeline',
     'guardian',
+    'haystack'
 )
 
 # A sample logging configuration. The only tangible logging
