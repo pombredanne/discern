@@ -10,12 +10,14 @@ The main steps are:
 3. xargs -a apt-packages.txt apt-get install
 4. apt-get install python-pip
 5. pip install virtualenv
-6. mkdir /opt/edx
-7. virtualenv "/opt/edx"
-8. source /opt/edx/bin/activate
+6. virtualenv /opt/edx
+7. source /opt/edx/bin/activate
+8. pip install numpy==1.6.2
 9. pip install -r requirements.txt
 10. python manage.py syncdb --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
 11. python manage.py migrate --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
+12. python manage.py collectstatic -c --noinput --settings=ml_service_api.aws --pythonpath=DIR WHERE YOU CLONED REPO
+13. python manage.py runserver --nostatic
 
 You can skip the virtualenv commands if you like, but they will be a major help in keeping the packages
 for this repo separate from the rest of your system.
