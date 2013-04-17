@@ -237,7 +237,6 @@ def get_group_name(membership):
 def add_creator_permissions(sender, instance, **kwargs):
     try:
         instance_name = instance.__class__.__name__.lower()
-        log.debug(instance_name)
         if instance_name=="user":
             user = instance
         elif instance_name=="userprofile":

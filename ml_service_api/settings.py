@@ -229,6 +229,7 @@ INSTALLED_APPS = (
     'djcelery',
     'pipeline',
     'guardian',
+    'haystack'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -282,3 +283,9 @@ BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/5'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+#Haystack settings
+HAYSTACK_SITECONF = 'ml_service_api.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index")
+TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds

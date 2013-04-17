@@ -78,7 +78,6 @@ class Command(BaseCommand):
         problem.save()
 
         grades, text = [], []
-        log.debug(settings.REPO_PATH)
         combined_raw = open(settings.REPO_PATH / essay_file).read()
         raw_lines = combined_raw.splitlines()
         for row in xrange(1, len(raw_lines)):
