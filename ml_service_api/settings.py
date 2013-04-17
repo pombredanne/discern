@@ -284,9 +284,8 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/5'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(ENV_ROOT, 'whoosh_index'),
-        },
-    }
+#Haystack settings
+HAYSTACK_SITECONF = 'ml_service_api.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index")
+TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds

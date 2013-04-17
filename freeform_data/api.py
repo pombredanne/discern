@@ -14,6 +14,10 @@ from django.db import IntegrityError
 from tastypie.exceptions import BadRequest
 from guardian_auth import GuardianAuthorization
 import logging
+from haystack.query import SearchQuerySet
+from django.core.paginator import Paginator, InvalidPage
+from django.http import Http404
+from collections import Iterator
 
 log=logging.getLogger(__name__)
 
@@ -53,6 +57,68 @@ def default_serialization():
     """
     return Serializer(formats=['json', 'jsonp', 'xml', 'yaml', 'html', 'plist'])
 
+def run_search(request,obj):
+    # Do the query.
+    sqs = SearchQuerySet().models(obj).load_all().auto_query(request.GET.get('query', ''))
+    paginator = Paginator(sqs, 20)
+
+    try:
+        page = paginator.page(int(request.GET.get('page', 1)))
+    except InvalidPage:
+        raise Http404("Sorry, no results on that page.")
+
+    return page.object_list
+
+class MockQuerySet(Iterator):
+    def __init__(self, model,data):
+        self.data = data
+        self.model = model
+        self.current_elem = 0
+
+    def next(self):
+        if self.current_elem>=len(self.data):
+            self.current_elem=0
+            raise StopIteration
+        dat = self.data[self.current_elem]
+        self.current_elem+=1
+        return dat
+
+class SearchModelResource(ModelResource):
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/search%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_search'), name="api_get_search"),
+            ]
+
+    def get_search(self, request, **kwargs):
+        self.method_check(request, allowed=['get'])
+        self.is_authenticated(request)
+        self.throttle_check(request)
+
+        object_list = run_search(request,self._meta.model_type)
+        objects = []
+
+        auth = default_authorization()
+        bundle = None
+
+        object_list = [result.object for result in object_list]
+        if len(object_list)>0:
+            bundle = self.build_bundle(obj=object_list[0], request=request)
+            bundle = self.full_dehydrate(bundle)
+            object_list = auth.read_list(MockQuerySet(self._meta.model_type, object_list),bundle)
+
+        for result in object_list:
+            bundle = self.build_bundle(obj=result, request=request)
+            bundle = self.full_dehydrate(bundle)
+            objects.append(bundle)
+
+        object_list = {
+            'objects': objects,
+            }
+
+        log.debug(object_list)
+        self.log_throttled_access(request)
+        return self.create_response(request, object_list)
+
 class CreateUserResource(ModelResource):
     """
     Creates a user with the specified username and password.  This is needed because of permissions restrictions
@@ -76,7 +142,7 @@ class CreateUserResource(ModelResource):
             raise BadRequest('That username already exists')
         return bundle
 
-class OrganizationResource(ModelResource):
+class OrganizationResource(SearchModelResource):
     """
     Preserves appropriate many to many relationships, and encapsulates the Organization model.
     """
@@ -95,6 +161,7 @@ class OrganizationResource(ModelResource):
         authorization= default_authorization()
         authentication = default_authentication()
         always_return_data = True
+        model_type = Organization
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(OrganizationResource, self).obj_create(bundle)
@@ -114,7 +181,6 @@ class OrganizationResource(ModelResource):
         This hacks the relation to show users.
         """
         if bundle.data.get('users'):
-            log.debug(bundle.data.get('users'))
             l_users = bundle.obj.users.all()
         resource_uris = []
         user_resource = UserResource()
@@ -122,7 +188,7 @@ class OrganizationResource(ModelResource):
             resource_uris.append(user_resource.get_resource_uri(bundle_or_obj=l_user))
         return resource_uris
 
-class UserProfileResource(ModelResource):
+class UserProfileResource(SearchModelResource):
     """
     Encapsulates the UserProfile module
     """
@@ -135,11 +201,12 @@ class UserProfileResource(ModelResource):
         authorization= default_authorization()
         authentication = default_authentication()
         always_return_data = True
+        model_type = UserProfile
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(UserProfileResource, self).obj_create(bundle,user=bundle.request.user)
 
-class UserResource(ModelResource):
+class UserResource(SearchModelResource):
     """
     Encapsulates the User Model
     """
@@ -157,6 +224,7 @@ class UserResource(ModelResource):
         authorization= default_authorization()
         authentication = default_authentication()
         always_return_data = True
+        model_type = User
 
     def obj_create(self, bundle, **kwargs):
         return super(UserResource, self).obj_create(bundle)
@@ -165,7 +233,7 @@ class UserResource(ModelResource):
         bundle.data['api_key'] = bundle.obj.api_key.key
         return bundle
 
-class MembershipResource(ModelResource):
+class MembershipResource(SearchModelResource):
     """
     Encapsulates the Membership Model
     """
@@ -179,6 +247,7 @@ class MembershipResource(ModelResource):
         authorization= default_authorization()
         authentication = default_authentication()
         always_return_data = True
+        model_type = Membership
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(MembershipResource, self).obj_create(bundle,user=bundle.request.user)
@@ -186,7 +255,7 @@ class MembershipResource(ModelResource):
     def apply_authorization_limits(self, request, object_list):
         return object_list.filter(user_id=request.user.id)
 
-class CourseResource(ModelResource):
+class CourseResource(SearchModelResource):
     """
     Encapsulates the Course Model
     """
@@ -201,6 +270,7 @@ class CourseResource(ModelResource):
         authorization= default_authorization()
         authentication = default_authentication()
         always_return_data = True
+        model_type = Course
 
     def obj_create(self, bundle, **kwargs):
         return super(CourseResource, self).obj_create(bundle, user=bundle.request.user)
@@ -208,7 +278,7 @@ class CourseResource(ModelResource):
     def apply_authorization_limits(self, request, object_list):
         return object_list.filter(organization__in=request.user.organizations)
 
-class ProblemResource(ModelResource):
+class ProblemResource(SearchModelResource):
     """
     Encapsulates the problem Model
     """
@@ -222,6 +292,7 @@ class ProblemResource(ModelResource):
         authorization= default_authorization()
         authentication = default_authentication()
         always_return_data = True
+        model_type = Problem
 
     def obj_create(self, bundle, **kwargs):
         return super(ProblemResource, self).obj_create(bundle)
@@ -229,7 +300,7 @@ class ProblemResource(ModelResource):
     def apply_authorization_limits(self, request, object_list):
         return object_list.filter(course__in=request.user.organizations.courses)
 
-class EssayResource(ModelResource):
+class EssayResource(SearchModelResource):
     """
     Encapsulates the essay Model
     """
@@ -245,6 +316,7 @@ class EssayResource(ModelResource):
         authorization= default_authorization()
         authentication = default_authentication()
         always_return_data = True
+        model_type = Essay
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(EssayResource, self).obj_create(bundle, user=bundle.request.user)
@@ -254,7 +326,7 @@ class EssayResource(ModelResource):
     def apply_authorization_limits(self, request, object_list):
         return object_list.filter(user_id=request.user.id)
 
-class EssayGradeResource(ModelResource):
+class EssayGradeResource(SearchModelResource):
     """
     Encapsulates the EssayGrade Model
     """
@@ -268,6 +340,7 @@ class EssayGradeResource(ModelResource):
         authorization= default_authorization()
         authentication = default_authentication()
         always_return_data = True
+        model_type = EssayGrade
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(EssayGradeResource, self).obj_create(bundle, user=bundle.request.user)
