@@ -12,7 +12,7 @@ from django.core.management import call_command
 log = logging.getLogger(__name__)
 
 @periodic_task(run_every=timedelta(seconds=settings.TIME_BETWEEN_INDEX_REBUILDS))
-def create_ml_models():
+def refresh_search_index():
     """
     A task that will periodically update the search index
     """
