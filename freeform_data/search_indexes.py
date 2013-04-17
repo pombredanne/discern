@@ -1,10 +1,12 @@
 import datetime
-from haystack import indexes
+from haystack.indexes import *
 from haystack import site
 from models import Organization, Course, Problem, Essay, EssayGrade
 
-class BaseIndex(indexes.SearchIndex):
-    text = indexes.CharField(document=True, use_template=True)
+class BaseIndex(SearchIndex):
+    text = CharField(document=True, use_template=True)
+    created = DateTimeField(model_attr='created')
+    modified = DateTimeField(model_attr='modified')
     model_type = None
 
     def get_model(self):
@@ -24,9 +26,13 @@ class ProblemIndex(BaseIndex):
     model_type = Problem
 
 class EssayIndex(BaseIndex):
+    type = CharField(model_attr="essay_type")
+    ml_graded = BooleanField(model_attr="has_been_ml_graded")
     model_type = Essay
 
 class EssayGradeIndex(BaseIndex):
+    success = BooleanField(model_attr="success")
+    confidence = DecimalField(model_attr="confidence")
     model_type = EssayGrade
 
 site.register(Organization, OrganizationIndex)
