@@ -283,3 +283,10 @@ BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/5'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(ENV_ROOT, 'whoosh_index'),
+        },
+    }

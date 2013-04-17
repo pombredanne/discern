@@ -17,6 +17,7 @@ The main steps are:
 10. pip install -r requirements.txt
 11. python manage.py syncdb --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
 12. python manage.py migrate --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
+13. python manage.py collectstatic -c --noinput --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
 
 You can skip the virtualenv commands if you like, but they will be a major help in keeping the packages
 for this repo separate from the rest of your system.
