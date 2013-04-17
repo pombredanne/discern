@@ -32,9 +32,6 @@ class GuardianAuthorization(Authorization):
         return model_klass
 
     def read_list(self, object_list, bundle):
-        log.debug(object_list)
-        log.debug(type(object_list))
-        log.debug(object_list.model)
         klass = self.base_checks(bundle.request, object_list.model)
         read_list=[]
 
