@@ -3,8 +3,8 @@ ML Service API
 
 Questions?
 ---------------------
-Feel free to open an issue in the issue tracker, or use the link http://www.hipchat.com/gBwxSJBHf to access a hipchat chat room for real time
-communication with some of the edX developers.
+Feel free to open an issue in the issue tracker, or use the link http://webchat.freenode.net/?channels=##edxml to access an IRC chat room for real time
+communication with some of the edX developers.  Alternatively, you can use your own IRC chat client and point it at freenode(chat.freenode.net).  The channel is ##edxml.
 
 Overview
 ---------------------
