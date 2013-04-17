@@ -72,6 +72,7 @@ ListView = Backbone.View.extend({
         this.itemList.add(new_item);
         $(this.el).children("#item-add").remove();
         $(this.el).data('adding', false);
+        this.renderItem(new_item.model);
     },
     previous: function() {
         this.itemList.previousPage();

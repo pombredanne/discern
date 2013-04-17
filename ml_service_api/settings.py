@@ -277,8 +277,8 @@ LOGGING = {
 
 AUTH_PROFILE_MODULE = 'freeform_data.UserProfile'
 
-BROKER_URL = 'redis://localhost:6379/0'
+BROKER_URL = 'redis://localhost:6379/5'
 BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/5'
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
