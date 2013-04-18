@@ -112,7 +112,6 @@ class ApiField(object):
             # Check for `__` in the field for looking through the relation.
             attrs = self.attribute.split('__')
             current_object = bundle.obj
-
             for attr in attrs:
                 previous_object = current_object
                 current_object = getattr(current_object, attr, None)

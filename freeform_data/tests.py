@@ -41,10 +41,14 @@ def get_first_resource_uri(type):
     c = login()
     endpoint, schema = get_urls(type)
     data = c.get(endpoint, data={'format' : 'json'})
-    log.debug(data.content)
     object = json.loads(data.content)['objects'][0]
-    resource_uri = [object['resource_uri']]
+    resource_uri = object['resource_uri']
     return resource_uri
+
+def create_object(type, object):
+    c = login()
+    endpoint, schema = get_urls(type)
+    c.post(endpoint, json.dumps(object), "application/json")
 
 def login():
     c = Client()
@@ -76,6 +80,7 @@ class GenericTest(object):
 
     def test_create(self):
         result = self.c.post(self.endpoint, json.dumps(self.object), "application/json")
+        log.debug(result.content)
         self.assertEqual(result.status_code,201)
 
 
@@ -100,8 +105,9 @@ class ProblemTest(unittest.TestCase, GenericTest):
         self.create_object()
 
     def create_object(self):
+        create_object("course", CourseTest.object)
         course_resource_uri = get_first_resource_uri("course")
-        self.object = {'courses' : course_resource_uri}
+        self.object = {'courses' : [course_resource_uri]}
 
 class EssayTest(unittest.TestCase, GenericTest):
     type="essay"
@@ -110,8 +116,13 @@ class EssayTest(unittest.TestCase, GenericTest):
         self.create_object()
 
     def create_object(self):
+        create_object("course", CourseTest.object)
+        course_resource_uri = get_first_resource_uri("course")
+        problem_object = {'courses' : [course_resource_uri]}
+        create_object("problem", problem_object)
+
         problem_resource_uri = get_first_resource_uri("problem")
-        self.object = {'problem' : problem_resource_uri}
+        self.object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : 'train'}
 
 class EssayGradeTest(unittest.TestCase, GenericTest):
     type="essaygrade"
