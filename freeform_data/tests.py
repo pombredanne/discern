@@ -48,23 +48,31 @@ def get_first_resource_uri(type):
 def create_object(type, object):
     c = login()
     endpoint, schema = get_urls(type)
-    c.post(endpoint, json.dumps(object), "application/json")
+    result = c.post(endpoint, json.dumps(object), "application/json")
+    return result
 
 def login():
     c = Client()
     c.login(username='test', password='test')
     return c
 
+def create_organization():
+    organization_object =  {"name" : "edX"}
+    result = create_object("organization", organization_object)
+    organization_resource_uri = json.loads(result.content)['resource_uri']
+    return organization_resource_uri
+
 def create_course():
-    create_object("course", CourseTest.object)
-    course_resource_uri = get_first_resource_uri("course")
+    course_object = {'course_name' : "edx_test"}
+    result = create_object("course", course_object)
+    course_resource_uri = json.loads(result.content)['resource_uri']
     return course_resource_uri
 
 def create_problem():
     course_resource_uri = create_course()
     problem_object = {'courses' : [course_resource_uri]}
-    create_object("problem", problem_object)
-    problem_resource_uri = get_first_resource_uri("problem")
+    result = create_object("problem", problem_object)
+    problem_resource_uri = json.loads(result.content)['resource_uri']
     return problem_resource_uri
 
 def create_essay():
@@ -73,6 +81,21 @@ def create_essay():
     create_object("essay", essay_object)
     essay_resource_uri = get_first_resource_uri("essay")
     return essay_resource_uri
+
+def create_essaygrade():
+    essay_resource_uri = create_essay()
+    essaygrade_object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
+    create_object("essaygrade", essaygrade_object)
+    essaygrade_resource_uri = get_first_resource_uri("essaygrade")
+    return essaygrade_resource_uri
+
+model_registry = {
+    'course' : create_course,
+    'problem' : create_problem,
+    'essay' : create_essay,
+    'organization' : create_organization,
+    'essaygrade' : create_essaygrade,
+}
 
 class GenericTest(object):
     type = "generic"
@@ -99,9 +122,17 @@ class GenericTest(object):
 
     def test_create(self):
         result = self.c.post(self.endpoint, json.dumps(self.object), "application/json")
-        log.debug(result.content)
         self.assertEqual(result.status_code,201)
 
+    def test_update(self):
+        object = model_registry[self.type]()
+        result = self.c.put(object, json.dumps(self.object), "application/json")
+        self.assertEqual(result.status_code,202)
+
+    def test_delete(self):
+        object = model_registry[self.type]()
+        result = self.c.delete(object)
+        self.assertEqual(result.status_code,204)
 
 class OrganizationTest(unittest.TestCase, GenericTest):
     type="organization"
