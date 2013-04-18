@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from models import Organization, Course, Problem, Essay, EssayGrade, UserProfile
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
-from ml_grading import ml_model_creation
+from ml_grading import ml_model_creation, ml_grader
 
 log = logging.getLogger(__name__)
 
@@ -141,15 +141,21 @@ model_registry = {
     'essaygrade' : create_essaygrade,
 }
 
-def create_ml_essays(type, count):
+def create_ml_problem_and_essays(type, count):
     problem_resource_uri = create_problem()
+    create_ml_essays_only(type,count,problem_resource_uri)
+    return problem_resource_uri
+
+def create_ml_essays_only(type,count,problem_resource_uri):
+    essay_list = []
     for i in xrange(0,count):
         essay_object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : type}
         result = create_object("essay", essay_object)
         essay_resource_uri = json.loads(result.content)['resource_uri']
+        essay_list.append(essay_resource_uri)
         essaygrade_object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
         create_object("essaygrade", essaygrade_object)
-    return problem_resource_uri
+    return essay_list
 
 def lookup_object(resource_uri):
     c = login()
@@ -282,11 +288,18 @@ class EssayGradeTest(unittest.TestCase, GenericTest):
 
 class MLModelCreationTest(unittest.TestCase):
     def test_ml_creation(self):
-        problem_resource_uri = create_ml_essays("train",10)
+        problem_resource_uri = create_ml_problem_and_essays("train",10)
         problem = lookup_object(problem_resource_uri)
         problem_id = problem['id']
         problem_model = Problem.objects.get(id=problem_id)
-        ml_model_creation.handle_single_problem(problem_model)
+        success, message = ml_model_creation.handle_single_problem(problem_model)
+        self.assertEqual(success, True)
+        essay_list = create_ml_essays_only("test",10, problem_resource_uri)
+        essay = lookup_object(essay_list[0])
+        essay_id = essay['id']
+        essay_model = Essay.objects.get(id=essay_id)
+        success, message = ml_grader.handle_single_essay(essay_model)
+        self.assertEqual(success, True)
 
 class FinalTest(unittest.TestCase):
     def test_delete(self):
