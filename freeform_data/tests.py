@@ -108,7 +108,7 @@ def create_problem():
     Create a problem
     """
     course_resource_uri = create_course()
-    problem_object = {'courses' : [course_resource_uri]}
+    problem_object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1])}
     result = create_object("problem", problem_object)
     problem_resource_uri = json.loads(result.content)['resource_uri']
     return problem_resource_uri
@@ -140,6 +140,23 @@ model_registry = {
     'organization' : create_organization,
     'essaygrade' : create_essaygrade,
 }
+
+def create_ml_essays(type, count):
+    problem_resource_uri = create_problem()
+    for i in xrange(0,count):
+        essay_object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : type}
+        result = create_object("essay", essay_object)
+        essay_resource_uri = json.loads(result.content)['resource_uri']
+        essaygrade_object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
+        create_object("essaygrade", essaygrade_object)
+    return problem_resource_uri
+
+def lookup_object(resource_uri):
+    c = login()
+    result = c.get(resource_uri,
+                        data={'format' : 'json'}
+    )
+    return json.loads(result.content)
 
 class GenericTest(object):
     """
@@ -265,8 +282,11 @@ class EssayGradeTest(unittest.TestCase, GenericTest):
 
 class MLModelCreationTest(unittest.TestCase):
     def test_ml_creation(self):
-        pass
-
+        problem_resource_uri = create_ml_essays("train",10)
+        problem = lookup_object(problem_resource_uri)
+        problem_id = problem['id']
+        problem_model = Problem.objects.get(id=problem_id)
+        ml_model_creation.handle_single_problem(problem_model)
 
 class FinalTest(unittest.TestCase):
     def test_delete(self):

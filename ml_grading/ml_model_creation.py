@@ -58,12 +58,16 @@ def handle_single_problem(problem):
 
     #Get the maximum target scores from the problem
     first_len = len(json.loads(problem.max_target_scores))
+    bad_list = []
     for i in xrange(0,len(essay_grades)):
         #All of the lists within the essay grade list (ie [[[1,1],[2,2]]) need to be the same length
         if len(essay_grades[i])!=first_len:
             error_message = "Problem with an instructor scored essay! {0}".format(essay_grades)
-            log.exception(error_message)
-            return False, error_message
+            log.info(error_message)
+            bad_list.append(i)
+
+    essay_text = [essay_text[t] for t in xrange(0,len(essay_text)) if t not in bad_list]
+    essay_grades = [essay_grades[t] for t in xrange(0,len(essay_grades)) if t not in bad_list]
 
     #Too many essays can take a very long time to train and eat up system resources.  Enforce a max.
     # Accuracy increases logarithmically, anyways, so you dont lose much here.
