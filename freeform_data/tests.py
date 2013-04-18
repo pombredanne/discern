@@ -46,24 +46,44 @@ class GenericTest(object):
         self.c.login(username='test', password='test')
         self.endpoint, self.schema = get_urls(self.type)
 
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
+    def test_schema(self):
+        result = self.c.get(self.schema,
+                            data={'format' : 'json'}
+        )
+
+        self.assertEqual(result.status_code,200)
+
+    def test_endpoint(self):
+        result = self.c.get(self.endpoint,
+                            data={'format' : 'json'}
+        )
+
+        self.assertEqual(result.status_code,200)
+
 
 class OrganizationTest(unittest.TestCase, GenericTest):
     type="organization"
     def setUp(self):
         self.generic_setup()
 
-    def test_organization(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        result = self.c.get(self.endpoint,
-                   data={'format' : 'json'}
-        )
-        log.debug(result)
+class CourseTest(unittest.TestCase, GenericTest):
+    type="course"
+    def setUp(self):
+        self.generic_setup()
+
+class ProblemTest(unittest.TestCase, GenericTest):
+    type="problem"
+    def setUp(self):
+        self.generic_setup()
+
+class EssayTest(unittest.TestCase, GenericTest):
+    type="essay"
+    def setUp(self):
+        self.generic_setup()
+
+class EssayGradeTest(unittest.TestCase, GenericTest):
+    type="essaygrade"
+    def setUp(self):
+        self.generic_setup()
 
 

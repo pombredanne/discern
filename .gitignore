@@ -10,3 +10,6 @@ celerybeat-schedule
 staticfiles/
 whoosh_api_index/
 *.orig
+nosetests.xml
+cover/
+.coverage
