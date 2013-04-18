@@ -112,7 +112,7 @@ def handle_single_problem(problem):
                 second_difference = (now - created_model.modified).total_seconds()
                 if second_difference > settings.TIME_BEFORE_REMOVING_STARTED_MODEL:
                     log.info("Model for problem {0} started over {1} seconds ago, removing and re-attempting.".format(
-                        problem_id, settings.TIME_BEFORE_REMOVING_STARTED_MODEL))
+                        problem.id, settings.TIME_BEFORE_REMOVING_STARTED_MODEL))
                     created_model.delete()
                     model_started = False
             #If a model has not been started, then initialize an entry in the database to prevent other threads from duplicating work
