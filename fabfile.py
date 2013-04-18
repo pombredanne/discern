@@ -67,7 +67,7 @@ def deploy():
         ml_repo_exists = exists(ml_code_dir, use_sudo=True)
         if not ml_repo_exists:
             with cd(up_one_level_dir):
-                run('git clone git@github.com:MITx/machine-learning.git')
+                run('git clone git@github.com:edx/machine-learning.git')
         db_exists = exists(database_dir, use_sudo=True)
         if not db_exists:
             sudo('mkdir {0}'.format(database_dir))
@@ -113,6 +113,7 @@ def deploy():
             run('python manage.py syncdb --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
             run('python manage.py migrate --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
             run('python manage.py collectstatic -c --noinput --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
+            run('python manage.py update_index --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
             sudo('chown -R www-data {0}'.format(up_one_level_dir))
 
         with cd(ml_code_dir):

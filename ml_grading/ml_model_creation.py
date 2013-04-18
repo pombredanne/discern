@@ -58,12 +58,16 @@ def handle_single_problem(problem):
 
     #Get the maximum target scores from the problem
     first_len = len(json.loads(problem.max_target_scores))
+    bad_list = []
     for i in xrange(0,len(essay_grades)):
         #All of the lists within the essay grade list (ie [[[1,1],[2,2]]) need to be the same length
         if len(essay_grades[i])!=first_len:
             error_message = "Problem with an instructor scored essay! {0}".format(essay_grades)
-            log.exception(error_message)
-            return False, error_message
+            log.info(error_message)
+            bad_list.append(i)
+
+    essay_text = [essay_text[t] for t in xrange(0,len(essay_text)) if t not in bad_list]
+    essay_grades = [essay_grades[t] for t in xrange(0,len(essay_grades)) if t not in bad_list]
 
     #Too many essays can take a very long time to train and eat up system resources.  Enforce a max.
     # Accuracy increases logarithmically, anyways, so you dont lose much here.
@@ -108,7 +112,7 @@ def handle_single_problem(problem):
                 second_difference = (now - created_model.modified).total_seconds()
                 if second_difference > settings.TIME_BEFORE_REMOVING_STARTED_MODEL:
                     log.info("Model for problem {0} started over {1} seconds ago, removing and re-attempting.".format(
-                        problem_id, settings.TIME_BEFORE_REMOVING_STARTED_MODEL))
+                        problem.id, settings.TIME_BEFORE_REMOVING_STARTED_MODEL))
                     created_model.delete()
                     model_started = False
             #If a model has not been started, then initialize an entry in the database to prevent other threads from duplicating work

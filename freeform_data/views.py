@@ -25,7 +25,11 @@ def login(request):
 
     if not p.has_key('username') or not p.has_key('password'):
         return error_response('Insufficient login info')
+    if isinstance(p['username'], list):
+        p['username'] = p['username'][0]
 
+    if isinstance(p['password'], list):
+        p['password'] = p['password'][0]
     user = django.contrib.auth.authenticate(username=p['username'], password=p['password'])
     if user is not None:
         django.contrib.auth.login(request, user)

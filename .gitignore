@@ -11,3 +11,8 @@ staticfiles/
 whoosh_api_index/
 build/
 .vagrant
+whoosh_api_index_test/
+*.orig
+nosetests.xml
+cover/
+.coverage
