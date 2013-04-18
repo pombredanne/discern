@@ -1,4 +1,11 @@
 from settings import *
+import logging
+
+south_logger=logging.getLogger('south')
+south_logger.setLevel(logging.INFO)
+
+warning_logger=logging.getLogger('py.warnings')
+warning_logger.setLevel(logging.ERROR)
 
 DATABASES = {
     'default': {
@@ -9,10 +16,9 @@ DATABASES = {
 
 # Nose Test Runner
 INSTALLED_APPS += ('django_nose',)
-NOSE_ARGS = ['--cover-erase', '--with-xunit', '--with-xcoverage', '--cover-html',
+NOSE_ARGS = ['--cover-erase', '--with-xunit', '--cover-html',
              '--cover-inclusive', '--cover-html-dir',
              'cover',
-             '--cover-package', 'controller',
-             '--cover-package', 'staff_grading',
-             '--cover-package', 'peer_grading']
+             '--cover-package', 'freeform_data',
+             '--cover-package', 'ml_grading',]
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

@@ -9,3 +9,4 @@ tmpfile
 celerybeat-schedule
 staticfiles/
 whoosh_api_index/
+*.orig
