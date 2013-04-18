@@ -6,8 +6,7 @@ virtualenv:
 before_install:
   - sudo xargs -a apt-packages.txt apt-get install
 install:
-  - pip install -r pre-requirements.txt
-  - pip install -r requirements.txt
+  - pip install -r base-requirements.txt
 before_script:
   - python manage.py syncdb --settings=ml_service_api.settings --pythonpath=.
   - python manage.py migrate --settings=ml_service_api.settings --pythonpath=.

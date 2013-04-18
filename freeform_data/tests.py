@@ -334,8 +334,8 @@ class MLTest(unittest.TestCase):
         #Try to score the essay
         grader_success, message = ml_grader.handle_single_essay(essay_model)
 
-        self.assertEqual(creator_success, settings.found_ml)
-        self.assertEqual(grader_success, settings.found_ml)
+        self.assertEqual(creator_success, settings.FOUND_ML)
+        self.assertEqual(grader_success, settings.FOUND_ML)
 
 class ViewTest(unittest.TestCase):
     def setUp(self):

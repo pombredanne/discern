@@ -291,9 +291,10 @@ HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index")
 TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds
 
 #Check to see if the ml repo is available or not
+FOUND_ML = False
 try:
     sys.path.append(ML_PATH)
     import grade
-    found_ml = True
+    FOUND_ML = True
 except:
-    found_ml = False
+    pass
