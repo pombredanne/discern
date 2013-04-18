@@ -25,8 +25,6 @@ def run_setup():
     """
     Setup function
     """
-    #Refresh haystack index
-    call_command('update_index', interactive=False)
     #Check to see if test user is created and create if not.
     if(User.objects.filter(username='test').count() == 0):
         user = User.objects.create_user('test', 'test@test.com', 'test')
@@ -236,6 +234,8 @@ class GenericTest(object):
         """
         Test if we can search in a given endpoint
         """
+        #Refresh haystack index
+        call_command('update_index', interactive=False)
         object = model_registry[self.type]()
         result = self.c.get(self.endpoint + "search/",
                             data={'format' : 'json'}
@@ -286,20 +286,78 @@ class EssayGradeTest(unittest.TestCase, GenericTest):
         essay_resource_uri = create_essay()
         self.object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
 
-class MLModelCreationTest(unittest.TestCase):
+class CreateUserTest(unittest.TestCase):
+    type = "createuser"
+    def setUp(self):
+        """
+        This is a special model to create users, so it doesn't inherit from generic
+        """
+        self.c = login()
+        self.endpoint, self.schema = get_urls(self.type)
+        self.post_data = {
+            'username' : 'test1',
+            'password' : 'test1',
+        }
+
+    def test_create(self):
+        """
+        See if POST can be used with the endpoint
+        """
+        result = self.c.post(self.endpoint, json.dumps(self.post_data), "application/json")
+        self.assertEqual(result.status_code,201)
+
+class MLTest(unittest.TestCase):
     def test_ml_creation(self):
+        """
+        Test to see if an ml model can be created and then if essays can be graded
+        """
+        #Create 10 training essays that are scored
         problem_resource_uri = create_ml_problem_and_essays("train",10)
+
+        #Get the problem so that we can pass it to ml model generation engine
         problem = lookup_object(problem_resource_uri)
         problem_id = problem['id']
         problem_model = Problem.objects.get(id=problem_id)
+
+        #Create the ml model
         success, message = ml_model_creation.handle_single_problem(problem_model)
         self.assertEqual(success, True)
+
+        #Create some test essays and see if the model can score them
         essay_list = create_ml_essays_only("test",10, problem_resource_uri)
+
+        #Lookup the first essay and try to score it
         essay = lookup_object(essay_list[0])
         essay_id = essay['id']
         essay_model = Essay.objects.get(id=essay_id)
+
+        #Try to score the essay
         success, message = ml_grader.handle_single_essay(essay_model)
         self.assertEqual(success, True)
+
+class ViewTest(unittest.TestCase):
+    def setUp(self):
+        run_setup()
+        self.c = Client()
+
+    def test_login(self):
+        """
+        Test the login view
+        """
+        login_url = reverse('freeform_data.views.login')
+        response = self.c.post(login_url,{'username' : 'test', 'password' : 'test'})
+        log.debug(json.loads(response.content))
+        response_code = json.loads(response.content)['success']
+        self.assertEqual(response_code,True)
+
+    def test_logout(self):
+        """
+        Test the logout view
+        """
+        logout_url = reverse('freeform_data.views.logout')
+        response = self.c.post(logout_url)
+        response_code = json.loads(response.content)['success']
+        self.assertEqual(response_code,True)
 
 class FinalTest(unittest.TestCase):
     def test_delete(self):
@@ -315,6 +373,7 @@ class FinalTest(unittest.TestCase):
         endpoint, schema = get_urls("essaygrade")
         data = c.get(endpoint, data={'format' : 'json'})
         self.assertEqual(len(json.loads(data.content)['objects']),0)
+
 
 
 
