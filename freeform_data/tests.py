@@ -1,14 +1,31 @@
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
+Run me with:
+    python manage.py test
 """
+import json
+import unittest
+from datetime import datetime
+import logging
+import urlparse
 
-from django.test import TestCase
+from django.contrib.auth.models import User
+from django.test.client import Client
+import requests
+from django.conf import settings
+from django.utils import timezone
+
+def run_setup():
 
 
-class SimpleTest(TestCase):
+class OrganizationTest(unittest.TestCase):
+    def setUp(self):
+        test_util.create_user()
+        self.c = Client()
+        response = self.c.login(username='test', password='CambridgeMA')
+
+    def tearDown(self):
+        test_util.delete_all()
+
     def test_basic_addition(self):
         """
         Tests that 1 + 1 always equals 2.
