@@ -127,7 +127,7 @@ class SearchModelResource(ModelResource):
         bundle = None
 
         #Convert search result list into a list of django models
-        object_list = [result.object for result in object_list]
+        object_list = [result.object for result in object_list if result is not None]
 
         #If there is more than one object, then apply authorization limits to the list
         if len(object_list)>0:
@@ -147,7 +147,6 @@ class SearchModelResource(ModelResource):
             'objects': objects,
             }
 
-        log.debug(object_list)
         self.log_throttled_access(request)
         return self.create_response(request, object_list)
 

@@ -21,3 +21,11 @@ NOSE_ARGS = ['--cover-erase', '--with-xunit', '--with-coverage', '--cover-html',
              '--cover-package', 'freeform_data',
              '--cover-package', 'ml_grading',]
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+#Celery settings
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+CELERY_ALWAYS_EAGER = True
+BROKER_BACKEND = 'memory'
+
+#Haystack settings
+HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index_test")

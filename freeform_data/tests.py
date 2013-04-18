@@ -16,10 +16,12 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from models import Organization, Course, Problem, Essay, EssayGrade, UserProfile
 from django.core.urlresolvers import reverse
+from django.core.management import call_command
 
 log = logging.getLogger(__name__)
 
 def run_setup():
+    call_command('update_index', interactive=False)
     if(User.objects.filter(username='test').count() == 0):
         user = User.objects.create_user('test', 'test@test.com', 'test')
         user.save()
@@ -134,6 +136,20 @@ class GenericTest(object):
         result = self.c.delete(object)
         self.assertEqual(result.status_code,204)
 
+    def test_view_single(self):
+        object = model_registry[self.type]()
+        result = self.c.get(object,
+                            data={'format' : 'json'}
+        )
+        self.assertEqual(result.status_code,200)
+
+    def test_search(self):
+        object = model_registry[self.type]()
+        result = self.c.get(self.endpoint + "search/",
+                            data={'format' : 'json'}
+        )
+        self.assertEqual(result.status_code,200)
+
 class OrganizationTest(unittest.TestCase, GenericTest):
     type="organization"
     object = {"name" : "edX"}
@@ -177,6 +193,19 @@ class EssayGradeTest(unittest.TestCase, GenericTest):
     def create_object(self):
         essay_resource_uri = create_essay()
         self.object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
+
+class FinalTest(unittest.TestCase):
+    def test_delete(self):
+        c = login()
+        delete_all()
+        endpoint, schema = get_urls("organization")
+        data = c.get(endpoint, data={'format' : 'json'})
+        self.assertEqual(len(json.loads(data.content)['objects']),0)
+
+        endpoint, schema = get_urls("essaygrade")
+        data = c.get(endpoint, data={'format' : 'json'})
+        self.assertEqual(len(json.loads(data.content)['objects']),0)
+
 
 
 
