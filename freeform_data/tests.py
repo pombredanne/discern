@@ -18,6 +18,7 @@ from models import Organization, Course, Problem, Essay, EssayGrade, UserProfile
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 from ml_grading import ml_model_creation, ml_grader
+import sys
 
 log = logging.getLogger(__name__)
 
@@ -320,8 +321,7 @@ class MLTest(unittest.TestCase):
         problem_model = Problem.objects.get(id=problem_id)
 
         #Create the ml model
-        success, message = ml_model_creation.handle_single_problem(problem_model)
-        self.assertEqual(success, True)
+        creator_success, message = ml_model_creation.handle_single_problem(problem_model)
 
         #Create some test essays and see if the model can score them
         essay_list = create_ml_essays_only("test",10, problem_resource_uri)
@@ -332,8 +332,10 @@ class MLTest(unittest.TestCase):
         essay_model = Essay.objects.get(id=essay_id)
 
         #Try to score the essay
-        success, message = ml_grader.handle_single_essay(essay_model)
-        self.assertEqual(success, True)
+        grader_success, message = ml_grader.handle_single_essay(essay_model)
+
+        self.assertEqual(creator_success, settings.found_ml)
+        self.assertEqual(grader_success, settings.found_ml)
 
 class ViewTest(unittest.TestCase):
     def setUp(self):
