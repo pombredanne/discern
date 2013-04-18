@@ -289,3 +289,12 @@ HAYSTACK_SITECONF = 'ml_service_api.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index")
 TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds
+
+#Check to see if the ml repo is available or not
+FOUND_ML = False
+try:
+    sys.path.append(ML_PATH)
+    import grade
+    FOUND_ML = True
+except:
+    pass
