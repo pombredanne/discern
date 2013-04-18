@@ -354,6 +354,7 @@ class EssayResource(SearchModelResource):
         bundle = super(EssayResource, self).obj_create(bundle, user=bundle.request.user)
         bundle.obj.user = bundle.request.user
         bundle.obj.save()
+        return bundle
 
     def apply_authorization_limits(self, request, object_list):
         return object_list.filter(user_id=request.user.id)
