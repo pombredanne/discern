@@ -25,6 +25,7 @@ class GraderTypes():
     machine = "ML"
     instructor = "IN"
     peer = "PE"
+    self = "SE"
 
 PERMISSIONS = ["view", "add", "delete", "change"]
 PERMISSION_MODELS = ["organization", "membership", "userprofile", "course", "problem", "essay", "essaygrade"]

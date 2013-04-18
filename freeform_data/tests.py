@@ -55,6 +55,25 @@ def login():
     c.login(username='test', password='test')
     return c
 
+def create_course():
+    create_object("course", CourseTest.object)
+    course_resource_uri = get_first_resource_uri("course")
+    return course_resource_uri
+
+def create_problem():
+    course_resource_uri = create_course()
+    problem_object = {'courses' : [course_resource_uri]}
+    create_object("problem", problem_object)
+    problem_resource_uri = get_first_resource_uri("problem")
+    return problem_resource_uri
+
+def create_essay():
+    problem_resource_uri = create_problem()
+    essay_object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : 'train'}
+    create_object("essay", essay_object)
+    essay_resource_uri = get_first_resource_uri("essay")
+    return essay_resource_uri
+
 class GenericTest(object):
     type = "generic"
     object = {'hello' : 'world'}
@@ -105,9 +124,8 @@ class ProblemTest(unittest.TestCase, GenericTest):
         self.create_object()
 
     def create_object(self):
-        create_object("course", CourseTest.object)
-        course_resource_uri = get_first_resource_uri("course")
-        self.object = {'courses' : [course_resource_uri]}
+        course_resource_uri = create_course()
+        self.object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1])}
 
 class EssayTest(unittest.TestCase, GenericTest):
     type="essay"
@@ -116,17 +134,18 @@ class EssayTest(unittest.TestCase, GenericTest):
         self.create_object()
 
     def create_object(self):
-        create_object("course", CourseTest.object)
-        course_resource_uri = get_first_resource_uri("course")
-        problem_object = {'courses' : [course_resource_uri]}
-        create_object("problem", problem_object)
-
-        problem_resource_uri = get_first_resource_uri("problem")
+        problem_resource_uri = create_problem()
         self.object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : 'train'}
 
 class EssayGradeTest(unittest.TestCase, GenericTest):
     type="essaygrade"
     def setUp(self):
         self.generic_setup()
+        self.create_object()
+
+    def create_object(self):
+        essay_resource_uri = create_essay()
+        self.object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
+
 
 
