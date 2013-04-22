@@ -27,6 +27,7 @@ class UserAccessThrottle(CacheDBThrottle):
         the user should be throttled.
         """
 
+        #Generate a more granular id
         new_id, url, request_method = self.get_new_id(identifier, **kwargs)
         key = self.convert_identifier_to_key(new_id)
 
@@ -48,13 +49,15 @@ class UserAccessThrottle(CacheDBThrottle):
     def accessed(self, identifier, **kwargs):
         """
         Handles recording the user's access.
-
-        Does everything the ``CacheThrottle`` class does, plus logs the
-        access within the database using the ``ApiAccess`` model.
+        identifier - whatever identifier is passed into the class.  Generally the username
+        kwargs - can contain request method and url
         """
 
+        #Generate a new id
         new_id, url, request_method = self.get_new_id(identifier, **kwargs)
         key = self.convert_identifier_to_key(new_id)
+
+        #Get times accessed and increment
         times_accessed = cache.get(key, [])
         times_accessed.append(int(time.time()))
         cache.set(key, times_accessed, self.expiration)
@@ -70,12 +73,21 @@ class UserAccessThrottle(CacheDBThrottle):
         )
 
     def get_new_id(self, identifier, **kwargs):
+        """
+        Generates a new, more granular, identifier, and parses request method and url from kwargs
+        identifier - whatever identifier is passed into the class.  Generally the username
+        kwargs - can contain request method and url
+        """
         url = kwargs.get('url', '')
         request_method = kwargs.get('request_method', '')
         new_id = "{0}.{1}.{2}".format(identifier,url,request_method)
         return new_id, url, request_method
 
     def get_user(self, identifier):
+        """
+        Try to get a user object from the identifier
+        identifier - whatever identifier is passed into the class.  Generally the username
+        """
         try:
             user = User.objects.get(username=identifier)
         except:
