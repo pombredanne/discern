@@ -60,6 +60,9 @@ def default_serialization():
     return Serializer(formats=['json', 'jsonp', 'xml', 'yaml', 'html', 'plist'])
 
 def default_throttling():
+    """
+    Default throttling for models.  Currently only affects essay model.
+    """
     return UserAccessThrottle(throttle_at=settings.THROTTLE_AT, timeframe=settings.THROTTLE_TIMEFRAME, expiration= settings.THROTTLE_EXPIRATION)
 
 def run_search(request,obj):
@@ -353,6 +356,7 @@ class EssayResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Essay
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(EssayResource, self).obj_create(bundle, user=bundle.request.user)
