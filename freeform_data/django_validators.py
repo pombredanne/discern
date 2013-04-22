@@ -1,14 +1,20 @@
 import json
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _, ungettext_lazy
+import logging
+log = logging.getLogger(__name__)
 
 class JSONListValidator(object):
     message = _('Invalid Json List.')
 
     def __init__(self, matching_list=None, message=None, matching_list_len = None):
         self.matching_list = matching_list
+        self.matching_list_len = None
         if message is not None:
             self.message = message
+
+        if matching_list_len is not None and isinstance(matching_list_len, int):
+            self.matching_list_len = matching_list_len
 
         if self.matching_list is not None:
             try:
@@ -22,15 +28,22 @@ class JSONListValidator(object):
         """
         Validates that the input matches the regular expression.
         """
+        log.debug(value)
         try:
             value = json.loads(value)
         except Exception:
             pass
 
-        value_len = len(value)
-
         if not isinstance(value,list):
             raise ValidationError(self.message)
+
+        value_len = len(value)
+
+        log.debug(self.matching_list)
+
+        for val in value:
+            if not isinstance(val,int):
+                raise ValidationError(self.message)
 
         if self.matching_list_len is not None:
             if self.matching_list_len!=value_len:

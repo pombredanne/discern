@@ -4,6 +4,7 @@ Local settings file
 import sys
 import os
 from path import path
+import logging
 
 #Initialize celery
 import djcelery
@@ -278,6 +279,10 @@ LOGGING = {
             'formatter': 'standard',
             'stream': sys.stdout,
             },
+        'null': {
+            'level': 'DEBUG',
+            'class':'django.utils.log.NullHandler',
+            },
         },
     'loggers': {
         'django.request': {
@@ -289,7 +294,12 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False
-        },
+            },
+        'django.db.backends': {
+            'handlers': ['null'],  # Quiet by default!
+            'propagate': False,
+            'level':'DEBUG',
+            },
         }
 }
 

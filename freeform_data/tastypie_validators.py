@@ -3,6 +3,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.forms import ModelForm
 from django.forms.models import model_to_dict
 from models import Problem, Essay
+import logging
+log = logging.getLogger(__name__)
 
 class CustomFormValidation(FormValidation):
     """
@@ -31,11 +33,13 @@ class CustomFormValidation(FormValidation):
         """
 
         form_data, problem_obj = self.form_args(bundle)
-        form_data.update({'problem_object' : problem_obj})
+        form_data['problem_object'] = problem_obj
         form = self.form_class(**form_data)
-
+        log.debug(form.is_valid())
         if form.is_valid():
             return {}
+
+        log.debug(form.errors)
 
         # The data is invalid. Let's collect all the error messages & return
         # them.
@@ -74,18 +78,16 @@ class CustomFormValidation(FormValidation):
     def form_args(self, bundle):
         kwargs = super(CustomFormValidation, self).form_args(bundle)
 
-        relation_fields = [name for name, field in
-                           self.form_class.base_fields.items()]
-
         problem_obj = None
-        for field in relation_fields:
-            if field in kwargs['data']:
-                if field=="problem":
-                    problem_id = self.uri_to_pk(kwargs['data'][field])
-                    problem_obj = model_to_dict(Problem.objects.get(id=problem_id))
-                elif field=="essay":
-                    essay_id = self.uri_to_pk(kwargs['data'][field])
-                    essay_obj = Essay.objects.get(id=essay_id)
-                    problem_obj = model_to_dict(essay_obj.problem)
+        for field in kwargs['data']:
+            log.debug(field)
+            if field=="problem":
+                problem_id = self.uri_to_pk(kwargs['data'][field])
+                problem_obj = model_to_dict(Problem.objects.get(id=problem_id))
+            elif field=="essay":
+                essay_id = self.uri_to_pk(kwargs['data'][field])
+                essay_obj = Essay.objects.get(id=essay_id)
+                problem_obj = model_to_dict(essay_obj.problem)
+            log.debug(problem_obj)
 
         return kwargs, problem_obj
