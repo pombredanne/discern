@@ -68,6 +68,7 @@ def deploy():
         if not ml_repo_exists:
             with cd(up_one_level_dir):
                 run('git clone git@github.com:edx/machine-learning.git')
+
         db_exists = exists(database_dir, use_sudo=True)
         if not db_exists:
             sudo('mkdir {0}'.format(database_dir))
@@ -120,6 +121,7 @@ def deploy():
             sudo('xargs -a apt-packages.txt apt-get install')
             run('pip install -r pre-requirements.txt')
             run('pip install -r requirements.txt')
+            run('python setup.py install')
 
     with lcd(local_dir), settings(warn_only=True):
         with cd(up_one_level_dir):
