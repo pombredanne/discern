@@ -1,6 +1,7 @@
 from tastypie.throttle import CacheDBThrottle
 import time
 from django.core.cache import cache
+from django.contrib.auth.models import User
 
 
 class UserAccessThrottle(CacheDBThrottle):
@@ -73,3 +74,11 @@ class UserAccessThrottle(CacheDBThrottle):
         request_method = kwargs.get('request_method', '')
         new_id = "{0}.{1}.{2}".format(identifier,url,request_method)
         return new_id, url, request_method
+
+    def get_user(self, identifier):
+        try:
+            user = User.objects.get(username=identifier)
+        except:
+            user = None
+
+        return user
