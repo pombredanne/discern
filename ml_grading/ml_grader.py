@@ -14,6 +14,7 @@ import sys
 import os
 from path import path
 import pickle
+from mock import Mock
 
 log=logging.getLogger(__name__)
 
@@ -24,7 +25,11 @@ from ml_grading.models import CreatedModel
 from ml_grading import ml_grading_util
 
 sys.path.append(settings.ML_PATH)
-import grade
+if settings.FOUND_ML:
+    import grade
+else:
+    import mock_ml_grading
+    grade = Mock(grade=mock_ml_grading.grade)
 
 log = logging.getLogger(__name__)
 

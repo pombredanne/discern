@@ -14,9 +14,14 @@ import sys
 import pickle
 from ml_grading.models import CreatedModel
 from ml_grading import ml_grading_util
+from mock import Mock
 
 sys.path.append(settings.ML_PATH)
-import create
+if settings.FOUND_ML:
+    import create
+else:
+    import mock_ml_grading
+    create = Mock(create=mock_ml_grading.create)
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +33,7 @@ def handle_single_problem(problem):
     Creates a machine learning model for a given problem.
     problem - A Problem instance (django model)
     """
+    overall_success = False
     #This function is called by celery.  This ensures that the database is not stuck in an old transaction
     transaction.commit_unless_managed()
     #Get prompt and essays from problem (needed to train a model)
@@ -150,6 +156,7 @@ def handle_single_problem(problem):
                 })
 
                 #Try to create model if ml model creator was successful
+                overall_success = results['success']
                 if results['success']:
                     try:
                         success, s3_public_url = save_model_file(results,settings.USE_S3_TO_STORE_MODELS)
@@ -185,7 +192,7 @@ def handle_single_problem(problem):
                     results['errors'],
                 ))
     transaction.commit_unless_managed()
-    return True, "Creation succeeded."
+    return overall_success, "Creation succeeded."
 
 def save_model_file(results, save_to_s3):
     """
