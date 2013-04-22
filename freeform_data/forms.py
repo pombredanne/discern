@@ -8,12 +8,18 @@ from django.core.exceptions import ValidationError
 log = logging.getLogger(__name__)
 
 class ProblemForm(forms.Form):
+    """
+    A form to validate Problem resources
+    """
     def __init__(self, problem_object= None, **kwargs):
         super(ProblemForm, self).__init__(**kwargs)
         validator = django_validators.JSONListValidator()
         self.fields['max_target_scores'] = fields.JSONListField(required=True, validators=[validator])
 
 class EssayForm(forms.Form):
+    """
+    A form to validate Essay resources
+    """
     def __init__(self, problem_object=None, **kwargs):
         super(EssayForm, self).__init__(**kwargs)
         if problem_object is not None:
@@ -26,6 +32,9 @@ class EssayForm(forms.Form):
         self.fields['additional_predictors'] = fields.JSONListField(required = False, validators=[validator])
 
 class EssayGradeForm(forms.Form):
+    """
+    A form to validate essaygrade resources
+    """
     def __init__(self, problem_object = None, **kwargs):
         super(EssayGradeForm, self).__init__(**kwargs)
         self.max_target_scores = None
