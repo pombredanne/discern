@@ -15,7 +15,6 @@ REPO_PATH = ROOT_PATH.dirname()
 ENV_ROOT = REPO_PATH.dirname()
 
 #ML Specific settings
-ML_PATH = os.path.join(ENV_ROOT, "machine-learning/") #Path to ML repo containing grade.py and create.py
 ML_MODEL_PATH=os.path.join(ENV_ROOT,"ml_models_api/") #Path to save and retrieve ML models from
 TIME_BETWEEN_ML_CREATOR_CHECKS= 1 * 60 # seconds.  Time between ML creator checking to see if models need to be made.
 TIME_BETWEEN_ML_GRADER_CHECKS= 10 # seconds.  Time between ML grader checking to see if models need to be made.
@@ -311,8 +310,7 @@ TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds
 #Check to see if the ml repo is available or not
 FOUND_ML = False
 try:
-    sys.path.append(ML_PATH)
-    import grade
+    import machine_learning.grade
     FOUND_ML = True
 except:
     pass

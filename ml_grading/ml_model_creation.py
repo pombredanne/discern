@@ -16,9 +16,8 @@ from ml_grading.models import CreatedModel
 from ml_grading import ml_grading_util
 from mock import Mock
 
-sys.path.append(settings.ML_PATH)
 if settings.FOUND_ML:
-    import create
+    from machine_learning import create
 else:
     import mock_ml_grading
     create = Mock(create=mock_ml_grading.create)

@@ -24,9 +24,8 @@ from ml_grading.models import CreatedModel
 
 from ml_grading import ml_grading_util
 
-sys.path.append(settings.ML_PATH)
 if settings.FOUND_ML:
-    import grade
+    from machine_learning import grade
 else:
     import mock_ml_grading
     grade = Mock(grade=mock_ml_grading.grade)
