@@ -8,7 +8,7 @@ before_install:
 install:
   - pip install -r base-requirements.txt
 before_script:
-  - python manage.py syncdb --settings=ml_service_api.settings --pythonpath=.
-  - python manage.py migrate --settings=ml_service_api.settings --pythonpath=.
+  - python manage.py syncdb --settings=ml_service_api.settings --pythonpath=. --noinput
+  - python manage.py migrate --settings=ml_service_api.settings --pythonpath=. --noinput
   - python manage.py collectstatic -c --noinput --settings=ml_service_api.settings --pythonpath=.
 script:  python manage.py test --settings=ml_service_api.test_settings --pythonpath=.
