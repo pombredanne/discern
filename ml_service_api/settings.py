@@ -34,10 +34,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+DB_PATH = "../db/"
+
+#Make the db path dir if it does not exist
+if not os.path.isdir(DB_PATH):
+    os.mkdir(DB_PATH)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '../db/service-api-db.db',                      # Or path to database file if using sqlite3.
+        'NAME': DB_PATH + 'service-api-db.db',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -90,6 +96,10 @@ MEDIA_URL = ''
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.abspath(REPO_PATH / "staticfiles")
+
+#Make the static root dir if it does not exist
+if not os.path.isdir(STATIC_ROOT):
+    os.mkdir(STATIC_ROOT)
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
