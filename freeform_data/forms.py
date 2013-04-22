@@ -4,7 +4,7 @@ import django_validators
 import logging
 from django.forms.fields import Field, FileField, IntegerField, CharField, ChoiceField, BooleanField, DecimalField
 from django.core.exceptions import ValidationError
-from models import EssayTypes, GraderTypes
+from models import ESSAY_TYPES, GRADER_TYPES
 
 log = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ class EssayForm(forms.Form):
     A form to validate Essay resources
     """
     essay_text = CharField(min_length=0, required=True)
-    essay_type = ChoiceField(choices=(EssayTypes.test, EssayTypes.train), required=True)
+    essay_type = ChoiceField(choices=ESSAY_TYPES, required=True)
     def __init__(self, problem_object=None, **kwargs):
         super(EssayForm, self).__init__(**kwargs)
         if problem_object is not None:
@@ -41,7 +41,7 @@ class EssayGradeForm(forms.Form):
     """
     A form to validate essaygrade resources
     """
-    grader_type = ChoiceField(choices=(GraderTypes.instructor, GraderTypes.machine, GraderTypes.peer, GraderTypes.self), required=True)
+    grader_type = ChoiceField(choices=GRADER_TYPES, required=True)
     feedback = CharField(min_length=0, required=False)
     annotated_text = CharField(min_length=0, required=False)
     success = BooleanField(required=True)
