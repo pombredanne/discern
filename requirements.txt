@@ -1,3 +1,4 @@
 scipy==0.11.0
 -r base-requirements.txt
--e git+https://github.com/edx/machine-learning.git@98ec66ee1ad6ae92bbbc581ecbd2246e564cd7c0#egg=machine-learning
+-e git+https://github.com/edx/machine-learning.git@41a81b92b334eaa1fdf22ebce333af7e78abc9b6#egg=machine-learning
+coverage==3.5.3

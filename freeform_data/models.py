@@ -10,22 +10,35 @@ log=logging.getLogger(__name__)
 
 #CLASSES THAT WRAP CONSTANTS
 
-class UserRoles():
+class UserRoles(object):
     student = "student"
     teacher = "teacher"
     administrator = "administrator"
     grader = "grader"
     creator = "creator"
 
-class EssayTypes():
+class EssayTypes(object):
     test = "test"
     train = "train"
 
-class GraderTypes():
+class GraderTypes(object):
     machine = "ML"
     instructor = "IN"
     peer = "PE"
     self = "SE"
+
+ESSAY_TYPES = (
+    (EssayTypes.test, EssayTypes.test),
+    (EssayTypes.train, EssayTypes.train)
+)
+
+GRADER_TYPES = (
+    (GraderTypes.machine, GraderTypes.machine),
+    (GraderTypes.instructor, GraderTypes.instructor),
+    (GraderTypes.peer, GraderTypes.peer),
+    (GraderTypes.self, GraderTypes.self),
+)
+
 
 PERMISSIONS = ["view", "add", "delete", "change"]
 PERMISSION_MODELS = ["organization", "membership", "userprofile", "course", "problem", "essay", "essaygrade"]
