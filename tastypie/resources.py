@@ -564,10 +564,11 @@ class Resource(object):
         Mostly a hook, this uses class assigned to ``throttle`` from
         ``Resource._meta``.
         """
+        request_method = request.method.lower()
         identifier = self._meta.authentication.get_identifier(request)
 
         # Check to see if they should be throttled.
-        if self._meta.throttle.should_be_throttled(identifier):
+        if self._meta.throttle.should_be_throttled(identifier, url=request.get_full_path(), request_method=request_method):
             # Throttle limit exceeded.
             raise ImmediateHttpResponse(response=http.HttpTooManyRequests())
 

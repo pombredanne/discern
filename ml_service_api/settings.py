@@ -45,6 +45,14 @@ DATABASES = {
     }
 }
 
+#Need caching for API rate limiting
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'ml-service-api-cache'
+    }
+}
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -298,3 +306,8 @@ try:
     FOUND_ML = True
 except:
     pass
+
+#Tastypie throttle settings
+THROTTLE_AT = 10000 #Throttle requests after this number in below timeframe, dev settings, so high!
+THROTTLE_TIMEFRAME= 60 * 60 #Timeframe in which to throttle N requests, seconds
+THROTTLE_EXPIRATION= 24 * 60 * 60 # When to remove throttle entries from cache, seconds
