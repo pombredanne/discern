@@ -107,7 +107,7 @@ def create_problem():
     Create a problem
     """
     course_resource_uri = create_course()
-    problem_object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1])}
+    problem_object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1]), 'prompt' : "blah"}
     result = create_object("problem", problem_object)
     problem_resource_uri = json.loads(result.content)['resource_uri']
     return problem_resource_uri
@@ -265,7 +265,7 @@ class ProblemTest(unittest.TestCase, GenericTest):
 
     def create_object(self):
         course_resource_uri = create_course()
-        self.object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1])}
+        self.object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1]), 'prompt' : "blah"}
 
 class EssayTest(unittest.TestCase, GenericTest):
     type="essay"
