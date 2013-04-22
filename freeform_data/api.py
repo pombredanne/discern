@@ -18,6 +18,8 @@ from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator, InvalidPage
 from django.http import Http404
 from collections import Iterator
+from throttle import UserAccessThrottle
+from django.conf import settings
 
 log=logging.getLogger(__name__)
 
@@ -56,6 +58,9 @@ def default_serialization():
     Current serialization formats.  HTML is not supported for now.
     """
     return Serializer(formats=['json', 'jsonp', 'xml', 'yaml', 'html', 'plist'])
+
+def default_throttling():
+    return UserAccessThrottle(throttle_at=settings.THROTTLE_AT, timeframe=settings.THROTTLE_TIMEFRAME, expiration= settings.THROTTLE_EXPIRATION)
 
 def run_search(request,obj):
     """
