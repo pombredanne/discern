@@ -334,7 +334,7 @@ class ProblemResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Problem
-        validation = CustomFormValidation(form_class=ProblemForm)
+        validation = CustomFormValidation(form_class=ProblemForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):
         return super(ProblemResource, self).obj_create(bundle)
@@ -360,7 +360,7 @@ class EssayResource(SearchModelResource):
         always_return_data = True
         model_type = Essay
         throttle = default_throttling()
-        validation = CustomFormValidation(form_class=EssayForm)
+        validation = CustomFormValidation(form_class=EssayForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(EssayResource, self).obj_create(bundle, user=bundle.request.user)
@@ -386,7 +386,7 @@ class EssayGradeResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = EssayGrade
-        validation = CustomFormValidation(form_class=EssayGradeForm)
+        validation = CustomFormValidation(form_class=EssayGradeForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(EssayGradeResource, self).obj_create(bundle, user=bundle.request.user)
