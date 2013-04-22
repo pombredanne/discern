@@ -2,8 +2,9 @@ from django import forms
 import fields
 import django_validators
 import logging
-from django.forms.fields import Field, FileField
+from django.forms.fields import Field, FileField, IntegerField, CharField, ChoiceField, BooleanField, DecimalField
 from django.core.exceptions import ValidationError
+from models import EssayTypes, GraderTypes
 
 log = logging.getLogger(__name__)
 
@@ -11,6 +12,9 @@ class ProblemForm(forms.Form):
     """
     A form to validate Problem resources
     """
+    number_of_additional_predictors = IntegerField(min_value=0, required=False)
+    prompt = CharField(min_length=0, required=True)
+    name = CharField(min_length=0, required=False)
     def __init__(self, problem_object= None, **kwargs):
         super(ProblemForm, self).__init__(**kwargs)
         validator = django_validators.JSONListValidator()
@@ -20,6 +24,8 @@ class EssayForm(forms.Form):
     """
     A form to validate Essay resources
     """
+    essay_text = CharField(min_length=0, required=True)
+    essay_type = ChoiceField(choices=(EssayTypes.test, EssayTypes.train), required=True)
     def __init__(self, problem_object=None, **kwargs):
         super(EssayForm, self).__init__(**kwargs)
         if problem_object is not None:
@@ -35,6 +41,11 @@ class EssayGradeForm(forms.Form):
     """
     A form to validate essaygrade resources
     """
+    grader_type = ChoiceField(choices=(GraderTypes.instructor, GraderTypes.machine, GraderTypes.peer, GraderTypes.self), required=True)
+    feedback = CharField(min_length=0, required=False)
+    annotated_text = CharField(min_length=0, required=False)
+    success = BooleanField(required=True)
+    confidence = DecimalField(required=False, max_value=1, max_digits=10)
     def __init__(self, problem_object = None, **kwargs):
         super(EssayGradeForm, self).__init__(**kwargs)
         self.max_target_scores = None
