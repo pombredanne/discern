@@ -243,6 +243,7 @@ class UserProfileResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = UserProfile
+        excludes = ['throttle_at']
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(UserProfileResource, self).obj_create(bundle,user=bundle.request.user)
