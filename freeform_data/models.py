@@ -67,6 +67,7 @@ class UserProfile(models.Model):
     name = models.TextField(blank=True,null=True)
     #User role in their organization
     role = models.CharField(max_length=20,blank=True,null=True)
+    throttle_at = models.IntegerField(default=0)
 
     created = models.DateTimeField(auto_now_add=True,blank=True, null=True)
     modified = models.DateTimeField(auto_now=True, blank=True, null=True)

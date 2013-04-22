@@ -18,6 +18,8 @@ from haystack.query import SearchQuerySet
 from django.core.paginator import Paginator, InvalidPage
 from django.http import Http404
 from collections import Iterator
+from throttle import UserAccessThrottle
+from django.conf import settings
 
 log=logging.getLogger(__name__)
 
@@ -56,6 +58,12 @@ def default_serialization():
     Current serialization formats.  HTML is not supported for now.
     """
     return Serializer(formats=['json', 'jsonp', 'xml', 'yaml', 'html', 'plist'])
+
+def default_throttling():
+    """
+    Default throttling for models.  Currently only affects essay model.
+    """
+    return UserAccessThrottle(throttle_at=settings.THROTTLE_AT, timeframe=settings.THROTTLE_TIMEFRAME, expiration= settings.THROTTLE_EXPIRATION)
 
 def run_search(request,obj):
     """
@@ -348,6 +356,7 @@ class EssayResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Essay
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(EssayResource, self).obj_create(bundle, user=bundle.request.user)
