@@ -33,6 +33,7 @@ ListView = Backbone.View.extend({
         this.itemList.fetch({
             success: function (items) {
                 // Once the results are returned lets populate our template
+                console.log("Fetched results!")
                 for(model in items.models)
                 {
                     that.renderItem(items.models[model])

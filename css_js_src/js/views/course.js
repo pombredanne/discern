@@ -1,17 +1,19 @@
-waitForModel("CourseContainer", function() {
-    waitForModel("Course", function() {
-        CourseItemView = ItemView.extend({
-            templatename : "course",
-            modeltype: Course
-        });
+waitForSchema(function() {
+    waitForModel("CourseContainer", function() {
+        waitForModel("Course", function() {
+            CourseItemView = ItemView.extend({
+                templatename : "course",
+                modeltype: Course
+            });
 
-        CourseListView = ListView.extend({
-            el: '.course-view',
-            collection: CourseContainer,
-            item: CourseItemView
-        });
+            CourseListView = ListView.extend({
+                el: '.course-view',
+                collection: CourseContainer,
+                item: CourseItemView
+            });
 
-        var course_view = new CourseListView();
-        course_view.render();
+            var course_view = new CourseListView();
+            course_view.render();
+        });
     });
 });
