@@ -31,6 +31,10 @@ class UserAccessThrottle(CacheDBThrottle):
         new_id, url, request_method = self.get_new_id(identifier, **kwargs)
         key = self.convert_identifier_to_key(new_id)
 
+        #See if we can get a user and adjust throttle limit
+        user = self.get_user(identifier)
+        throttle_at = self.get_rate_limit_for_user(user)
+
         # Make sure something is there.
         cache.add(key, [])
 
@@ -39,7 +43,7 @@ class UserAccessThrottle(CacheDBThrottle):
         times_accessed = [access for access in cache.get(key) if access >= minimum_time]
         cache.set(key, times_accessed, self.expiration)
 
-        if len(times_accessed) >= int(self.throttle_at):
+        if len(times_accessed) >= int(throttle_at):
             # Throttle them.
             return True
 
@@ -94,3 +98,14 @@ class UserAccessThrottle(CacheDBThrottle):
             user = None
 
         return user
+
+    def get_rate_limit_for_user(self, user):
+        """
+        See if the user has a higher rate limit than the global throttle setting
+        user - a user object
+        """
+        throttle_at = self.throttle_at
+        if user is not None and user.profile is not None:
+            if user.profile.throttle_at > throttle_at:
+                throttle_at = user.throttle_at
+        return throttle_at
