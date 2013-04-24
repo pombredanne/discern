@@ -7,7 +7,7 @@ test_data/
 _build/
 tmpfile
 celerybeat-schedule
-staticfiles/
+staticfiles/*
 whoosh_api_index/
 build/
 .vagrant
@@ -16,3 +16,4 @@ whoosh_api_index_test/
 nosetests.xml
 cover/
 .coverage
+!.vc
