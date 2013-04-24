@@ -27,4 +27,4 @@ for this repo separate from the rest of your system.
 If you get errors using the above, you may need to create a database directory one level up from where you cloned
 the git repo (folder named "db")
 
-You will need to install the machine-learning repo (https://github.com/edx/machine-learning) in the same base repo that you installed ml-service-api in order to get all functionality.  Follow the install instructions in that repo.
+You will need to install the machine-learning repo (https://github.com/edx/machine-learning) in the same base directory that you installed ml-service-api in order to get all functionality.  Follow the install instructions in that repo.
