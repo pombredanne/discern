@@ -40,7 +40,7 @@
 
 <p>The following instructions will allow you to clone this repo:</p>
 
-<pre><code>$ git clone git@github.com:edx/ml-service-api.git
+<pre><code>$ git clone git://github.com/edx/ml-service-api.git
 </code></pre>
 
 <p>After cloning the repo, please refer to the documentation below for full install directions.</p>
@@ -51,7 +51,7 @@
 
 <h3>IRC channel</h3>
 
-<p>Join the conversation in the ##edxml channel on irc.freenode.net. You can connect using the <a href="http://webchat.freenode.net?randomnick=1&amp;channels=%23%23edxml&amp;uio=d4">webchat</a> if you don't have an IRC client installed.</p>
+<p>Join the conversation in the #edxml channel on irc.freenode.net. You can connect using the <a href="http://webchat.freenode.net?randomnick=1&amp;channels=%23edxml&amp;uio=d4">webchat</a> if you don't have an IRC client installed.</p>
 
 <h3>Mailing list</h3>
 
@@ -59,7 +59,9 @@
 
 <h3>Test coverage</h3>
 
-<p>We're in the process of setting up Travis for continuous integration, but in the meantime you can run the tests with:</p>
+<p><a href="https://travis-ci.org/edx/ml-service-api"><img src="https://travis-ci.org/edx/ml-service-api.png?branch=dev" alt="Build Status"></a></p>
+
+<p>The tests are run automatically using <a href="https://travis-ci.org/">TravisCI</a>. You can run them manually with:</p>
 
 <pre><code>$ python manage.py test --settings=ml_service_api.test_settings
 </code></pre>
