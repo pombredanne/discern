@@ -10,7 +10,7 @@ warning_logger.setLevel(logging.ERROR)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME' : '../db/service-api-test-db.db',
+        'NAME' : 'db/service-api-test-db.db',
         }
 }
 

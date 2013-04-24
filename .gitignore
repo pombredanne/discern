@@ -17,3 +17,4 @@ nosetests.xml
 cover/
 .coverage
 !.vc
+db/*

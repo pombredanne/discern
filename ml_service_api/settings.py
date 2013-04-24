@@ -34,7 +34,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DB_PATH = "../db/"
+DB_PATH = "db/"
 
 #Make the db path dir if it does not exist
 if not os.path.isdir(DB_PATH):
