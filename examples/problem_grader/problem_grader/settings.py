@@ -1,3 +1,6 @@
+import sys
+import os
+
 # Django settings for problem_grader project.
 
 DEBUG = True
@@ -11,8 +14,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'db/grader.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -124,33 +127,53 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'grader',
+    'south',
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
+syslog_format = ("[%(name)s][env:{logging_env}] %(levelname)s "
+                 "[{hostname}  %(process)d] [%(filename)s:%(lineno)d] "
+                 "- %(message)s").format(
+    logging_env="", hostname="")
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)s %(process)d '
+                      '[%(name)s] %(filename)s:%(lineno)d - %(message)s',
+            },
+        'syslog_format': {'format': syslog_format},
+        'raw': {'format': '%(message)s'},
+        },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
+        'console': {
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'stream': sys.stdout,
+            },
+        'null': {
+            'level': 'DEBUG',
+            'class':'django.utils.log.NullHandler',
+            },
+        },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['console'],
             'level': 'ERROR',
             'propagate': True,
+            },
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False
         },
-    }
+        'django.db.backends': {
+            'handlers': ['null'],  # Quiet by default!
+            'propagate': False,
+            'level':'DEBUG',
+            },
+        }
 }
