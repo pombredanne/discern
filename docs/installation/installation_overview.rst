@@ -14,7 +14,7 @@ The main steps are:
 7. source /opt/edx/bin/activate
 8. cd ml-service-api
 9. pip install -r pre-requirements.txt
-19. pip install -r requirements.txt
+10. pip install -r requirements.txt
 11. python manage.py syncdb --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
 12. python manage.py migrate --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
 13. python manage.py collectstatic -c --noinput --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
