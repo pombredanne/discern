@@ -6,36 +6,40 @@ class Rubric(models.Model):
     associated_problem = models.IntegerField()
     user = models.ForeignKey(User)
 
-    def get_total_score(self):
-        categories = self.get_rubric_json()
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    def get_scores(self):
         scores = []
-        final_score = 0
-        category_set = self.rubriccategory_set.all()
-        for category in category_set:
-            options = category.rubricoption_set.filter(selected=True)
-            if options.count()>0:
-                scores.append([options.option_points for option in options])
+        all_scores = []
+        final_score=0
+        max_score = 0
+        options = self.get_rubric_dict()
+        for option in options:
+            all_scores.append(option['option_points'])
+            if option['selected']:
+                scores.append(option['option_points'])
+
         if len(scores)>0:
             final_score = sum(scores)
 
-    def get_rubric_json(self):
-        categories = []
-        category_set = self.rubriccategory_set.all()
-        for category in category_set:
-            options = category.rubricoption_set.all()
-            option_list = []
-            for option in options:
-                option_list.append(model_to_dict(option))
-            category_dict = model_to_dict(category)
-            category_dict['options'] = option_list
-            categories.append(category_dict)
-        return categories
+        if len(all_scores)>0:
+            max_score = sum(all_scores)
 
-class RubricCategory(models.Model):
-    category_name = models.CharField()
-    rubric = models.ForeignKey(Rubric)
+        return {
+            'score' : final_score,
+            'max_score' : max_score
+        }
+
+    def get_rubric_dict(self):
+        options = []
+        option_set = self.rubricoption_set.all().order_by('id')
+        for option in option_set:
+            options.append(model_to_dict(option))
+        return options
 
 class RubricOption(models.Model):
+    rubric = models.ForeignKey(Rubric)
     option_points = models.IntegerField()
     option_text = models.TextField()
     selected = models.BooleanField(default=False)
