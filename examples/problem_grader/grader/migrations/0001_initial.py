@@ -31,8 +31,9 @@ class Migration(SchemaMigration):
         # Adding model 'UserProfile'
         db.create_table(u'grader_userprofile', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('api_pass', self.gf('django.db.models.fields.TextField')()),
-            ('api_user', self.gf('django.db.models.fields.TextField')()),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True)),
+            ('api_key', self.gf('django.db.models.fields.TextField')(default='')),
+            ('api_user', self.gf('django.db.models.fields.TextField')(default='')),
             ('api_user_created', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal(u'grader', ['UserProfile'])
@@ -104,10 +105,11 @@ class Migration(SchemaMigration):
         },
         u'grader.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
-            'api_pass': ('django.db.models.fields.TextField', [], {}),
-            'api_user': ('django.db.models.fields.TextField', [], {}),
+            'api_key': ('django.db.models.fields.TextField', [], {'default': "''"}),
+            'api_user': ('django.db.models.fields.TextField', [], {'default': "''"}),
             'api_user_created': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['auth.User']", 'unique': 'True'})
         }
     }
 

@@ -55,7 +55,7 @@ class RubricOption(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    api_pass = models.TextField(default="")
+    api_key = models.TextField(default="")
     api_user = models.TextField(default="")
     api_user_created = models.BooleanField(default=False)
 
@@ -86,7 +86,8 @@ def create_user_profile(sender, instance, created, **kwargs):
             status_code = response.status_code
             if status_code==201:
                 instance.profile.api_user_created = True
-                instance.profile.api_pass = data['password']
+                response_data = json.loads(response.content)
+                instance.profile.api_pass = response_data['api_key']
                 instance.profile.api_user = data['username']
                 instance.profile.save()
         except:

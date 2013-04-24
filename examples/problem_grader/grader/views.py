@@ -18,3 +18,27 @@ def register(request):
 
 def index(request):
     return render_to_response("index.html",RequestContext(request))
+
+def course():
+    pass
+
+def problem():
+    pass
+
+def essay():
+    pass
+
+def essaygrade():
+    pass
+
+def course_action():
+    pass
+
+def problem_action():
+    pass
+
+def essay_action():
+    pass
+
+def essaygrade_action():
+    pass

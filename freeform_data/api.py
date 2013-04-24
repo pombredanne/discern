@@ -183,6 +183,14 @@ class CreateUserResource(ModelResource):
             raise BadRequest('That username already exists')
         return bundle
 
+    def dehydrate(self, bundle):
+        username = bundle.data.get('username', None)
+        if username is not None:
+            user = User.objects.get(username=username)
+            api_key = user.api_key
+            bundle.data['api_key'] = api_key.key
+        return bundle
+
 class OrganizationResource(SearchModelResource):
     """
     Preserves appropriate many to many relationships, and encapsulates the Organization model.
