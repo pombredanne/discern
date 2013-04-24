@@ -13,7 +13,6 @@ from django.test.client import Client
 import requests
 from django.conf import settings
 from django.utils import timezone
-from django.contrib.auth.models import User
 from models import Organization, Course, Problem, Essay, EssayGrade, UserProfile
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
