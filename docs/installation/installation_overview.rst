@@ -16,8 +16,9 @@ The main steps are:
 9. pip install -r pre-requirements.txt
 19. pip install -r requirements.txt
 11. python manage.py syncdb --settings=ml_service_api.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO
-12. python manage.py migrate --settings=ml_service_api.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO
-13. python manage.py collectstatic -c --noinput --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
+12. Choose "no" for create superuser if syncdb prompts you for it.
+13. python manage.py migrate --settings=ml_service_api.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO
+14. python manage.py collectstatic -c --noinput --settings=ml_service_api.settings --pythonpath=DIR WHERE YOU CLONED REPO
 
 See "usage" for how to run this.  You will both need to run the server and the celery tasks.
 
