@@ -30,7 +30,7 @@ DATABASES = {
 }
 
 #Figure out where the API is!
-API_URL_BASE = "127.0.0.1:7999/"
+API_URL_BASE = "http://127.0.0.1:7999/"
 API_URL_INTERMEDIATE = "essay_site/api/v1/"
 FULL_API_START = API_URL_BASE + API_URL_INTERMEDIATE
 
