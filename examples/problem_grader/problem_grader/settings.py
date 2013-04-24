@@ -24,6 +24,12 @@ DATABASES = {
     }
 }
 
+#Figure out where the API is!
+API_URL_BASE = "127.0.0.1:7999/"
+API_URL_INTERMEDIATE = "essay_site/api/v1/"
+FULL_API_START = API_URL_BASE + API_URL_INTERMEDIATE
+
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -109,6 +115,8 @@ ROOT_URLCONF = 'problem_grader.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'problem_grader.wsgi.application'
+
+AUTH_PROFILE_MODULE = 'grader.UserProfile'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
