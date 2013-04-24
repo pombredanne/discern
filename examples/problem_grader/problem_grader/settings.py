@@ -1,7 +1,12 @@
 import sys
 import os
+from path import path
 
 # Django settings for problem_grader project.
+
+ROOT_PATH = path(__file__).dirname()
+REPO_PATH = ROOT_PATH.dirname()
+ENV_ROOT = REPO_PATH.dirname()
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -122,6 +127,8 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.abspath(REPO_PATH / "templates"),
+    os.path.abspath(REPO_PATH / "grader")
 )
 
 INSTALLED_APPS = (

@@ -5,7 +5,7 @@ urlpatterns=patterns('django.contrib.auth.views',
                      url(r'^logout/$','logout'),
                      )
 
-urlpatterns +=patterns('frontend.views',
+urlpatterns +=patterns('grader.views',
                        url(r'^register/$','register'),
                        url(r'^$','index'),
                        )
