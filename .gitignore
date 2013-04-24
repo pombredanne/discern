@@ -18,3 +18,4 @@ cover/
 .coverage
 !.vc
 db/*
+examples/problem_grader/staticfiles/*
