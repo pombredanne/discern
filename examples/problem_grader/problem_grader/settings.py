@@ -71,14 +71,14 @@ MEDIA_ROOT = ''
 # Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = ''
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = os.path.abspath(REPO_PATH / "staticfiles")
+
+#Make the static root dir if it does not exist
+if not os.path.isdir(STATIC_ROOT):
+    os.mkdir(STATIC_ROOT)
 
 # URL prefix for static files.
-# Example: "http://example.com/static/", "http://static.example.com/"
+# Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
 
 # Additional locations of static files
@@ -86,7 +86,49 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    os.path.abspath(REPO_PATH / 'css_js_src/'),
 )
+
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
+PIPELINE_JS = {
+    'util' : {
+        'source_filenames': [
+            'js/jquery-1.9.1.js',
+            'js/json2.js',
+            'js/bootstrap.js'
+            ],
+        'output_filename': 'js/util.js',
+        }
+}
+
+PIPELINE_CSS = {
+    'bootstrap': {
+        'source_filenames': [
+            'css/bootstrap.css',
+            'css/bootstrap-responsive.css',
+            'css/bootstrap-extensions.css',
+            ],
+        'output_filename': 'css/bootstrap.css',
+        },
+    'util_css' : {
+        'source_filenames': [
+            'css/jquery-ui-1.10.2.custom.css',
+            ],
+        'output_filename': 'css/util_css.css',
+        }
+}
+
+
+PIPELINE_DISABLE_WRAPPER = True
+PIPELINE_YUI_BINARY = "yui-compressor"
+
+PIPELINE_CSS_COMPRESSOR = None
+PIPELINE_JS_COMPRESSOR = None
+
+PIPELINE_COMPILE_INPLACE = True
+PIPELINE = True
+
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -144,6 +186,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'grader',
     'south',
+    'pipeline',
 )
 
 syslog_format = ("[%(name)s][env:{logging_env}] %(levelname)s "
