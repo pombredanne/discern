@@ -19,3 +19,4 @@ cover/
 !.vc
 db/*
 examples/problem_grader/staticfiles/*
+examples/problem_grader/db/*
