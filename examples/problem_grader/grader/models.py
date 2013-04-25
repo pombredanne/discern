@@ -87,7 +87,7 @@ def create_user_profile(sender, instance, created, **kwargs):
             if status_code==201:
                 instance.profile.api_user_created = True
                 response_data = json.loads(response.content)
-                instance.profile.api_pass = response_data['api_key']
+                instance.profile.api_key = response_data['api_key']
                 instance.profile.api_user = data['username']
                 instance.profile.save()
         except:
