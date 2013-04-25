@@ -1,6 +1,18 @@
 import slumber
 import logging
+import requests
+import json
+import os
+
 log = logging.getLogger(__name__)
+
+def join_without_slash(path1, path2):
+    if path1.endswith("/"):
+        path1 = path1[0:-1]
+    if not path2.startswith("/"):
+        path2 = "/" + path2
+
+    return path1 + path2
 
 class SlumberModel(object):
     excluded_fields = ['created', 'id', 'resource_uri', 'id', 'modified']
@@ -71,4 +83,25 @@ class SlumberModel(object):
         match = self.find_model_by_id(id)
         self.objects[match] = response
         return response
+
+class SlumberModelDiscovery(object):
+    def __init__(self,api_url, api_auth, api_base):
+        self.api_url = api_url
+        self.api_auth = api_auth
+        self.api_base = api_base
+
+    def get_schema(self):
+        schema = requests.get(self.api_url, params=self.api_auth)
+        return json.loads(schema.content)
+
+    def generate_models(self):
+        schema = self.get_schema()
+        slumber_models = {}
+        for field in schema:
+            field_url = join_without_slash(self.api_base, schema[field]['list_endpoint'])
+            field_model = SlumberModel(field_url, field, self.api_auth)
+            slumber_models[field] = field_model
+        return slumber_models
+
+
 
