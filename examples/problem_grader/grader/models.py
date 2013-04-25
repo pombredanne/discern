@@ -59,6 +59,12 @@ class UserProfile(models.Model):
     api_user = models.TextField(default="")
     api_user_created = models.BooleanField(default=False)
 
+    def get_api_auth(self):
+        return {
+            'username' : self.user.username,
+            'api_key' : self.api_key
+        }
+
 
 def create_user_profile(sender, instance, created, **kwargs):
     """
