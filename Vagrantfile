@@ -6,17 +6,6 @@ Vagrant::Config.run do |config|
   # http://docs-v1.vagrantup.com/v1/docs/config/vm/share_folder.html
   # config.vm.share_folder "foo", "/guest/path", "/host/path"
   config.vm.share_folder "ml-service-api", "/home/vagrant/ml-service-api", "."
-  config.vm.provision :shell, :inline => %{ \
-    touch /var/log/ml-service-api-setup.log; \
-    sudo apt-get update -y                                          | tee -a /var/log/ml-service-api-setup.log; \
-    cd ml-service-api; sudo xargs -a apt-packages.txt apt-get install -y | tee -a /var/log/ml-service-api-setup.log; \
-    sudo virtualenv /opt/edx | tee -a /var/log/ml-service-api-setup.log; \
-    source /opt/edx/bin/activate | tee -a /var/log/ml-service-api-setup.log; \
-    pip install -r pre-requirements.txt | tee -a /var/log/ml-service-api-setup.log; \
-    pip install -r requirements.txt | tee -a /var/log/ml-service-api-setup.log; \
-    python manage.py syncdb --settings=ml_service_api.settings --pythonpath=/home/vagrant/ml-service-api | tee -a /var/log/ml-service-api-setup.log; \
-    python manage.py migrate --settings=ml_service_api.settings --pythonpath=/home/vagrant/ml-service-api | tee -a /var/log/ml-service-api-setup.log; \
-    python manage.py collectstatic -c --noinput --settings=ml_service_api.settings --pythonpath=/home/vagrant/ml-service-api | tee -a /var/log/ml-service-api-setup.log; \
-  }
+  # setting an IP address with config.vm.network, we can use Fabric to configure the Vagrant box
   config.vm.network :hostonly, "33.33.33.10"
 end
