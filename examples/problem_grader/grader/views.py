@@ -63,8 +63,8 @@ def action(request):
 
 @login_required
 def course(request):
-    return render_to_response('course.html')
+    return render_to_response('course.html', {'model' : 'course'})
 
 def problem(request):
-    return render_to_response('problem.html')
+    return render_to_response('problem.html', {'model' : 'problem'})
 
