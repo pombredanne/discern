@@ -34,11 +34,14 @@ class SlumberModel(object):
             ref = ref(id)
         return ref
 
-    def get(self, **kwargs):
+    def get(self, id = None, data = None, **kwargs):
         new_arguments = self.api_auth.copy()
         new_arguments['limit'] = 0
-        self.objects = self.get_base_model().get(**new_arguments).get('objects', None)
-        return self.objects
+        if id is not None:
+            self.objects = self.get_base_model().get(**new_arguments).get('objects', None)
+            return self.objects
+        else:
+            return self.get_base_model(id).get(**new_arguments).get('objects', None)
 
     @property
     def schema(self):
@@ -54,7 +57,7 @@ class SlumberModel(object):
                 required_fields.append(field)
         return required_fields
 
-    def post(self, data, **kwargs):
+    def post(self, id = None, data = None, **kwargs):
         for field in self.required_fields:
             if field not in data:
                error_message = "Key {0} not present in post data, but is required.".format(field)
@@ -75,14 +78,14 @@ class SlumberModel(object):
                 break
         return match
 
-    def delete(self,id, **kwargs):
+    def delete(self,id = None, data = None, **kwargs):
         response = self.get_base_model(id=id).delete(**self.api_auth)
         match = self.find_model_by_id(id)
         if match is not None:
             self.objects.pop(match)
         return response
 
-    def update(self, id, data, **kwargs):
+    def update(self, id = None, data = None, **kwargs):
         self.get()
         new_arguments = self.api_auth.copy()
         new_arguments['data'] = data

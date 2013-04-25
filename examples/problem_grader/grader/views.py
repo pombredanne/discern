@@ -59,4 +59,12 @@ def action(request):
         log.info(error)
         raise Exception(error)
 
-    slumber_models[model].action(action,id=id,data=data)
+    return slumber_models[model].action(action,id=id,data=data)
+
+@login_required
+def course(request):
+    return render_to_response('course.html')
+
+def problem(request):
+    return render_to_response('problem.html')
+

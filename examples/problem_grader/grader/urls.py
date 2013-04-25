@@ -8,4 +8,6 @@ urlpatterns=patterns('django.contrib.auth.views',
 urlpatterns +=patterns('grader.views',
                        url(r'^register/$','register'),
                        url(r'^$','index'),
+                       url(r'^course/$','course'),
+                       url(r'^action/$','action'),
                        )
