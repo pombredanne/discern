@@ -274,7 +274,8 @@ LOGGING = {
         },
     'handlers': {
         'console': {
-            'level': 'DEBUG' if DEBUG else 'INFO',
+#            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'standard',
             'stream': sys.stdout,
