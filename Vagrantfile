@@ -18,4 +18,5 @@ Vagrant::Config.run do |config|
     python manage.py migrate --settings=ml_service_api.settings --pythonpath=/home/vagrant/ml-service-api | tee -a /var/log/ml-service-api-setup.log; \
     python manage.py collectstatic -c --noinput --settings=ml_service_api.settings --pythonpath=/home/vagrant/ml-service-api | tee -a /var/log/ml-service-api-setup.log; \
   }
+  config.vm.network :hostonly, "33.33.33.10"
 end
