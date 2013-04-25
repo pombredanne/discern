@@ -412,6 +412,11 @@ def add_membership(user,organization):
     and tastypie does not automatically create through relations.
     """
     users = organization.users.all()
+    membership_count = Membership.objects.filter(user=user).count()
+    if membership_count>=1:
+        error_message = "All users, including user {0} can only have a maximum of 1 organizations.  This will hopefully be fixed in a future release.".format(user)
+        log.info(error_message)
+        raise BadRequest(error_message)
     membership = Membership(
         user = user,
         organization = organization,

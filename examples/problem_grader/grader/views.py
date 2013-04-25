@@ -3,6 +3,18 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from slumber_models import SlumberModelDiscovery
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+import logging
+
+log = logging.getLogger(__name__)
+
+def setup_slumber_models(user, model_types=None):
+    api_auth = user.profile.get_api_auth
+    slumber_discovery = SlumberModelDiscovery(settings.FULL_API_START + "?format=json", api_auth, settings.API_URL_BASE)
+    models = slumber_discovery.generate_models(model_types)
+    return models
 
 def register(request):
     if request.method == 'POST':
@@ -19,26 +31,32 @@ def register(request):
 def index(request):
     return render_to_response("index.html",RequestContext(request))
 
-def course():
-    pass
+action_types = ["update", "delete", "get", "post"]
 
-def problem():
-    pass
+@login_required
+def action(request):
+    if request.method == 'POST':
+        args = request.POST
+    else:
+        args = request.GET
 
-def essay():
-    pass
+    action = args.get('action', 'get')
+    model = args.get('model', None)
+    id = args.get('id', None)
 
-def essaygrade():
-    pass
+    user = request.user
+    data = args.get('data', None)
 
-def course_action():
-    pass
+    if action is None or action not in action_types:
+        error = "Action cannot be None, and must be a string in action_types: {0}".format(action_types)
+        log.info(error)
+        raise TypeError(error)
 
-def problem_action():
-    pass
+    slumber_models = setup_slumber_models(user)
 
-def essay_action():
-    pass
+    if model not in slumber_models:
+        error = "Invalid model specified :{0} .  Model does not appear to exist in list: {1}".format(model, slumber_models.keys())
+        log.info(error)
+        raise Exception(error)
 
-def essaygrade_action():
-    pass
+    slumber_models[model].action(action,id=id,data=data)

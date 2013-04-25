@@ -14,13 +14,19 @@ def join_without_slash(path1, path2):
 
     return path1 + path2
 
+class InvalidValueException(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 class SlumberModel(object):
     excluded_fields = ['created', 'id', 'resource_uri', 'id', 'modified']
     def __init__(self,api_url, model_type, api_auth):
         self.api = slumber.API(api_url)
         self.model_type = model_type
         self.api_auth = api_auth
-        self.get()
+        self.objects=[]
 
     def get_base_model(self, id = None):
         ref = getattr(self.api,self.model_type)
@@ -28,7 +34,7 @@ class SlumberModel(object):
             ref = ref(id)
         return ref
 
-    def get(self):
+    def get(self, **kwargs):
         new_arguments = self.api_auth.copy()
         new_arguments['limit'] = 0
         self.objects = self.get_base_model().get(**new_arguments).get('objects', None)
@@ -48,17 +54,17 @@ class SlumberModel(object):
                 required_fields.append(field)
         return required_fields
 
-    def post(self, post_data):
+    def post(self, data, **kwargs):
         for field in self.required_fields:
-            if field not in post_data:
+            if field not in data:
                error_message = "Key {0} not present in post data, but is required.".format(field)
                log.debug(error_message)
-               return False, error_message
+               raise InvalidValueException(error_message)
         new_arguments = self.api_auth.copy()
-        new_arguments['data'] = post_data
+        new_arguments['data'] = data
         new = self.get_base_model().post(**new_arguments)
         self.objects.append(new)
-        return True, new
+        return new
 
     def find_model_by_id(self,id):
         match = None
@@ -69,20 +75,46 @@ class SlumberModel(object):
                 break
         return match
 
-    def delete(self,id):
+    def delete(self,id, **kwargs):
         response = self.get_base_model(id=id).delete(**self.api_auth)
         match = self.find_model_by_id(id)
         if match is not None:
             self.objects.pop(match)
         return response
 
-    def update(self, id, update_data):
+    def update(self, id, data, **kwargs):
+        self.get()
         new_arguments = self.api_auth.copy()
-        new_arguments['data'] = update_data
+        new_arguments['data'] = data
         response = self.get_base_model(id=id).update(**new_arguments)
         match = self.find_model_by_id(id)
         self.objects[match] = response
         return response
+
+    def action(self, action, id=None, data = None):
+        action_dict = {
+            'get' : self.get,
+            'post' : self.post,
+            'update' : self.update,
+            'delete' : self.delete,
+        }
+        if action not in action_dict:
+            error = "Could not find action {0} in registered actions.".format(action)
+            log.info(error)
+            raise InvalidValueException(error)
+
+        if action in ['update', 'delete'] and id is None:
+            error = "Need to provide an id along with action {0}.".format(action)
+            log.info(error)
+            raise InvalidValueException(error)
+
+        if action in ['update', 'post'] and data is None:
+            error = "Need to provide data along with action {0}.".format(action)
+            log.info(error)
+            raise InvalidValueException(error)
+
+        result = action_dict[action](data=data, id=id)
+        return result
 
 class SlumberModelDiscovery(object):
     def __init__(self,api_url, api_auth, api_base):
@@ -94,10 +126,12 @@ class SlumberModelDiscovery(object):
         schema = requests.get(self.api_url, params=self.api_auth)
         return json.loads(schema.content)
 
-    def generate_models(self):
+    def generate_models(self, model_names = None):
         schema = self.get_schema()
         slumber_models = {}
         for field in schema:
+            if model_names is not None and field not in model_names:
+                continue
             field_url = join_without_slash(self.api_base, schema[field]['list_endpoint'])
             field_model = SlumberModel(field_url, field, self.api_auth)
             slumber_models[field] = field_model

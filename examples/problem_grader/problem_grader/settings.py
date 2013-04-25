@@ -29,6 +29,13 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'problem-grader'
+    }
+}
+
 #Figure out where the API is!
 API_URL_BASE = "http://127.0.0.1:7999/"
 API_URL_INTERMEDIATE = "essay_site/api/v1/"
