@@ -24,12 +24,14 @@ class SlumberModel(object):
     excluded_fields = ['created', 'id', 'resource_uri', 'id', 'modified']
     def __init__(self,api_url, model_type, api_auth):
         self.api = slumber.API(api_url)
+        self.api_url = api_url
         self.model_type = model_type
         self.api_auth = api_auth
         self.objects=[]
 
     def get_base_model(self, id = None):
         ref = getattr(self.api,self.model_type)
+        log.debug(self.api_url)
         if id is not None:
             ref = ref(id)
         return ref
@@ -38,10 +40,10 @@ class SlumberModel(object):
         new_arguments = self.api_auth.copy()
         new_arguments['limit'] = 0
         if id is not None:
-            self.objects = self.get_base_model().get(**new_arguments).get('objects', None)
+            self.objects = self.get_base_model(id).get(**new_arguments).get('objects', None)
             return self.objects
         else:
-            return self.get_base_model(id).get(**new_arguments).get('objects', None)
+            return self.get_base_model().get(**new_arguments).get('objects', None)
 
     @property
     def schema(self):
@@ -120,13 +122,13 @@ class SlumberModel(object):
         return result
 
 class SlumberModelDiscovery(object):
-    def __init__(self,api_url, api_auth, api_base):
+    def __init__(self,api_url, api_auth):
         self.api_url = api_url
         self.api_auth = api_auth
-        self.api_base = api_base
+        self.schema_url = join_without_slash(self.api_url, "?format=json")
 
     def get_schema(self):
-        schema = requests.get(self.api_url, params=self.api_auth)
+        schema = requests.get(self.schema_url, params=self.api_auth)
         return json.loads(schema.content)
 
     def generate_models(self, model_names = None):
@@ -135,8 +137,7 @@ class SlumberModelDiscovery(object):
         for field in schema:
             if model_names is not None and field not in model_names:
                 continue
-            field_url = join_without_slash(self.api_base, schema[field]['list_endpoint'])
-            field_model = SlumberModel(field_url, field, self.api_auth)
+            field_model = SlumberModel(self.api_url, field, self.api_auth)
             slumber_models[field] = field_model
         return slumber_models
 

@@ -133,6 +133,8 @@ PIPELINE_JS = {
         'output_filename': 'js/util.js',
     }
 }
+SESSION_COOKIE_NAME = "mlserviceapisessionid"
+CSRF_COOKIE_NAME = "mlserviceapicsrftoken"
 
 API_MODELS = ["userprofile", "user", "membership", "course", "organization", "problem", "essay", "essaygrade"]
 

@@ -1,18 +1,19 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from slumber_models import SlumberModelDiscovery
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 import logging
+import json
 
 log = logging.getLogger(__name__)
 
 def setup_slumber_models(user, model_types=None):
-    api_auth = user.profile.get_api_auth
-    slumber_discovery = SlumberModelDiscovery(settings.FULL_API_START + "?format=json", api_auth, settings.API_URL_BASE)
+    api_auth = user.profile.get_api_auth()
+    slumber_discovery = SlumberModelDiscovery(settings.FULL_API_START, api_auth)
     models = slumber_discovery.generate_models(model_types)
     return models
 
@@ -58,13 +59,13 @@ def action(request):
         error = "Invalid model specified :{0} .  Model does not appear to exist in list: {1}".format(model, slumber_models.keys())
         log.info(error)
         raise Exception(error)
-
-    return slumber_models[model].action(action,id=id,data=data)
+    json_data = json.dumps(slumber_models[model].action(action,id=id,data=data))
+    return HttpResponse(json_data)
 
 @login_required
 def course(request):
-    return render_to_response('course.html', {'model' : 'course'})
+    return render_to_response('course.html', {'model' : 'course', 'api_url' : "/grader/action"})
 
 def problem(request):
-    return render_to_response('problem.html', {'model' : 'problem'})
+    return render_to_response('problem.html', {'model' : 'problem', 'api_url' : "/grader/action"})
 

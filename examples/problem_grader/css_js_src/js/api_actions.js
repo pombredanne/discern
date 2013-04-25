@@ -1,8 +1,5 @@
-API_BASE = "http://127.0.0.1/"
-API_PATH = API_BASE + "essay_site/api/v1/"
-
 $(function(){
-    var tokenValue = $.cookie('csrftoken');
+    var tokenValue = $.cookie('problemgradercsrftoken');
 
     $.ajaxSetup({
         headers: {'X-CSRF-Token': tokenValue}
@@ -11,13 +8,15 @@ $(function(){
 })
 
 $(function(){
-    model_type = $('#model_name').attr('model');
+    var model_type = $('#model_name').attr('model');
+    var API_BASE = $('#model_name').attr("url");
     if(model_type!=undefined) {
         $.ajax({
             type: "GET",
-            url: API_PATH + model_type + "/?format=json"
+            url: API_BASE,
+            data: { action: "get", model: model_type }
         }).done(function( msg ) {
-                
+               console.log(msg)
         });
     }
 })

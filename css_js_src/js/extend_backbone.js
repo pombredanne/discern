@@ -17,7 +17,7 @@ TastypieCollection = Backbone.Collection.extend({
 });
 
 $(function(){
-    var tokenValue = $.cookie('csrftoken');
+    var tokenValue = $.cookie('mlserviceapicsrftoken');
 
     $.ajaxSetup({
         headers: {'X-CSRF-Token': tokenValue}

@@ -36,6 +36,9 @@ CACHES = {
     }
 }
 
+SESSION_COOKIE_NAME = "problemgradersessionid"
+CSRF_COOKIE_NAME = "problemgradercsrftoken"
+
 #Figure out where the API is!
 API_URL_BASE = "http://127.0.0.1:7999/"
 API_URL_INTERMEDIATE = "essay_site/api/v1/"
@@ -103,10 +106,17 @@ PIPELINE_JS = {
         'source_filenames': [
             'js/jquery-1.9.1.js',
             'js/json2.js',
-            'js/bootstrap.js'
+            'js/bootstrap.js',
+            'js/jquery.cookie.js',
             ],
         'output_filename': 'js/util.js',
-        }
+        },
+    'api' : {
+        'source_filenames': [
+            'js/api_actions.js',
+        ],
+        'output_filename': 'js/api.js',
+    },
 }
 
 PIPELINE_CSS = {

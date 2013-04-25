@@ -61,7 +61,7 @@ class UserProfile(models.Model):
 
     def get_api_auth(self):
         return {
-            'username' : self.user.username,
+            'username' : self.api_user,
             'api_key' : self.api_key
         }
 
