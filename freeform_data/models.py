@@ -71,6 +71,14 @@ class Membership(models.Model):
             ("view_membership", "Can view membership"),
         )
 
+    def save(self, *args, **kwargs):
+        members_count = Membership.objects.filter(user = self.user).count()
+        if members_count>=1:
+            error_message = "You can currently only be a member of a single organization.  This will hopefully be changed in the future.  Generated for user {0}.".format(self.user)
+            log.info(error_message)
+            return error_message
+        super(Membership, self).save(*args, **kwargs) # Call the "real" save() method.
+
 class UserProfile(models.Model):
     #TODO: Add in a callback where if user identifies as "administrator", then they can create an organization
     #Each userprofile has one user, and vice versa
