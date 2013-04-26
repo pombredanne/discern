@@ -14,7 +14,7 @@ The main steps are:
 7. source /opt/edx/bin/activate
 8. cd ml-service-api
 9. pip install -r pre-requirements.txt
-19. pip install -r requirements.txt
+10. pip install -r requirements.txt
 11. python manage.py syncdb --settings=ml_service_api.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO
 12. Choose "no" for create superuser if syncdb prompts you for it.
 13. python manage.py migrate --settings=ml_service_api.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO
@@ -28,4 +28,4 @@ for this repo separate from the rest of your system.
 If you get errors using the above, you may need to create a database directory one level up from where you cloned
 the git repo (folder named "db")
 
-You will need to install the machine-learning repo (https://github.com/edx/machine-learning) in the same base repo that you installed ml-service-api in order to get all functionality.  Follow the install instructions in that repo.
+You will need to install the machine-learning repo (https://github.com/edx/machine-learning) in the same base directory that you installed ml-service-api in order to get all functionality.  Follow the install instructions in that repo.
