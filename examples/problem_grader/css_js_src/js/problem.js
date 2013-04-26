@@ -12,17 +12,22 @@ var render_problem = function(data) {
     data = $.parseJSON(data);
     var item_template = $( "#problem-item-template" ).html();
     var container_template = $( "#problem-list-template" ).html();
+    var rubric_list_template = $('#rubric-list-template').html();
+
     var problems = new Array();
     for (var i = 0; i < data.length; i++) {
         var elem = data[i];
         var mod_problem_name = elem.name.replace(" ", "_");
+        console.log(elem.rubric)
 
         var elem_dict = {
             name : elem.name,
+            prompt : elem.prompt,
             href : elem.id + mod_problem_name,
             modified : new Date(Date.parse(elem.modified)),
             created: new Date(Date.parse(elem.created)),
-            id : elem.id
+            id : elem.id,
+            rubric : _.template(rubric_list_template,{rubrics : elem.rubric})
         }
         problems.push(_.template(item_template,elem_dict));
     }

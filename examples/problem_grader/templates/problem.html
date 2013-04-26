@@ -26,6 +26,10 @@
             <div id="<%= href %>" class="accordion-body collapse" style="height: 0px;">
                 <div class="accordion-inner">
                     <ul class="unstyled">
+                        <li>Prompt :  <%= prompt %> </li>
+                        <li>Created on: <%= created %></li>
+                        <li>Last modified on: <%= modified %></li>
+                        <li>Rubric  <%= rubric %></li>
                     </ul>
                     <button class="btn show-essays">Show Essays</button>
                 </div>
@@ -95,6 +99,26 @@
                 <option>4</option>
                 <option>5</option>
             </select>
+        </div>
+    </script>
+    <script type="text/template" id="rubric-list-template">
+        <div id="rubric-list">
+            <table class="table table-condensed">
+            <tr>
+                <th>
+                    Rubric Text
+                </th>
+                <th>
+                    Points
+                </th>
+            </tr>
+            <% _.each( rubrics, function( rubric ){ %>
+                <tr>
+                    <td><%= rubric.option_text %></td>
+                    <td><%= rubric.option_points %></td>
+                </tr>
+                <% }); %>
+            </table>
         </div>
     </script>
     {% endverbatim %}
