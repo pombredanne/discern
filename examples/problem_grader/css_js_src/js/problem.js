@@ -4,71 +4,62 @@ var get_models = function(api_url, model_type, callback) {
         url: api_url,
         data: { action: "get", model: model_type }
     }).done(callback);
- }
+}
 
-var render_course = function(data) {
+var render_problem = function(data) {
     var model_data = $("#model_container");
     model_data.empty();
     data = $.parseJSON(data);
-    var item_template = $( "#course-item-template" ).html();
-    var container_template = $( "#course-list-template" ).html();
-    var courses = new Array();
+    var item_template = $( "#problem-item-template" ).html();
+    var container_template = $( "#problem-list-template" ).html();
+    var problems = new Array();
     for (var i = 0; i < data.length; i++) {
         var elem = data[i];
-        var mod_course_name = elem.course_name.replace(" ", "_");
+        var mod_problem_name = elem.name.replace(" ", "_");
 
         var elem_dict = {
-            name : elem.course_name,
-            href : elem.id + mod_course_name,
+            name : elem.name,
+            href : elem.id + mod_problem_name,
             user_count : elem.users.length,
             problem_count: elem.problems.length,
             modified : new Date(Date.parse(elem.modified)),
             created: new Date(Date.parse(elem.created)),
             id : elem.id
         }
-        courses.push(_.template(item_template,elem_dict));
+        problems.push(_.template(item_template,elem_dict));
     }
     var template_data = {
-        courses: courses
+        problems: problems
     };
     model_data.append(_.template(container_template,template_data))
-    add_course_button()
-    $('#create-course').click(create_course);
-    $('.delete-course').click(delete_course);
-    $('.show-problems').click(get_problem);
+    add_problem_button()
+    $('#create-problem').click(create_problem);
+    $('.delete-problem').click(delete_problem);
 }
 
-var get_problem = function(target) {
-    var target_btn = $(target.target);
-    var form = target_btn.parent().parent().parent();
-    var inputs = form.find('.accordion-toggle')
-    var course_id = inputs.data('elem_id')
-    window.location.href = "/grader/problem/?course_id=" + course_id;
-}
-
-var add_course_button = function() {
+var add_problem_button = function() {
     var model_add = $("#model_add")
     model_add.empty()
-    var add_template = $( "#course-add-template" ).html();
+    var add_template = $( "#problem-add-template" ).html();
     var add_dict = {
-        name : "Add a course",
-        href: "course-add"
+        name : "Add a problem",
+        href: "problem-add"
     }
     model_add.html(_.template(add_template,add_dict))
 }
 
-var get_course_items = function(model_type) {
+var get_problem_items = function(model_type) {
     var api_base = $('#model_name').attr("url");
     switch(model_type)
     {
-        case "course":
-            callback = render_course;
+        case "problem":
+            callback = render_problem;
             break;
     }
     get_models(api_base, model_type, callback)
 }
 
-var delete_course = function(target) {
+var delete_problem = function(target) {
     var target_btn = $(target.target);
     var data = target_btn.parent();
     console.log(data)
@@ -77,30 +68,30 @@ var delete_course = function(target) {
     $.ajax({
         type: "POST",
         url: api_url,
-        data: { action: "delete", model: 'course', id : id}
+        data: { action: "delete", model: 'problem', id : id}
     }).done(get_model_type_and_items);
 }
 
-var create_course = function(target) {
+var create_problem = function(target) {
     var target_btn = $(target.target);
     var form = target_btn.parent().parent().parent();
     var inputs = form.find('input')
-    var course_name = inputs.val()
+    var problem_name = inputs.val()
     var api_url = $('#model_name').attr("url") + "/";
     post_data = {
-        course_name : course_name
+        problem_name : problem_name
     }
     $.ajax({
         type: "POST",
         url: api_url,
-        data: { action: "post", model: 'course', data : JSON.stringify(post_data)}
+        data: { action: "post", model: 'problem', data : JSON.stringify(post_data)}
     }).done(get_model_type_and_items);
 }
 
 var get_model_type_and_items = function() {
     var model_type = $('#model_name').attr('model');
     if(model_type!=undefined) {
-        get_course_items(model_type)
+        get_problem_items(model_type)
     }
 }
 

@@ -71,6 +71,7 @@ def action(request):
 def course(request):
     return render_to_response('course.html', RequestContext(request, {'model' : 'course', 'api_url' : "/grader/action"}))
 
+@login_required
 def problem(request):
     if request.method == 'POST':
         args = request.POST
@@ -79,8 +80,23 @@ def problem(request):
 
     matching_course_id = args.get('course_id', -1)
     match_course = False
+    course_name = None
     if matching_course_id!= -1:
         match_course = True
+        user = request.user
+        slumber_models = setup_slumber_models(user)
+        course_object = slumber_models['course'].action('get',id=matching_course_id, data=None)
+        log.debug(course_object)
+        course_name = course_object['course_name']
 
-    return render_to_response('problem.html', RequestContext(request, {'model' : 'problem', 'api_url' : "/grader/action", 'course_id' : matching_course_id, 'match_course' : match_course}))
+    matching_course_id = str(matching_course_id)
+
+
+    return render_to_response('problem.html', RequestContext(request, {'model' : 'problem',
+                                                                       'api_url' : "/grader/action",
+                                                                       'matching_course_id' : matching_course_id,
+                                                                       'match_course' : match_course,
+                                                                       'course_name' : course_name,
+    })
+    )
 

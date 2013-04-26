@@ -40,7 +40,7 @@ class SlumberModel(object):
         new_arguments = self.api_auth.copy()
         new_arguments['limit'] = 0
         if id is not None:
-            self.objects = self.get_base_model(id).get(**new_arguments).get('objects', None)
+            self.objects = self.get_base_model(id).get(**new_arguments)
             return self.objects
         else:
             return self.get_base_model().get(**new_arguments).get('objects', None)

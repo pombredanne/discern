@@ -118,6 +118,12 @@ PIPELINE_JS = {
         ],
         'output_filename': 'js/course.js',
     },
+    'problem' : {
+        'source_filenames': [
+            'js/problem.js',
+            ],
+        'output_filename': 'js/problem.js',
+    },
 }
 
 PIPELINE_CSS = {
