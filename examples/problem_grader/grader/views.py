@@ -61,9 +61,16 @@ def action(request):
 
     rubric = {'options' : []}
     if action=="post" and model=="problem":
+        log.debug(data)
         rubric = data['rubric'].copy()
-        data['max_target_scores'] = [1 for i in xrange(0,len(data['rubric']['options']))]
+        data.update({
+            'premium_feedback_models' : "",
+            'number_of_additional_predictors' : 0,
+            'max_target_scores' : [1 for i in xrange(0,len(data['rubric']['options']))],
+            'courses' : ["/" + settings.API_URL_INTERMEDIATE + "course/" + str(data['course']) + "/"]
+        })
         del data['rubric']
+        del data['course']
 
     slumber_models = setup_slumber_models(user)
     log.debug(slumber_models['problem'].required_fields)
@@ -73,7 +80,14 @@ def action(request):
         log.info(error)
         raise Exception(error)
 
-    slumber_data = slumber_models[model].action(action,id=id,data=data)
+    try:
+        slumber_data = slumber_models[model].action(action,id=id,data=data)
+    except Exception as inst:
+        log.debug(inst.args)
+        log.debug(inst.response)
+        log.debug(inst.content)
+        raise
+
     if action=="post" and model=="problem":
         problem_id = slumber_data['id']
         rubric['problem_id'] = problem_id
@@ -82,8 +96,12 @@ def action(request):
     if action in ["get", "post"] and model=="problem":
         if isinstance(slumber_data,list):
             for i in xrange(0,len(slumber_data)):
-                rubric_data = rubric_functions.get_rubric_data(slumber_data[i]['id'])
-                slumber_data[i]['rubric'] = rubric_data
+                try:
+                    rubric_data = rubric_functions.get_rubric_data(slumber_data[i]['id'])
+                    slumber_data[i]['rubric'] = rubric_data
+                except:
+                    log.error("Could not find rubric for problem id {0}.".format(slumber_data[i]['id']))
+                    slumber_data[i]['rubric'] = []
         else:
             rubric_data = rubric_functions.get_rubric_data(slumber_data['id'])
             slumber_data['rubric'] = rubric_data

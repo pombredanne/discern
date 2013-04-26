@@ -97,18 +97,22 @@ var create_problem = function(target) {
     var rubric = form.find("#rubric-item-container")
     var rubric_items = rubric.find(".rubric-item")
     options = new Array();
-
+    var course = $("#model_name").data("course_id")
     for (var i=0 ; i < rubric_items.length ; i++) {
         options.push({
-            points: rubric_items[i].find('input').find(":selected").text(),
-            text : rubric_items[i].find('textarea').val()
+            points: rubric_items.eq(i).find('select').find(":selected").text(),
+            text : rubric_items.eq(i).find('textarea').val()
         })
+    }
+    var rubric = {
+        options : options
     }
     var api_url = $('#model_name').attr("url") + "/";
     post_data = {
-        problem_name : problem_name,
+        name : problem_name,
         prompt : prompt,
-
+        rubric : rubric,
+        course : course
     }
     $.ajax({
         type: "POST",
