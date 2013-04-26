@@ -11,7 +11,6 @@ var render_course = function(data) {
     model_data.empty();
     data = $.parseJSON(data);
     var item_template = $( "#course-item-template" ).html();
-    console.log(item_template)
     var container_template = $( "#course-list-template" ).html();
     var courses = new Array();
     for (var i = 0; i < data.length; i++) {

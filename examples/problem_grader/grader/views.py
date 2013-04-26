@@ -72,5 +72,15 @@ def course(request):
     return render_to_response('course.html', RequestContext(request, {'model' : 'course', 'api_url' : "/grader/action"}))
 
 def problem(request):
-    return render_to_response('problem.html', RequestContext(request, {'model' : 'problem', 'api_url' : "/grader/action"}))
+    if request.method == 'POST':
+        args = request.POST
+    else:
+        args = request.GET
+
+    matching_course_id = args.get('course_id', -1)
+    match_course = False
+    if matching_course_id!= -1:
+        match_course = True
+
+    return render_to_response('problem.html', RequestContext(request, {'model' : 'problem', 'api_url' : "/grader/action", 'course_id' : matching_course_id, 'match_course' : match_course}))
 

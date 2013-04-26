@@ -1,4 +1,9 @@
-{% extends "base.html" %}%}
+{% extends "base.html" %}
+{% load compressed %}
+
+{% block additional_js %}
+    {% compressed_js 'course' %}
+{% endblock %}
 
 {% block content %}
     <h4>Courses</h4>
@@ -16,12 +21,13 @@
                 </div>
                 <div id="<%= href %>" class="accordion-body collapse" style="height: 0px;">
                     <div class="accordion-inner">
-                        <ul>
+                        <ul class="unstyled">
                             <li>Number of students: <%= user_count %></li>
                             <li>Number of problems: <%= problem_count %></li>
                             <li>Created on: <%= created %></li>
                             <li>Last modified on: <%= modified %></li>
                         </ul>
+                        <button class="btn show-problems">Show Problems</button>
                     </div>
                 </div>
             </div>

@@ -112,11 +112,11 @@ PIPELINE_JS = {
             ],
         'output_filename': 'js/util.js',
         },
-    'api' : {
+    'course' : {
         'source_filenames': [
-            'js/api_actions.js',
+            'js/course.js',
         ],
-        'output_filename': 'js/api.js',
+        'output_filename': 'js/course.js',
     },
 }
 
