@@ -229,12 +229,12 @@ class OrganizationResource(SearchModelResource):
         Tastypie will currently show memberships instead of users due to the through relation.
         This hacks the relation to show users.
         """
-        if bundle.data.get('users'):
-            l_users = bundle.obj.users.all()
         resource_uris = []
         user_resource = UserResource()
-        for l_user in l_users:
-            resource_uris.append(user_resource.get_resource_uri(bundle_or_obj=l_user))
+        if bundle.data.get('users'):
+            l_users = bundle.obj.users.all()
+            for l_user in l_users:
+                resource_uris.append(user_resource.get_resource_uri(bundle_or_obj=l_user))
         return resource_uris
 
 class UserProfileResource(SearchModelResource):
@@ -413,7 +413,7 @@ def add_membership(user,organization):
     """
     users = organization.users.all()
     membership_count = Membership.objects.filter(user=user).count()
-    if membership_count>=1:
+    if membership_count>=settings.MEMBERSHIP_LIMIT:
         error_message = "All users, including user {0} can only have a maximum of 1 organizations.  This will hopefully be fixed in a future release.".format(user)
         log.info(error_message)
         raise BadRequest(error_message)

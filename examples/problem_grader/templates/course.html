@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %}%}
 
 {% block content %}
     View courses below.
@@ -16,7 +16,12 @@
                 </div>
                 <div id="<%= href %>" class="accordion-body collapse" style="height: 0px;">
                     <div class="accordion-inner">
-
+                        <ul>
+                            <li>Number of students: <%= user_count %></li>
+                            <li>Number of problems: <%= problem_count %></li>
+                            <li>Created on: <%= created %></li>
+                            <li>Last modified on: <%= modified %></li>
+                        </ul>
                     </div>
                 </div>
             </div>

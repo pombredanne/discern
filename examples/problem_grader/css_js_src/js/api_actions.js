@@ -28,7 +28,11 @@ var render_course = function(data) {
         var elem = data[i];
         var elem_dict = {
             name : elem.course_name,
-            href : elem.id + elem.course_name
+            href : elem.id + elem.course_name,
+            user_count : elem.users.length,
+            problem_count: elem.problems.length,
+            modified : new Date(Date.parse(elem.modified)),
+            created: new Date(Date.parse(elem.created))
         }
         courses.push(_.template(item_template,elem_dict));
     }
@@ -50,14 +54,20 @@ var add_course_button = function() {
     model_add.html(_.template(add_template,add_dict))
 }
 
+var get_course_items = function(model_type) {
+    var api_base = $('#model_name').attr("url");
+    switch(model_type)
+    {
+        case "course":
+            callback = render_course
+            break;
+    }
+    get_models(api_base, model_type, callback)
+}
+
 $(function(){
     var model_type = $('#model_name').attr('model');
-    var API_BASE = $('#model_name').attr("url");
-    var callback = function (msg) {
-        console.log(msg);
-
-    }
     if(model_type!=undefined) {
-        get_models(API_BASE, model_type, render_course)
+        get_course_items(model_type)
     }
 })

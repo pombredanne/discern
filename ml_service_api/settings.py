@@ -331,3 +331,6 @@ except:
 THROTTLE_AT = 10000 #Throttle requests after this number in below timeframe, dev settings, so high!
 THROTTLE_TIMEFRAME= 60 * 60 #Timeframe in which to throttle N requests, seconds
 THROTTLE_EXPIRATION= 24 * 60 * 60 # When to remove throttle entries from cache, seconds
+
+#Model settings
+MEMBERSHIP_LIMIT=1 #Currently users can only be in one organization

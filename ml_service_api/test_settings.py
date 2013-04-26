@@ -29,3 +29,6 @@ BROKER_BACKEND = 'memory'
 
 #Haystack settings
 HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index_test")
+
+#Model settings
+MEMBERSHIP_LIMIT=50 #For testing purposes, relax membership limits

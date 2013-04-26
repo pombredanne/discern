@@ -5,6 +5,7 @@ import json
 from django.db.models.signals import pre_delete, pre_save, post_save, post_delete
 from request_provider.signals import get_request
 from guardian.shortcuts import assign_perm
+from django.conf import settings
 import logging
 log=logging.getLogger(__name__)
 
@@ -73,7 +74,7 @@ class Membership(models.Model):
 
     def save(self, *args, **kwargs):
         members_count = Membership.objects.filter(user = self.user).count()
-        if members_count>=1:
+        if members_count>=settings.MEMBERSHIP_LIMIT:
             error_message = "You can currently only be a member of a single organization.  This will hopefully be changed in the future.  Generated for user {0}.".format(self.user)
             log.info(error_message)
             return error_message
