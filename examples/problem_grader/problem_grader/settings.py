@@ -108,6 +108,7 @@ PIPELINE_JS = {
             'js/json2.js',
             'js/bootstrap.js',
             'js/jquery.cookie.js',
+            'js/underscore.js',
             ],
         'output_filename': 'js/util.js',
         },
