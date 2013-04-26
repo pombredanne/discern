@@ -33,7 +33,6 @@ var PaginatedCollection = Backbone.Collection.extend({
     },
     url: function() {
         var url = Backbone.Collection.prototype.url.call(this, arguments);
-        console.log(url)
         urlparams = {offset: this.offset, limit: this.limit};
         urlparams = $.extend(urlparams, this.filter_options);
         if (this.sort_field) {
@@ -159,7 +158,6 @@ var PaginatedView = Backbone.View.extend({
                     this.total = this.meta.total_count;
                     this.offset = this.meta.offset;
                     this.limit = this.meta.limit;
-                    console.log(this.offset);
                     var info = {
                         total: this.total,
                         offset: this.offset,

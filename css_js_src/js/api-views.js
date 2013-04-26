@@ -33,7 +33,6 @@ ListView = Backbone.View.extend({
         this.itemList.fetch({
             success: function (items) {
                 // Once the results are returned lets populate our template
-                console.log("Fetched results!")
                 for(model in items.models)
                 {
                     that.renderItem(items.models[model])
@@ -55,7 +54,6 @@ ListView = Backbone.View.extend({
                         fields[field] = "";
                     }
                 }
-                console.log(data);
                 var update_template = $('#generic-item-add-template');
                 var update_html = (_.template(update_template.html(), {item: fields, _:_}));
                 $(that.el).prepend(update_html);

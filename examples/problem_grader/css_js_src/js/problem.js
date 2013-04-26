@@ -91,7 +91,6 @@ var get_problem_items = function(model_type) {
 var delete_problem = function(target) {
     var target_btn = $(target.target);
     var data = target_btn.parent();
-    console.log(data)
     var id = data.data('elem_id')
     var api_url = $('#model_name').attr("url") + "/";
     $.ajax({
@@ -108,7 +107,6 @@ var create_problem = function(target) {
     var prompt = form.find('#promptname').val()
     var rubric = form.find("#rubric-item-container")
     var rubric_items = rubric.find(".rubric-item")
-    console.log(rubric_items)
     var options = new Array();
     var course = parseInt($("#model_name").data("course_id"))
     for (var i=0 ; i < rubric_items.length ; i++) {

@@ -1,6 +1,7 @@
 var get_courses = function() {
     $('#problem_nav').empty()
     $('#course_nav').empty()
+    $('#essay-container').empty()
     var api_base = $('#model_name').attr("url");
     $.ajax({
         type: "GET",
@@ -45,7 +46,6 @@ var render_course_nav = function(data) {
     var add_template = $( "#course-nav-template" ).html();
     var course_nav = $('#course_nav')
     data = $.parseJSON(data);
-    console.log(data)
     course_nav.html(_.template(add_template,{courses : data}))
     $('.course-select').click(get_problem_nav);
 }
