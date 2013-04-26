@@ -3,12 +3,28 @@ This fabfile currently works to deploy this repo and machine-learning to a new s
 A lot of settings and names will need to be changed around for your specific config, so
 look through carefully.
 """
-
 from __future__ import with_statement
 from fabric.api import local, lcd, run, env, cd, settings, prefix, sudo, shell_env
 from fabric.contrib.console import confirm
 from fabric.operations import put
 from fabric.contrib.files import exists
+from path import path
+from fabric.contrib import django
+import sys
+import os
+import logging
+
+ROOT_PATH = path(__file__).dirname()
+
+sys.path.append(ROOT_PATH)
+
+django.settings_module('ml_service_api.settings')
+from django.conf import settings as django_settings
+
+logging.basicConfig(level=logging.ERROR)
+
+para_log=logging.getLogger('paramiko.transport')
+para_log.setLevel(logging.ERROR)
 
 #Should be in the format user@remote_host
 env.hosts = ['vik@sandbox-service-api-001.m.edx.org']
@@ -20,30 +36,29 @@ def prepare_deployment():
     local('git add -p && git commit')
     local("git push")
 
+def check_paths():
+    log = logging.getLogger(__name__)
+    logging.basicConfig(level=logging.INFO)
+    log.info(django_settings.ROOT_PATH)
+    log.info(django_settings.REPO_PATH)
+    log.info(django_settings.ENV_ROOT)
+
 def deploy():
+    env.forward_agent = True
     #Setup needed directory paths
     #Edit if you are using this for deployment
-    code_dir = '/opt/wwc/ml-service-api'
-    ml_code_dir = '/opt/wwc/machine-learning'
     up_one_level_dir = '/opt/wwc'
-    database_dir = '/opt/wwc/db'
+    code_dir = os.path.join(up_one_level_dir, "ml-service-api")
+    ml_code_dir = os.path.join(up_one_level_dir, 'machine-learning')
+    database_dir = os.path.join(code_dir, "db")
     remote_ssh_dir = '/home/vik/.ssh'
-    local_dir = '/home/vik/mitx_all'
+    local_dir = django_settings.ENV_ROOT
     nltk_data_dir = '/usr/share/nltk_data'
-    static_dir = '/opt/wwc/staticfiles'
+    static_dir = os.path.join(code_dir, 'staticfiles')
+    deployment_config_dir = os.path.join(django_settings.REPO_PATH, "deployment/configuration/")
 
     #this is needed for redis-server to function properly
     sudo('sysctl vm.overcommit_memory=1')
-    #LCD defines the local directory
-    with lcd(local_dir), settings(warn_only=True):
-        #Cd defines the remote directory
-        with cd(remote_ssh_dir):
-            #Move local keys that can access github to remote host
-            #Highly recommend that you use a password for these!
-            put('service-id_rsa','id_rsa', use_sudo=True)
-            put('service-id_rsa.pub','id_rsa.pub', use_sudo=True)
-            #Change permissions on keyfile to ensure that it can be used
-            sudo('chmod 400 id_rsa')
 
     with settings(warn_only=True):
         #Stop services
@@ -123,7 +138,7 @@ def deploy():
             run('pip install -r requirements.txt')
             run('python setup.py install')
 
-    with lcd(local_dir), settings(warn_only=True):
+    with lcd(deployment_config_dir), settings(warn_only=True):
         with cd(up_one_level_dir):
             #Move env and auth.json (read by aws.py if using it instead of settings)
             put('service-auth.json', 'auth.json', use_sudo=True)

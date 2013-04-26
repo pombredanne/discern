@@ -1,29 +1,12 @@
-"""
-Local settings file
-"""
 import sys
 import os
 from path import path
-import logging
 
-#Initialize celery
-import djcelery
-djcelery.setup_loader()
+# Django settings for problem_grader project.
 
-# Django settings for ml_service_api project.
 ROOT_PATH = path(__file__).dirname()
 REPO_PATH = ROOT_PATH.dirname()
 ENV_ROOT = REPO_PATH.dirname()
-
-#ML Specific settings
-ML_MODEL_PATH=os.path.join(ENV_ROOT,"ml_models_api/") #Path to save and retrieve ML models from
-TIME_BETWEEN_ML_CREATOR_CHECKS= 1 * 60 # seconds.  Time between ML creator checking to see if models need to be made.
-TIME_BETWEEN_ML_GRADER_CHECKS= 10 # seconds.  Time between ML grader checking to see if models need to be made.
-USE_S3_TO_STORE_MODELS= False #Determines whether or not models are placed in Amazon S3
-S3_BUCKETNAME="OpenEnded"
-TIME_BEFORE_REMOVING_STARTED_MODEL = 10 * 60 * 60 # in seconds, time before removing an ml model that was started (assume it wont finish)
-
-LOGIN_REDIRECT_URL = "/frontend/"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -34,30 +17,37 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DB_PATH = "db/"
-
-#Make the db path dir if it does not exist
-if not os.path.isdir(DB_PATH):
-    os.mkdir(DB_PATH)
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': DB_PATH + 'service-api-db.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'NAME': 'db/grader.db',                      # Or path to database file if using sqlite3.
+        # The following settings are not used with sqlite3:
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '',                      # Set to empty string for default.
     }
 }
 
-#Need caching for API rate limiting
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'ml-service-api-cache'
+        'LOCATION': 'problem-grader'
     }
 }
+
+SESSION_COOKIE_NAME = "problemgradersessionid"
+CSRF_COOKIE_NAME = "problemgradercsrftoken"
+
+#Figure out where the API is!
+API_URL_BASE = "http://127.0.0.1:7999/"
+API_URL_INTERMEDIATE = "essay_site/api/v1/"
+FULL_API_START = API_URL_BASE + API_URL_INTERMEDIATE
+
+
+# Hosts/domain names that are valid for this site; required if DEBUG is False
+# See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = []
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -83,18 +73,14 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
+# Example: "/var/www/example.com/media/"
 MEDIA_ROOT = ''
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+# Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = ''
 
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = os.path.abspath(REPO_PATH / "staticfiles")
 
 #Make the static root dir if it does not exist
@@ -120,31 +106,19 @@ PIPELINE_JS = {
         'source_filenames': [
             'js/jquery-1.9.1.js',
             'js/json2.js',
-            'js/underscore.js',
             'js/bootstrap.js',
-            'js/backbone.js',
-            'js/backbone.validations.js',
-            'js/backbone-tastypie.js',
-            'js/backbone-schema.js',
-            'js/setup-env.js',
-            'js/api-views.js',
             'js/jquery.cookie.js',
+            'js/underscore.js',
             ],
         'output_filename': 'js/util.js',
-    }
-}
-SESSION_COOKIE_NAME = "mlserviceapisessionid"
-CSRF_COOKIE_NAME = "mlserviceapicsrftoken"
-
-API_MODELS = ["userprofile", "user", "membership", "course", "organization", "problem", "essay", "essaygrade"]
-
-for model in API_MODELS:
-    PIPELINE_JS[model] = {
+        },
+    'api' : {
         'source_filenames': [
-            'js/views/{0}.js'.format(model)
+            'js/api_actions.js',
         ],
-        'output_filename': 'js/{0}.js'.format(model),
-    }
+        'output_filename': 'js/api.js',
+    },
+}
 
 PIPELINE_CSS = {
     'bootstrap': {
@@ -173,6 +147,7 @@ PIPELINE_JS_COMPRESSOR = None
 PIPELINE_COMPILE_INPLACE = True
 PIPELINE = True
 
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
@@ -182,22 +157,13 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'u)4v9b&amp;9jhsg-&amp;&amp;^*!jff&amp;t1e7$em0uh8^i^w!ojjvr&amp;8$ok6-'
+SECRET_KEY = 'p*51#*%wyw^y3a@%s*ak+xb$o4sfsr#xkj@d-n^ammtelysp@@'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -208,27 +174,21 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'request_provider.middleware.RequestProvider',
 )
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'guardian.backends.ObjectPermissionBackend',
-)
-
-ANONYMOUS_USER_ID = -1
-
-ROOT_URLCONF = 'ml_service_api.urls'
+ROOT_URLCONF = 'problem_grader.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'ml_service_api.wsgi.application'
+WSGI_APPLICATION = 'problem_grader.wsgi.application'
+
+AUTH_PROFILE_MODULE = 'grader.UserProfile'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.abspath(REPO_PATH / "templates"),
-    os.path.abspath(REPO_PATH / "freeform_data")
+    os.path.abspath(REPO_PATH / "grader")
 )
 
 INSTALLED_APPS = (
@@ -242,21 +202,10 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'tastypie',
-    'freeform_data',
+    'grader',
     'south',
-    'ml_grading',
-    'djcelery',
     'pipeline',
-    'guardian',
-    'haystack'
 )
-
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
 
 syslog_format = ("[%(name)s][env:{logging_env}] %(levelname)s "
                  "[{hostname}  %(process)d] [%(filename)s:%(lineno)d] "
@@ -296,7 +245,7 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
             'propagate': False
-            },
+        },
         'django.db.backends': {
             'handlers': ['null'],  # Quiet by default!
             'propagate': False,
@@ -304,33 +253,3 @@ LOGGING = {
             },
         }
 }
-
-AUTH_PROFILE_MODULE = 'freeform_data.UserProfile'
-
-BROKER_URL = 'redis://localhost:6379/5'
-BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/5'
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
-#Haystack settings
-HAYSTACK_SITECONF = 'ml_service_api.search_sites'
-HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index")
-TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds
-
-#Check to see if the ml repo is available or not
-FOUND_ML = False
-try:
-    import machine_learning.grade
-    FOUND_ML = True
-except:
-    pass
-
-#Tastypie throttle settings
-THROTTLE_AT = 10000 #Throttle requests after this number in below timeframe, dev settings, so high!
-THROTTLE_TIMEFRAME= 60 * 60 #Timeframe in which to throttle N requests, seconds
-THROTTLE_EXPIRATION= 24 * 60 * 60 # When to remove throttle entries from cache, seconds
-
-#Model settings
-MEMBERSHIP_LIMIT=1 #Currently users can only be in one organization

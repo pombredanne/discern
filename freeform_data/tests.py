@@ -13,8 +13,7 @@ from django.test.client import Client
 import requests
 from django.conf import settings
 from django.utils import timezone
-from django.contrib.auth.models import User
-from models import Organization, Course, Problem, Essay, EssayGrade, UserProfile
+from models import Organization, Course, Problem, Essay, EssayGrade, UserProfile, Membership
 from django.core.urlresolvers import reverse
 from django.core.management import call_command
 from ml_grading import ml_model_creation, ml_grader
@@ -39,6 +38,7 @@ def delete_all():
     Course.objects.all().delete()
     #This should cascade down and delete all associated essays and essaygrades
     Problem.objects.all().delete()
+    Membership.objects.all().delete()
 
 def get_urls(resource_name):
     """
@@ -88,6 +88,7 @@ def create_organization():
     """
     Create an organization
     """
+    Membership.objects.all().delete()
     organization_object =  {"name" : "edX"}
     result = create_object("organization", organization_object)
     organization_resource_uri = json.loads(result.content)['resource_uri']
@@ -248,6 +249,7 @@ class OrganizationTest(unittest.TestCase, GenericTest):
     object = {"name" : "edX"}
 
     def setUp(self):
+        Membership.objects.all().delete()
         self.generic_setup()
 
 class CourseTest(unittest.TestCase, GenericTest):

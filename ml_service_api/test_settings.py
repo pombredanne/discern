@@ -10,14 +10,14 @@ warning_logger.setLevel(logging.ERROR)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME' : '../db/service-api-test-db.db',
+        'NAME' : 'db/service-api-test-db.db',
         }
 }
 
 # Nose Test Runner
 INSTALLED_APPS += ('django_nose',)
-NOSE_ARGS = ['--cover-erase', '--with-xunit', '--with-coverage', '--cover-html',
-             '--cover-inclusive', '--cover-html-dir', 'cover',
+NOSE_ARGS = [ '--with-xunit', '--with-coverage',
+              '--cover-html-dir', 'cover',
              '--cover-package', 'freeform_data',
              '--cover-package', 'ml_grading',]
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -29,3 +29,6 @@ BROKER_BACKEND = 'memory'
 
 #Haystack settings
 HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index_test")
+
+#Model settings
+MEMBERSHIP_LIMIT=50 #For testing purposes, relax membership limits
