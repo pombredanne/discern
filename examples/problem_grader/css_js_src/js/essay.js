@@ -60,10 +60,11 @@ var get_essay_template = function(data) {
     var target = $(data.target).parent();
     var problem_id = parseInt(target.data('problem_id'));
     var prompt = target.data('prompt');
+    var name = target.data('name');
     var essay_template = $('#essay-template').html();
     var essay_container = $('#essay-container');
 
-    var rendered_essay_template = _.template(essay_template,{prompt : prompt, problem_id : problem_id})
+    var rendered_essay_template = _.template(essay_template,{prompt : prompt, problem_id : problem_id, name: name})
 
     essay_container.empty();
     essay_container.html(rendered_essay_template);
