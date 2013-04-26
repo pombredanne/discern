@@ -41,7 +41,6 @@ def action(request):
     else:
         args = request.GET
 
-    log.debug(args)
     action = args.get('action', 'get')
     model = args.get('model', None)
     id = args.get('id', None)
@@ -49,7 +48,11 @@ def action(request):
     user = request.user
     data = args.get('data', None)
 
-    log.debug(data)
+    try:
+        data = json.loads(data)
+    except:
+        pass
+
     if action is None or action not in action_types:
         error = "Action cannot be None, and must be a string in action_types: {0}".format(action_types)
         log.info(error)

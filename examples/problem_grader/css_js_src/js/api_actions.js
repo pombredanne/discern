@@ -68,7 +68,7 @@ var create_course = function(target) {
     $.ajax({
         type: "POST",
         url: api_url,
-        data: { action: "post", model: 'course', data : post_data}
+        data: { action: "post", model: 'course', data : JSON.stringify(post_data)}
     }).done(get_model_type_and_items);
 }
 
