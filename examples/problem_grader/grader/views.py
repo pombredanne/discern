@@ -64,8 +64,8 @@ def action(request):
 
 @login_required
 def course(request):
-    return render_to_response('course.html', {'model' : 'course', 'api_url' : "/grader/action"})
+    return render_to_response('course.html', RequestContext(request, {'model' : 'course', 'api_url' : "/grader/action"}))
 
 def problem(request):
-    return render_to_response('problem.html', {'model' : 'problem', 'api_url' : "/grader/action"})
+    return render_to_response('problem.html', RequestContext(request, {'model' : 'problem', 'api_url' : "/grader/action"}))
 

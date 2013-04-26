@@ -72,6 +72,11 @@ def create_user_profile(sender, instance, created, **kwargs):
     """
     if created:
         profile, created = UserProfile.objects.get_or_create(user=instance)
+    else:
+        return
+
+    if not created:
+        return
 
     random_pass = ''.join([random.choice(string.digits + string.letters) for i in range(0, 15)])
     data = {
@@ -86,7 +91,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     counter = 0
     status_code = 400
 
-    while status_code==400 and counter<2:
+    while status_code==400 and counter<2 and not instance.profile.api_user_created:
         try:
             response = requests.post(create_user_url, data=json.dumps(data),headers=headers)
             status_code = response.status_code
@@ -98,7 +103,6 @@ def create_user_profile(sender, instance, created, **kwargs):
                 instance.profile.save()
         except:
             log.exception("Could not create an API user!")
-            instance.profile.api_user_created = False
             instance.profile.save()
         counter+=1
         data['username'] += random.choice(string.digits + string.letters)

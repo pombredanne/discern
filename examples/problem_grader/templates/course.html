@@ -10,11 +10,11 @@
         <script type="text/template" id="course-item-template">
             <div class="accordion-group">
                 <div class="accordion-heading">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
-                        <%= item.get('course_name') %>
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2" href="#<%= href %>">
+                        <%= name %>
                     </a>
                 </div>
-                <div id="collapseThree" class="accordion-body collapse" style="height: 0px;">
+                <div id="<%= href %>" class="accordion-body collapse" style="height: 0px;">
                     <div class="accordion-inner">
 
                     </div>
@@ -23,7 +23,23 @@
         </script>
         <script type="text/template" id="course-list-template">
             <div class="accordion" id="accordion2">
-                <%= item.get('html') %>
+                <% _.each( courses, function( course ){ %>
+                    <%= course %>
+                <% }); %>
+            </div>
+        </script>
+        <script type="text/template" id="course-add-template">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2" href="#<%= href %>">
+                        <%= name %>
+                    </a>
+                </div>
+                <div id="<%= href %>" class="accordion-body collapse" style="height: 0px;">
+                    <div class="accordion-inner">
+
+                    </div>
+                </div>
             </div>
         </script>
     {% endverbatim %}

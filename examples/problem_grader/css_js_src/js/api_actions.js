@@ -1,3 +1,4 @@
+
 $(function(){
     var tokenValue = $.cookie('problemgradercsrftoken');
 
@@ -18,22 +19,35 @@ var get_models = function(api_url, model_type, callback) {
 var render_course = function(data) {
     var model_data = $("#model_container");
     model_data.empty();
-    data = $.parseJSON(data)
-    var template = _.template(
-        $( "#course-item-template" ).html()
-    );
+    data = $.parseJSON(data);
+    var item_template = $( "#course-item-template" ).html();
+    console.log(item_template)
+    var container_template = $( "#course-list-template" ).html();
+    var courses = new Array();
     for (var i = 0; i < data.length; i++) {
         var elem = data[i];
-        console.log(elem);
-        model_data.append(elem.course_name);
+        var elem_dict = {
+            name : elem.course_name,
+            href : elem.id + elem.course_name
+        }
+        courses.push(_.template(item_template,elem_dict));
     }
+    var template_data = {
+        courses: courses
+    };
+    model_data.append(_.template(container_template,template_data))
     add_course_button()
 }
 
 var add_course_button = function() {
     var model_add = $("#model_add")
     model_add.empty()
-    model_add.html('<button class="btn btn-primary" id="course_add">Add new course</button>')
+    var add_template = $( "#course-add-template" ).html();
+    var add_dict = {
+        name : "Add a course",
+        href: "course-add"
+    }
+    model_add.html(_.template(add_template,add_dict))
 }
 
 $(function(){
