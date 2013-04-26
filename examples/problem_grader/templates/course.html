@@ -10,8 +10,8 @@
         <script type="text/template" id="course-item-template">
             <div class="accordion-group">
                 <div class="accordion-heading">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2" href="#<%= href %>">
-                        <%= name %>
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion2" href="#<%= href %>" data-elem_id="<%= id %>">
+                        <%= name %> <i class=" icon-remove delete-course pull-right"></i>
                     </a>
                 </div>
                 <div id="<%= href %>" class="accordion-body collapse" style="height: 0px;">

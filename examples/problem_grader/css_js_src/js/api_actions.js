@@ -16,13 +16,16 @@ var render_course = function(data) {
     var courses = new Array();
     for (var i = 0; i < data.length; i++) {
         var elem = data[i];
+        var mod_course_name = elem.course_name.replace(" ", "_");
+
         var elem_dict = {
             name : elem.course_name,
-            href : elem.id + elem.course_name,
+            href : elem.id + mod_course_name,
             user_count : elem.users.length,
             problem_count: elem.problems.length,
             modified : new Date(Date.parse(elem.modified)),
-            created: new Date(Date.parse(elem.created))
+            created: new Date(Date.parse(elem.created)),
+            id : elem.id
         }
         courses.push(_.template(item_template,elem_dict));
     }
@@ -32,6 +35,7 @@ var render_course = function(data) {
     model_data.append(_.template(container_template,template_data))
     add_course_button()
     $('#create-course').click(create_course);
+    $('.delete-course').click(delete_course);
 }
 
 var add_course_button = function() {
@@ -54,6 +58,19 @@ var get_course_items = function(model_type) {
             break;
     }
     get_models(api_base, model_type, callback)
+}
+
+var delete_course = function(target) {
+    var target_btn = $(target.target);
+    var data = target_btn.parent();
+    console.log(data)
+    var id = data.data('elem_id')
+    var api_url = $('#model_name').attr("url") + "/";
+    $.ajax({
+        type: "POST",
+        url: api_url,
+        data: { action: "delete", model: 'course', id : id}
+    }).done(get_model_type_and_items);
 }
 
 var create_course = function(target) {
