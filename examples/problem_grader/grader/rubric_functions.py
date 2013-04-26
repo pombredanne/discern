@@ -17,5 +17,4 @@ def create_rubric_objects(rubric_data, request):
     rubric.save()
     for option in rubric_data['options']:
         option = RubricOption(rubric=rubric, option_points =option['points'], option_text = option['text'])
-    max_score_list = [1 for i in xrange(0,len(rubric_data['options']))]
-    return max_score_list
+        option.save()

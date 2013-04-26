@@ -20,8 +20,6 @@ var render_problem = function(data) {
         var elem_dict = {
             name : elem.name,
             href : elem.id + mod_problem_name,
-            user_count : elem.users.length,
-            problem_count: elem.problems.length,
             modified : new Date(Date.parse(elem.modified)),
             created: new Date(Date.parse(elem.created)),
             id : elem.id
@@ -94,11 +92,23 @@ var delete_problem = function(target) {
 var create_problem = function(target) {
     var target_btn = $(target.target);
     var form = target_btn.parent().parent().parent();
-    var inputs = form.find('input')
-    var problem_name = inputs.val()
+    var problem_name = form.find('#problem-name-input').val()
+    var prompt = form.find('#promptname').val()
+    var rubric = form.find("#rubric-item-container")
+    var rubric_items = rubric.find(".rubric-item")
+    options = new Array();
+
+    for (var i=0 ; i < rubric_items.length ; i++) {
+        options.push({
+            points: rubric_items[i].find('input').find(":selected").text(),
+            text : rubric_items[i].find('textarea').val()
+        })
+    }
     var api_url = $('#model_name').attr("url") + "/";
     post_data = {
-        problem_name : problem_name
+        problem_name : problem_name,
+        prompt : prompt,
+
     }
     $.ajax({
         type: "POST",

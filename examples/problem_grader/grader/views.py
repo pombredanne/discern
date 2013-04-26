@@ -59,9 +59,10 @@ def action(request):
         log.info(error)
         raise TypeError(error)
 
+    rubric = {'options' : []}
     if action=="post" and model=="problem":
-        max_score_list = rubric_functions.create_rubric_objects(data['rubric'], request)
-        data['max_target_scores'] = max_score_list
+        rubric = data['rubric'].copy()
+        data['max_target_scores'] = [1 for i in xrange(0,len(data['rubric']['options']))]
         del data['rubric']
 
     slumber_models = setup_slumber_models(user)
@@ -73,10 +74,19 @@ def action(request):
         raise Exception(error)
 
     slumber_data = slumber_models[model].action(action,id=id,data=data)
-    if action in ["post", "get"] and model=="problem":
-        for i in xrange(0,len(slumber_data)):
-            rubric_data = rubric_functions.get_rubric_data(slumber_data[i]['id'])
-            slumber_data[i]['rubric'] = rubric_data
+    if action=="post" and model=="problem":
+        problem_id = slumber_data['id']
+        rubric['problem_id'] = problem_id
+        rubric_functions.create_rubric_objects(rubric, request)
+
+    if action in ["get", "post"] and model=="problem":
+        if isinstance(slumber_data,list):
+            for i in xrange(0,len(slumber_data)):
+                rubric_data = rubric_functions.get_rubric_data(slumber_data[i]['id'])
+                slumber_data[i]['rubric'] = rubric_data
+        else:
+            rubric_data = rubric_functions.get_rubric_data(slumber_data['id'])
+            slumber_data['rubric'] = rubric_data
 
     json_data = json.dumps(slumber_data)
     return HttpResponse(json_data)
