@@ -1,13 +1,3 @@
-
-$(function(){
-    var tokenValue = $.cookie('problemgradercsrftoken');
-
-    $.ajaxSetup({
-        headers: {'X-CSRF-Token': tokenValue}
-    });
-
-})
-
 var get_models = function(api_url, model_type, callback) {
     $.ajax({
         type: "GET",
@@ -41,6 +31,7 @@ var render_course = function(data) {
     };
     model_data.append(_.template(container_template,template_data))
     add_course_button()
+    $('#create-course').click(create_course);
 }
 
 var add_course_button = function() {
@@ -59,15 +50,41 @@ var get_course_items = function(model_type) {
     switch(model_type)
     {
         case "course":
-            callback = render_course
+            callback = render_course;
             break;
     }
     get_models(api_base, model_type, callback)
 }
 
-$(function(){
+var create_course = function(target) {
+    var target_btn = $(target.target);
+    var form = target_btn.parent().parent().parent();
+    var inputs = form.find('input')
+    var course_name = inputs.val()
+    var api_url = $('#model_name').attr("url") + "/";
+    post_data = {
+        course_name : course_name
+    }
+    $.ajax({
+        type: "POST",
+        url: api_url,
+        data: { action: "post", model: 'course', data : post_data}
+    }).done(get_model_type_and_items);
+}
+
+var get_model_type_and_items = function() {
     var model_type = $('#model_name').attr('model');
     if(model_type!=undefined) {
         get_course_items(model_type)
     }
+}
+
+$(function(){
+    var tokenValue = $.cookie('problemgradercsrftoken');
+
+    $.ajaxSetup({
+        data: {csrfmiddlewaretoken: tokenValue },
+        headers: {'X-CSRF-Token': tokenValue}
+    });
+    get_model_type_and_items()
 })
