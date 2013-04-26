@@ -68,6 +68,27 @@ var get_essay_template = function(data) {
 
     essay_container.empty();
     essay_container.html(rendered_essay_template);
+    $('#essay-save').click(save_essay);
+}
+
+var save_essay = function(data) {
+    var target_btn = $(data.target);
+    var form = target_btn.parent().parent();
+    var problem_id = parseInt(form.data("problem_id"))
+    var essay_text = form.find('#essay-text').val()
+    var api_url = $('#model_name').attr("url") + "/";
+    post_data = {
+        essay_text : essay_text,
+        essay_type : "train",
+        problem : problem_id,
+        additional_predictors : [],
+        has_been_ml_graded : false
+    }
+    $.ajax({
+        type: "POST",
+        url: api_url,
+        data: { action: "post", model: 'essay', data : JSON.stringify(post_data)}
+    }).done(get_courses);
 }
 
 $(function(){

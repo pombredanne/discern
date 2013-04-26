@@ -61,7 +61,6 @@ def action(request):
 
     rubric = {'options' : []}
     if action=="post" and model=="problem":
-        log.debug(data)
         rubric = data['rubric'].copy()
         data.update({
             'premium_feedback_models' : "",
@@ -71,6 +70,9 @@ def action(request):
         })
         del data['rubric']
         del data['course']
+
+    if action=="post" and model=="essay":
+        data['problem'] = "/" + settings.API_URL_INTERMEDIATE + "problem/" + str(data['problem']) + "/"
 
     slumber_models = setup_slumber_models(user)
     log.debug(slumber_models['essay'].required_fields)

@@ -26,7 +26,9 @@ var render_problem = function(data) {
             modified : new Date(Date.parse(elem.modified)),
             created: new Date(Date.parse(elem.created)),
             id : elem.id,
-            rubric : _.template(rubric_list_template,{rubrics : elem.rubric})
+            rubric : _.template(rubric_list_template,{rubrics : elem.rubric}),
+            course_count: elem.courses.length,
+            essay_count : elem.essays.length
         }
         for(var z=0; z< elem.courses.length ; z++) {
             var course = elem.courses[z]
