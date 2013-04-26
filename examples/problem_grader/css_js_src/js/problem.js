@@ -35,12 +35,19 @@ var render_problem = function(data) {
     add_problem_button()
     $('#create-problem').click(create_problem);
     $('.delete-problem').click(delete_problem);
+    $('#rubricadd').click(add_rubric_option);
 }
 
 var add_rubric_option = function(target) {
     var target_btn = $(target.target);
-    var rubric_container = target_btn.parent();
-    rubric_container.prepend()
+    var rubric_container = target_btn.parent().find('#rubric-item-container');
+    rubric_container.find(".rubric_input").attr('disabled','disabled');
+    var rubric_template = $( "#rubric-item-template" ).html();
+    var rubric_dict = {
+        finished : false
+    }
+    var rubric_html = _.template(rubric_template,rubric_dict)
+    rubric_container.append(rubric_html)
 }
 
 var add_problem_button = function() {

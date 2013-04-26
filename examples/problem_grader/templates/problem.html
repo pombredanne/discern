@@ -64,7 +64,9 @@
                         <div class="control-group rubric-input-container">
                             <label class="control-label" for="rubricadd">Rubric</label>
                             <div class="controls rubric-input">
-                                <%= rubric %>
+                                <div id="rubric-item-container">
+                                    <%= rubric %>
+                                </div>
                                 <button id="rubricadd" class="btn">Add</button>
                             </div>
                         </div>
@@ -81,11 +83,11 @@
     <script type="text/template" id="rubric-item-template">
         <div class="rubric-item" finished = "<%= finished %>">
             <% if(finished) { %>
-                <input type="text" id="rubric-option-text" placeholder="Rubric option text" disabled>
-                <select disabled>
+                <textarea type="text" class="rubric-option-text rubric_input" placeholder="Rubric option text" disabled></textarea>
+                <select disabled class="rubric-score-select rubric_input">
             <% } else { %>
-                <input type="text" id="rubric-option-text" placeholder="Rubric option text">
-                <select>
+                <textarea type="text" class="rubric-option-text rubric_input" placeholder="Rubric option text"></textarea>
+                <select class="rubric-score-select rubric_input">
             <% } %>
                 <option>1</option>
                 <option>2</option>
