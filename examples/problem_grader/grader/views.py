@@ -8,6 +8,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 import logging
 import json
+import rubric_functions
 
 log = logging.getLogger(__name__)
 
@@ -58,13 +59,26 @@ def action(request):
         log.info(error)
         raise TypeError(error)
 
+    if action=="post" and model=="problem":
+        max_score_list = rubric_functions.create_rubric_objects(data['rubric'], request)
+        data['max_target_scores'] = max_score_list
+        del data['rubric']
+
     slumber_models = setup_slumber_models(user)
+    log.debug(slumber_models['problem'].required_fields)
 
     if model not in slumber_models:
         error = "Invalid model specified :{0} .  Model does not appear to exist in list: {1}".format(model, slumber_models.keys())
         log.info(error)
         raise Exception(error)
-    json_data = json.dumps(slumber_models[model].action(action,id=id,data=data))
+
+    slumber_data = slumber_models[model].action(action,id=id,data=data)
+    if action in ["post", "get"] and model=="problem":
+        for i in xrange(0,len(slumber_data)):
+            rubric_data = rubric_functions.get_rubric_data(slumber_data[i]['id'])
+            slumber_data[i]['rubric'] = rubric_data
+
+    json_data = json.dumps(slumber_data)
     return HttpResponse(json_data)
 
 @login_required
