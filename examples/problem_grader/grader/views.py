@@ -73,7 +73,7 @@ def action(request):
         del data['course']
 
     slumber_models = setup_slumber_models(user)
-    log.debug(slumber_models['problem'].required_fields)
+    log.debug(slumber_models['essay'].required_fields)
 
     if model not in slumber_models:
         error = "Invalid model specified :{0} .  Model does not appear to exist in list: {1}".format(model, slumber_models.keys())

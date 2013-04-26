@@ -36,6 +36,7 @@ var render_problem_nav_wrapper = function(course_id) {
         var problem_nav = $("#problem_nav")
         problem_nav.empty()
         problem_nav.html(rendered)
+        $('.problem-select').click(get_essay_template);
     };
     return render_problem_nav
 }
@@ -53,6 +54,19 @@ var get_problem_nav = function(data) {
     var target = $(data.target).parent();
     var course_id = parseInt(target.data('course_id'))
     get_problems(course_id)
+}
+
+var get_essay_template = function(data) {
+    var target = $(data.target).parent();
+    var problem_id = parseInt(target.data('problem_id'));
+    var prompt = target.data('prompt');
+    var essay_template = $('#essay-template').html();
+    var essay_container = $('#essay-container');
+
+    var rendered_essay_template = _.template(essay_template,{prompt : prompt, problem_id : problem_id})
+
+    essay_container.empty();
+    essay_container.html(rendered_essay_template);
 }
 
 $(function(){
