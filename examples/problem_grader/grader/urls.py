@@ -11,4 +11,5 @@ urlpatterns +=patterns('grader.views',
                        url(r'^course/$','course'),
                        url(r'^action/$','action'),
                        url(r'^problem/$','problem'),
+                       url(r'^write_essays/$','write_essays'),
                        )

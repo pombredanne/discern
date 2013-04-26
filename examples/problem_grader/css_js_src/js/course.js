@@ -15,7 +15,7 @@ var render_course = function(data) {
     var courses = new Array();
     for (var i = 0; i < data.length; i++) {
         var elem = data[i];
-        var mod_course_name = elem.course_name.replace(" ", "_");
+        var mod_course_name = elem.course_name.replace(/ /g, "_");
 
         var elem_dict = {
             name : elem.course_name,
@@ -71,7 +71,6 @@ var get_course_items = function(model_type) {
 var delete_course = function(target) {
     var target_btn = $(target.target);
     var data = target_btn.parent();
-    console.log(data)
     var id = data.data('elem_id')
     var api_url = $('#model_name').attr("url") + "/";
     $.ajax({

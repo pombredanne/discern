@@ -142,3 +142,7 @@ def problem(request):
     })
     )
 
+@login_required
+def write_essays(request):
+    return render_to_response('write_essay.html', RequestContext(request, {'api_url' : "/grader/action", 'model' : 'essay',}))
+

@@ -13,12 +13,11 @@ var render_problem = function(data) {
     var item_template = $( "#problem-item-template" ).html();
     var container_template = $( "#problem-list-template" ).html();
     var rubric_list_template = $('#rubric-list-template').html();
-
+    var matching_course_id = parseInt($("#model_name").data("course_id"))
     var problems = new Array();
     for (var i = 0; i < data.length; i++) {
         var elem = data[i];
-        var mod_problem_name = elem.name.replace(" ", "_");
-        console.log(elem.rubric)
+        var mod_problem_name = elem.name.replace(/ /g, "_");
 
         var elem_dict = {
             name : elem.name,
@@ -29,7 +28,13 @@ var render_problem = function(data) {
             id : elem.id,
             rubric : _.template(rubric_list_template,{rubrics : elem.rubric})
         }
-        problems.push(_.template(item_template,elem_dict));
+        for(var z=0; z< elem.courses.length ; z++) {
+            var course = elem.courses[z]
+            var course_split=course.split("/");
+            if(parseInt(course_split[5])==matching_course_id){
+                problems.push(_.template(item_template,elem_dict));
+            }
+        }
     }
     var template_data = {
         problems: problems
@@ -101,13 +106,16 @@ var create_problem = function(target) {
     var prompt = form.find('#promptname').val()
     var rubric = form.find("#rubric-item-container")
     var rubric_items = rubric.find(".rubric-item")
-    options = new Array();
-    var course = $("#model_name").data("course_id")
+    console.log(rubric_items)
+    var options = new Array();
+    var course = parseInt($("#model_name").data("course_id"))
     for (var i=0 ; i < rubric_items.length ; i++) {
-        options.push({
-            points: rubric_items.eq(i).find('select').find(":selected").text(),
-            text : rubric_items.eq(i).find('textarea').val()
-        })
+        if(rubric_items.eq(i).find("select").attr("disabled") == "disabled") {
+            options.push({
+                points: rubric_items.eq(i).find('select').find(":selected").text(),
+                text : rubric_items.eq(i).find('textarea').val()
+            })
+        }
     }
     var rubric = {
         options : options

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load compressed %}
+
+{% block additional_js %}
+    {% compressed_js 'essay' %}
+{% endblock %}
+
+{% block content %}
+    <h4>Write Essays</h4>
+    <div id="model_name" model={{ model }} url= {{ api_url }}></div>
+    <div class="container">
+        <div class="row">
+                <div id="course_nav" class="span2 pull-left"></div>
+                <div id="problem_nav" class="span2"></div>
+                <div id="essay" class="span8 pull-right"></div>
+        </div>
+    </div>
+
+    {%  verbatim %}
+        <script type="text/template" id="course-nav-template">
+            <ul class="nav nav-list">
+                <li class="nav-header">Course Selection</li>
+                <% _.each( courses, function( course ){ %>
+                    <li class="course-select" data-course_id="<%= course.id %>"><a href="#"><%= course.course_name %></a></li>
+                <% }); %>
+            </ul>
+        </script>
+    {%  endverbatim %}
+{% endblock %}
