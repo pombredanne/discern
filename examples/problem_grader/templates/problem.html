@@ -58,7 +58,14 @@
                         <div class="control-group">
                             <label class="control-label" for="promptname">Prompt</label>
                             <div class="controls">
-                                <input type="text" id="promptname" placeholder="Enter prompt">
+                                <textarea type="text" rows="3" id="promptname" placeholder="Enter prompt"></textarea>
+                            </div>
+                        </div>
+                        <div class="control-group rubric-input-container">
+                            <label class="control-label" for="rubricadd">Rubric</label>
+                            <div class="controls rubric-input">
+                                <%= rubric %>
+                                <button id="rubricadd" class="btn">Add</button>
                             </div>
                         </div>
                         <div class="control-group">
@@ -72,7 +79,21 @@
         </div>
     </script>
     <script type="text/template" id="rubric-item-template">
-        
+        <div class="rubric-item" finished = "<%= finished %>">
+            <% if(finished) { %>
+                <input type="text" id="rubric-option-text" placeholder="Rubric option text" disabled>
+                <select disabled>
+            <% } else { %>
+                <input type="text" id="rubric-option-text" placeholder="Rubric option text">
+                <select>
+            <% } %>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+        </div>
     </script>
     {% endverbatim %}
 {% endblock %}

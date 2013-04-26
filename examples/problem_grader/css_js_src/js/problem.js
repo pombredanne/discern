@@ -37,13 +37,25 @@ var render_problem = function(data) {
     $('.delete-problem').click(delete_problem);
 }
 
+var add_rubric_option = function(target) {
+    var target_btn = $(target.target);
+    var rubric_container = target_btn.parent();
+    rubric_container.prepend()
+}
+
 var add_problem_button = function() {
     var model_add = $("#model_add")
     model_add.empty()
     var add_template = $( "#problem-add-template" ).html();
+    var rubric_template = $( "#rubric-item-template" ).html();
+    var rubric_dict = {
+        finished : false
+    }
+    var rubric_html = _.template(rubric_template,rubric_dict)
     var add_dict = {
         name : "Add a problem",
-        href: "problem-add"
+        href: "problem-add",
+        rubric: rubric_html
     }
     model_add.html(_.template(add_template,add_dict))
 }
