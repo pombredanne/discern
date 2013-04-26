@@ -21,9 +21,17 @@
             <ul class="nav nav-list">
                 <li class="nav-header">Course Selection</li>
                 <% _.each( courses, function( course ){ %>
-                    <li class="course-select" data-course_id="<%= course.id %>"><a href="#"><%= course.course_name %></a></li>
+                    <li data-course_id="<%= course.id %>"><a href="#" class="course-select"><%= course.course_name %></a></li>
                 <% }); %>
             </ul>
         </script>
-    {%  endverbatim %}
+        <script type="text/template" id="problem-nav-template">
+            <ul class="nav nav-list">
+                <li class="nav-header">Problem Selection</li>
+                <% _.each( problems, function( problem ){ %>
+                <li data-problem_id="<%= problem.id %>" data-course_id="<%= course_id %>"><a href="#" class="problem-select"><%= problem.name %></a></li>
+                <% }); %>
+            </ul>
+        </script>
+        {%  endverbatim %}
 {% endblock %}
