@@ -26,10 +26,12 @@
             <div id="<%= href %>" class="accordion-body collapse" style="height: 0px;">
                 <div class="accordion-inner">
                     <ul class="unstyled">
-                        <li>Prompt :  <%= prompt %> </li>
                         <li>Created on: <%= created %></li>
                         <li>Last modified on: <%= modified %></li>
                     </ul>
+                    <h5>Prompt</h5>
+                    <p><%= prompt %></p>
+
                     <h5>Rubric</h5>
                     <%= rubric %>
                     <button class="btn show-essays">Show Essays</button>
