@@ -126,7 +126,9 @@ var create_problem = function(target) {
         name : problem_name,
         prompt : prompt,
         rubric : rubric,
-        course : course
+        course : course,
+        premium_feedback_models : "",
+        number_of_additional_predictors : 0
     }
     $.ajax({
         type: "POST",

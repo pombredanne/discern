@@ -13,12 +13,23 @@ import rubric_functions
 log = logging.getLogger(__name__)
 
 def setup_slumber_models(user, model_types=None):
+    """
+    Sets up the slumber API models for a given user.  See slumber_models for a description of slumber
+    user - a django user object
+    model_types - if you only want to setup certain types of models, pass them in
+    """
+    #Get the api authentication dictionary for the user
     api_auth = user.profile.get_api_auth()
+    #Instantiate the slumber model discovery class for the api endpoint specified in settings
     slumber_discovery = SlumberModelDiscovery(settings.FULL_API_START, api_auth)
+    #Generate all the models
     models = slumber_discovery.generate_models(model_types)
     return models
 
 def register(request):
+    """
+    Register a new user for a given request
+    """
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
@@ -31,57 +42,79 @@ def register(request):
         }))
 
 def index(request):
+    """
+    Index page for the site.
+    """
     return render_to_response("index.html",RequestContext(request))
 
+#Available types of actions
 action_types = ["update", "delete", "get", "post"]
 
 @login_required
 def action(request):
+    """
+    Main handler function for actions.  Needs to be broken up down the line.
+    """
+
+    #Support get or post requests
     if request.method == 'POST':
         args = request.POST
     else:
         args = request.GET
 
+    #Action is the type of action to do (see action_types above)
     action = args.get('action', 'get')
+    #Model is the model to perform the given action on(ie 'organization')
     model = args.get('model', None)
+    #If the action is on a per-instance level (ie delete and update), then get the id to perform the action on.
     id = args.get('id', None)
 
+    #Grab the user
     user = request.user
+    #Data is used when posting and updating
     data = args.get('data', None)
 
+    #Data might be in json format, but it might not.  support both
     try:
         data = json.loads(data)
     except:
         pass
 
+    #Check to see if the action is valid.
     if action is None or action not in action_types:
         error = "Action cannot be None, and must be a string in action_types: {0}".format(action_types)
         log.info(error)
         raise TypeError(error)
 
+    #Define a base rubric
     rubric = {'options' : []}
+    #If we are posting a problem, then there is additional processing to do before we can submit to the API
     if action=="post" and model=="problem":
+        #Grab the rubric for later.
         rubric = data['rubric'].copy()
+        #Add in two needed fields (the api requires them)
         data.update({
-            'premium_feedback_models' : "",
-            'number_of_additional_predictors' : 0,
             'max_target_scores' : [1 for i in xrange(0,len(data['rubric']['options']))],
-            'courses' : ["/" + settings.API_URL_INTERMEDIATE + "course/" + str(data['course']) + "/"]
+            'courses' : [construct_related_uri(data['course'], 'course')]
         })
+        #Remove these keys (posting to the api will fail if they are still in)
         del data['rubric']
         del data['course']
 
+    #We need to convert the integer id into a resource uri before posting to the API
     if action=="post" and model=="essay":
-        data['problem'] = "/" + settings.API_URL_INTERMEDIATE + "problem/" + str(data['problem']) + "/"
+        data['problem'] = construct_related_uri(data['problem'], 'problem')
 
+    #We need to convert the integer id into a resource uri before posting to the API
     if action=="post" and model=="essaygrade":
-        data['essay'] = "/" + settings.API_URL_INTERMEDIATE + "essay/" + str(data['essay']) + "/"
+        data['essay'] = construct_related_uri(data['essay'], 'essay')
 
+    #If we are deleting a problem, delete its local model uri
     if action=="delete" and model=="problem":
         rubric_functions.delete_rubric_data(id)
 
+    #Setup all slumber models for the current user
     slumber_models = setup_slumber_models(user)
-    log.debug(slumber_models['essay'].required_fields)
 
     if model not in slumber_models:
         error = "Invalid model specified :{0} .  Model does not appear to exist in list: {1}".format(model, slumber_models.keys())
@@ -95,8 +128,6 @@ def action(request):
         log.debug(inst.response)
         log.debug(inst.content)
         raise
-
-    log.debug(slumber_models['essaygrade'].required_fields)
 
     if action=="post" and model=="problem":
         problem_id = slumber_data['id']
@@ -134,6 +165,9 @@ def action(request):
     json_data = json.dumps(slumber_data)
     return HttpResponse(json_data)
 
+def construct_related_uri(id, model_type):
+    return "/{api_url}{model_type}/{id}/".format(api_url=settings.API_URL_INTERMEDIATE, model_type=model_type, id=id)
+
 def get_essaygrade_data(slumber_data, essaygrades):
     problem_id = slumber_data['problem'].split('/')[5]
     essaygrade_data = []
@@ -170,7 +204,6 @@ def problem(request):
         user = request.user
         slumber_models = setup_slumber_models(user)
         course_object = slumber_models['course'].action('get',id=matching_course_id, data=None)
-        log.debug(course_object)
         course_name = course_object['course_name']
 
     matching_course_id = str(matching_course_id)

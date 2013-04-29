@@ -15,6 +15,8 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+LOGIN_REDIRECT_URL = '/grader'
+
 MANAGERS = ADMINS
 
 DATABASES = {
