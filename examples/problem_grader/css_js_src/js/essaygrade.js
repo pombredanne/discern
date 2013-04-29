@@ -113,7 +113,8 @@ var render_essay_wrapper = function(prompt, problem_id) {
                 created: new Date(Date.parse(elem.created)),
                 id : elem.id,
                 essay_text : elem.essay_text,
-                rubric : _.template(rubric_list_template,{rubrics : elem.rubric})
+                rubric : _.template(rubric_list_template,{rubrics : elem.rubric}),
+                essaygrades : essaygrades_html
             }
             var problem = elem.problem
             var problem_split=problem.split("/");
@@ -128,6 +129,7 @@ var render_essay_wrapper = function(prompt, problem_id) {
         var grading_container = $('.grading-container');
         grading_container.hide();
         $('.grade-essay').click(toggle_grading_container);
+        $('.create-essaygrade').click(save_essaygrade);
     }
     return render_essay
 }
