@@ -76,13 +76,19 @@ var render_essay_wrapper = function(prompt, problem_id) {
         var item_template = $( "#essay-item-template" ).html();
         var container_template = $( "#essay-list-template" ).html();
         var rubric_list_template = $('#rubric-list-template').html();
+        var essay_grades_template = $('#essay-grades-template').html();
+        var essay_grade_tab_template = $('#essay-grade-tab-template').html();
+        var essay_grade_detail_template = $('#essay-grade-detail-template').html();
+
         var essays = new Array();
         for (var i = 0; i < data.length; i++) {
             var elem = data[i];
-            console.log(elem)
             var essay_name = "Essay with id " + elem.id.toString();
             var mod_essay_name = essay_name.replace(/ /g, "_");
-
+            var essaygrade_data = elem.essaygrades_full
+            for (var z = 0; z < essaygrade_data.length; z++) {
+                
+            }
             var elem_dict = {
                 name : essay_name,
                 prompt : prompt,

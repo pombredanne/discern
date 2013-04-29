@@ -119,24 +119,29 @@ def action(request):
         essaygrades = slumber_models['essaygrade'].action('get')
         if isinstance(slumber_data,list):
             for i in xrange(0,len(slumber_data)):
-                essaygrade_data = []
-                for z in xrange(0,len(slumber_data[i]['essaygrades'])):
-                    essaygrade_id = slumber_data[i]['essaygrades'][z].split('/')[5]
-                    for eg in essaygrades:
-                        if int(essaygrade_id) == int(eg['id']):
-                            essaygrade_data.append(eg)
-                slumber_data[i]['essaygrades_full'] = essaygrade_data
-
+                slumber_data[i]['essaygrades_full'] = get_essaygrade_data(slumber_data[i], essaygrades)
         else:
-            for z in xrange(0,len(slumber_data['essaygrades'])):
-                essaygrade_id = slumber_data['essaygrades'][z].split('/')[5]
-                for eg in essaygrades:
-                    if int(essaygrade_id) == int(eg['id']):
-                        essaygrade_data.append(eg)
-            slumber_data['essaygrades_full'] = essaygrade_data
+            slumber_data['essaygrades_full'] = get_essaygrade_data(slumber_data, essaygrades)
 
     json_data = json.dumps(slumber_data)
     return HttpResponse(json_data)
+
+def get_essaygrade_data(slumber_data, essaygrades):
+    problem_id = slumber_data['problem'].split('/')[5]
+    essaygrade_data = []
+    for z in xrange(0,len(slumber_data['essaygrades'])):
+        essaygrade_id = slumber_data['essaygrades'][z].split('/')[5]
+        for i in xrange(0,len(essaygrades)):
+            if int(essaygrade_id) == int(essaygrades[i]['id']):
+                target_scores = essaygrades[i]['target_scores']
+                try:
+                    target_scores = json.loads(target_scores)
+                except:
+                    pass
+                rubric_data = rubric_functions.get_rubric_data(problem_id, target_scores)
+                essaygrades[i]['rubric'] = rubric_data
+                essaygrade_data.append(essaygrades[i])
+    return essaygrade_data
 
 @login_required
 def course(request):

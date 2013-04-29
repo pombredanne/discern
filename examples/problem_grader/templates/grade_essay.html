@@ -96,5 +96,25 @@
                 </table>
             </div>
         </script>
+        <script type="text/template" id="essay-grade-tab-template">
+            <li class="active"><a href="#<%= href %>" data-toggle="tab"><%= type %></a></li>
+        </script>
+        <script type="text/template" id="essay-grade-detail-template">
+            <div class="tab-pane active" id="<%= href %>">
+                <%= rubric %>
+            </div>
+        </script>
+        <script type="text/template" id="essay-grades-template">
+            <div id="essaygrade-list">
+                <div class="tabbable" style="margin-bottom: 18px;">
+                    <ul class="nav nav-tabs">
+                        <%= tabs %>
+                    </ul>
+                    <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
+                        <%= detail %>
+                    </div>
+                </div>
+            </div>
+        </script>
     {%  endverbatim %}
 {% endblock %}
