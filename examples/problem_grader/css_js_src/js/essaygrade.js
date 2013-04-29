@@ -56,6 +56,18 @@ var get_problem_nav = function(data) {
     get_problems(course_id)
 }
 
+var toggle_grading_container = function(target) {
+    var target = $(target.target);
+    var container = target.parent();
+    var grading_container = container.find(".grading-container");
+    if(grading_container.is(":visible")) {
+        grading_container.hide();
+    } else {
+        grading_container.show();
+    }
+
+}
+
 var render_essay_wrapper = function(prompt, problem_id) {
     var render_essay = function(data) {
         var model_data = $("#essay-container");
@@ -63,6 +75,7 @@ var render_essay_wrapper = function(prompt, problem_id) {
         data = $.parseJSON(data);
         var item_template = $( "#essay-item-template" ).html();
         var container_template = $( "#essay-list-template" ).html();
+        var rubric_list_template = $('#rubric-list-template').html();
         var essays = new Array();
         for (var i = 0; i < data.length; i++) {
             var elem = data[i];
@@ -77,7 +90,8 @@ var render_essay_wrapper = function(prompt, problem_id) {
                 modified : new Date(Date.parse(elem.modified)),
                 created: new Date(Date.parse(elem.created)),
                 id : elem.id,
-                essay_text : elem.essay_text
+                essay_text : elem.essay_text,
+                rubric : _.template(rubric_list_template,{rubrics : elem.rubric})
             }
             var problem = elem.problem
             var problem_split=problem.split("/");
@@ -88,7 +102,10 @@ var render_essay_wrapper = function(prompt, problem_id) {
         var template_data = {
             essays: essays
         };
-        model_data.append(_.template(container_template,template_data))
+        model_data.append(_.template(container_template,template_data));
+        var grading_container = $('.grading-container');
+        grading_container.hide();
+        $('.grade-essay').click(toggle_grading_container);
     }
     return render_essay
 }
