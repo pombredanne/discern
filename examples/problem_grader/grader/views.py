@@ -95,6 +95,7 @@ def action(request):
         rubric['problem_id'] = problem_id
         rubric_functions.create_rubric_objects(rubric, request)
 
+    #Append rubric to problem and essay objects
     if (action in ["get", "post"] and model=="problem") or (action=="get" and model=="essay"):
         if isinstance(slumber_data,list):
             for i in xrange(0,len(slumber_data)):
@@ -112,6 +113,27 @@ def action(request):
         else:
             rubric_data = rubric_functions.get_rubric_data(slumber_data['id'])
             slumber_data['rubric'] = rubric_data
+
+    #append essaygrades to essay objects
+    if action=="get" and model=="essay":
+        essaygrades = slumber_models['essaygrade'].action('get')
+        if isinstance(slumber_data,list):
+            for i in xrange(0,len(slumber_data)):
+                essaygrade_data = []
+                for z in xrange(0,len(slumber_data[i]['essaygrades'])):
+                    essaygrade_id = slumber_data[i]['essaygrades'][z].split('/')[5]
+                    for eg in essaygrades:
+                        if int(essaygrade_id) == int(eg['id']):
+                            essaygrade_data.append(eg)
+                slumber_data[i]['essaygrades_full'] = essaygrade_data
+
+        else:
+            for z in xrange(0,len(slumber_data['essaygrades'])):
+                essaygrade_id = slumber_data['essaygrades'][z].split('/')[5]
+                for eg in essaygrades:
+                    if int(essaygrade_id) == int(eg['id']):
+                        essaygrade_data.append(eg)
+            slumber_data['essaygrades_full'] = essaygrade_data
 
     json_data = json.dumps(slumber_data)
     return HttpResponse(json_data)
