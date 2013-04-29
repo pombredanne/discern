@@ -76,19 +76,35 @@ var render_essay_wrapper = function(prompt, problem_id) {
         var item_template = $( "#essay-item-template" ).html();
         var container_template = $( "#essay-list-template" ).html();
         var rubric_list_template = $('#rubric-list-template').html();
-        var essay_grades_template = $('#essay-grades-template').html();
-        var essay_grade_tab_template = $('#essay-grade-tab-template').html();
-        var essay_grade_detail_template = $('#essay-grade-detail-template').html();
+        var essaygrades_template = $('#essay-grades-template').html();
+        var essaygrade_tab_template = $('#essay-grade-tab-template').html();
+        var essaygrade_detail_template = $('#essay-grade-detail-template').html();
 
         var essays = new Array();
+        var essaygrade_tabs = new Array();
+        var essaygrade_details = new Array();
+
         for (var i = 0; i < data.length; i++) {
             var elem = data[i];
             var essay_name = "Essay with id " + elem.id.toString();
             var mod_essay_name = essay_name.replace(/ /g, "_");
             var essaygrade_data = elem.essaygrades_full
             for (var z = 0; z < essaygrade_data.length; z++) {
-                
+                essaygrade_rubric = essaygrade_data[z]['rubric']
+                essaygrade_href = "Essaygrade with id" + essaygrade_data[z]['id']
+                essaygrade_href = essaygrade_href.replace(/ /g, "_");
+                essaygrade_type = essaygrade_data[z].grader_type;
+                var essaygrade_dict = {
+                    href : essaygrade_href,
+                    rubric : essaygrade_rubric,
+                    type : essaygrade_type
+                }
+                var essaygrade_tab = _.template(essaygrade_tab_template,essaygrade_dict);
+                var essaygrade_detail = _.template(essaygrade_detail_template,essaygrade_dict);
+                essaygrade_tabs.push(essaygrade_tab);
+                essaygrade_details.push(essaygrade_detail);
             }
+            var essaygrades_html = _.template(essaygrades_template,{tabs : essaygrade_tabs, details : essaygrade_details});
             var elem_dict = {
                 name : essay_name,
                 prompt : prompt,

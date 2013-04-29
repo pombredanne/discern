@@ -101,7 +101,29 @@
         </script>
         <script type="text/template" id="essay-grade-detail-template">
             <div class="tab-pane active" id="<%= href %>">
-                <%= rubric %>
+                <table class="table table-condensed">
+                    <tr>
+                        <th>
+                            Rubric Text
+                        </th>
+                        <th>
+                            Points
+                        </th>
+                        <th>
+                            Select
+                        </th>
+                    </tr>
+                    <% _.each( rubrics, function( rubric ){ %>
+                    <% if(rubric.selected) %>
+                        <tr class="success">
+                    <% } else { %>
+                        <tr class="error">
+                    <% } %>
+                            <td><%= rubric.option_text %></td>
+                            <td><%= rubric.option_points %></td>
+                        </tr>
+                    <% }); %>
+                </table>
             </div>
         </script>
         <script type="text/template" id="essay-grades-template">
@@ -111,7 +133,7 @@
                         <%= tabs %>
                     </ul>
                     <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
-                        <%= detail %>
+                        <%= details %>
                     </div>
                 </div>
             </div>
