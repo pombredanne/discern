@@ -56,14 +56,6 @@ var get_problem_nav = function(data) {
     get_problems(course_id)
 }
 
-var get_models = function(api_url, model_type, callback) {
-    $.ajax({
-        type: "GET",
-        url: api_url,
-        data: { action: "get", model: model_type }
-    }).done(callback);
-}
-
 var render_essay_wrapper = function(prompt, problem_id) {
     var render_essay = function(data) {
         var model_data = $("#essay-container");
@@ -74,15 +66,18 @@ var render_essay_wrapper = function(prompt, problem_id) {
         var essays = new Array();
         for (var i = 0; i < data.length; i++) {
             var elem = data[i];
+            console.log(elem)
             var essay_name = "Essay with id " + elem.id.toString();
+            var mod_essay_name = essay_name.replace(/ /g, "_");
 
             var elem_dict = {
                 name : essay_name,
                 prompt : prompt,
-                href : essay_name,
+                href : mod_essay_name,
                 modified : new Date(Date.parse(elem.modified)),
                 created: new Date(Date.parse(elem.created)),
-                id : elem.id
+                id : elem.id,
+                essay_text : elem.essay_text
             }
             var problem = elem.problem
             var problem_split=problem.split("/");
@@ -107,7 +102,7 @@ var get_essay_list = function(data) {
     $.ajax({
         type: "GET",
         url: api_base,
-        data: { action: "get", model: "problem" }
+        data: { action: "get", model: "essay" }
     }).done(render_essay_wrapper(prompt, problem_id));
 }
 
