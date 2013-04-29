@@ -77,6 +77,9 @@ def action(request):
     if action=="post" and model=="essaygrade":
         data['essay'] = "/" + settings.API_URL_INTERMEDIATE + "essay/" + str(data['essay']) + "/"
 
+    if action=="delete" and model=="problem":
+        rubric_functions.delete_rubric_data(id)
+
     slumber_models = setup_slumber_models(user)
     log.debug(slumber_models['essay'].required_fields)
 

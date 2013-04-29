@@ -121,6 +121,7 @@ var create_problem = function(target) {
         options : options
     }
     var api_url = $('#model_name').attr("url") + "/";
+    console.log(rubric)
     post_data = {
         name : problem_name,
         prompt : prompt,
