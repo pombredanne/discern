@@ -81,10 +81,10 @@ var render_essay_wrapper = function(prompt, problem_id) {
         var essaygrade_detail_template = $('#essay-grade-detail-template').html();
 
         var essays = new Array();
-        var essaygrade_tabs = new Array();
-        var essaygrade_details = new Array();
 
         for (var i = 0; i < data.length; i++) {
+            var essaygrade_tabs = new Array();
+            var essaygrade_details = new Array();
             var elem = data[i];
             var essay_name = "Essay with id " + elem.id.toString();
             var mod_essay_name = essay_name.replace(/ /g, "_");
@@ -96,7 +96,7 @@ var render_essay_wrapper = function(prompt, problem_id) {
                 essaygrade_type = essaygrade_data[z].grader_type;
                 var essaygrade_dict = {
                     href : essaygrade_href,
-                    rubric : essaygrade_rubric,
+                    rubrics : essaygrade_rubric,
                     type : essaygrade_type
                 }
                 var essaygrade_tab = _.template(essaygrade_tab_template,essaygrade_dict);
@@ -156,7 +156,7 @@ var save_essaygrade = function(data) {
     var essay_id = grading_container.parent().parent().parent().find('.accordion-toggle').data('elem_id')
     for(var i=0;i < rubric_item_selects.length ; i++) {
         var item_score = 0
-        if(rubric_item_selects[i].is(':checked')) {
+        if($(rubric_item_selects[i]).is(':checked')) {
             item_score = 1
         }
         rubric_scores.push(item_score)

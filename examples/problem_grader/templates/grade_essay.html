@@ -59,7 +59,7 @@
                             <form onsubmit="return false;">
                             <%= rubric %>
                             <textarea type="text" rows="3" class="essay-feedback" placeholder="Enter feedback"></textarea>
-                            <button type="submit" id="create-essaygrade" class="btn">Submit Grades</button>
+                            <button type="submit" class="create-essaygrade" class="btn">Submit Grades</button>
                         </div>
                         </form>
                     </div>
@@ -98,10 +98,10 @@
             </div>
         </script>
         <script type="text/template" id="essay-grade-tab-template">
-            <li class="active"><a href="#<%= href %>" data-toggle="tab"><%= type %></a></li>
+            <li><a href="#<%= href %>" data-toggle="tab"><%= type %></a></li>
         </script>
         <script type="text/template" id="essay-grade-detail-template">
-            <div class="tab-pane active" id="<%= href %>">
+            <div class="tab-pane" id="<%= href %>">
                 <table class="table table-condensed">
                     <tr>
                         <th>
@@ -110,19 +110,16 @@
                         <th>
                             Points
                         </th>
-                        <th>
-                            Select
-                        </th>
                     </tr>
                     <% _.each( rubrics, function( rubric ){ %>
-                    <% if(rubric.selected) %>
-                        <tr class="success">
-                    <% } else { %>
-                        <tr class="error">
-                    <% } %>
-                            <td><%= rubric.option_text %></td>
-                            <td><%= rubric.option_points %></td>
-                        </tr>
+                        <% if(rubric.selected) { %>
+                            <tr class="success">
+                        <% } else { %>
+                            <tr class="error">
+                        <% }; %>
+                                <td><%= rubric.option_text %></td>
+                                <td><%= rubric.option_points %></td>
+                            </tr>
                     <% }); %>
                 </table>
             </div>
@@ -131,10 +128,14 @@
             <div id="essaygrade-list">
                 <div class="tabbable" style="margin-bottom: 18px;">
                     <ul class="nav nav-tabs">
-                        <%= tabs %>
+                        <% _.each( tabs, function( tab ){ %>
+                            <%= tab %>
+                        <% }); %>
                     </ul>
-                    <div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
-                        <%= details %>
+                    <div class="tab-content">
+                        <% _.each( details, function( detail ){ %>
+                            <%= detail %>
+                        <% }); %>
                     </div>
                 </div>
             </div>

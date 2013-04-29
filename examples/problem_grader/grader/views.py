@@ -74,6 +74,9 @@ def action(request):
     if action=="post" and model=="essay":
         data['problem'] = "/" + settings.API_URL_INTERMEDIATE + "problem/" + str(data['problem']) + "/"
 
+    if action=="post" and model=="essaygrade":
+        data['essay'] = "/" + settings.API_URL_INTERMEDIATE + "essay/" + str(data['essay']) + "/"
+
     slumber_models = setup_slumber_models(user)
     log.debug(slumber_models['essay'].required_fields)
 
