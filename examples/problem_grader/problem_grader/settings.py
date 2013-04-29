@@ -130,6 +130,12 @@ PIPELINE_JS = {
         ],
     'output_filename': 'js/essay.js',
     },
+    'essaygrade' : {
+        'source_filenames': [
+            'js/essaygrade.js',
+            ],
+        'output_filename': 'js/essaygrade.js',
+        },
 }
 
 PIPELINE_CSS = {

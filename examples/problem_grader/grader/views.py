@@ -148,3 +148,8 @@ def problem(request):
 def write_essays(request):
     return render_to_response('write_essay.html', RequestContext(request, {'api_url' : "/grader/action", 'model' : 'essay',}))
 
+@login_required
+def grade_essays(request):
+    return render_to_response('grade_essay.html', RequestContext(request, {'api_url' : "/grader/action", 'model' : 'essaygrade',}))
+
+
