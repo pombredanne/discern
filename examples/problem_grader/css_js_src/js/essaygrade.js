@@ -149,21 +149,33 @@ var get_essay_list = function(data) {
 
 var save_essaygrade = function(data) {
     var target_btn = $(data.target);
-    var form = target_btn.parent().parent();
-    var problem_id = parseInt(form.data("problem_id"))
-    var essay_text = form.find('#essay-text').val()
+    var grading_container = target_btn.parent().parent();
+    var feedback = grading_container.find('.essay-feedback').val()
+    var rubric_scores = new Array();
+    var rubric_item_selects = grading_container.find('.rubric-item-select')
+    var essay_id = grading_container.parent().parent().parent().find('.accordion-toggle').data('elem_id')
+    for(var i=0;i < rubric_item_selects.length ; i++) {
+        var item_score = 0
+        if(rubric_item_selects[i].is(':checked')) {
+            item_score = 1
+        }
+        rubric_scores.push(item_score)
+    }
     var api_url = $('#model_name').attr("url") + "/";
     post_data = {
-        essay_text : essay_text,
-        essay_type : "train",
-        problem : problem_id,
-        additional_predictors : [],
-        has_been_ml_graded : false
+        target_scores: JSON.stringify(rubric_scores),
+        essay : essay_id,
+        confidence : 1,
+        feedback: feedback,
+        success: true,
+        grader_type: "IN",
+        premium_feedback_scores: JSON.stringify("[]"),
+        annotated_text: ""
     }
     $.ajax({
         type: "POST",
         url: api_url,
-        data: { action: "post", model: 'essay', data : JSON.stringify(post_data)}
+        data: { action: "post", model: 'essaygrade', data : JSON.stringify(post_data)}
     }).done(get_courses);
 }
 

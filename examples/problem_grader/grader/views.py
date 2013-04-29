@@ -90,6 +90,8 @@ def action(request):
         log.debug(inst.content)
         raise
 
+    log.debug(slumber_models['essaygrade'].required_fields)
+
     if action=="post" and model=="problem":
         problem_id = slumber_data['id']
         rubric['problem_id'] = problem_id
