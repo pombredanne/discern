@@ -106,7 +106,7 @@ var get_essay_list = function(data) {
     }).done(render_essay_wrapper(prompt, problem_id));
 }
 
-var save_essay = function(data) {
+var save_essaygrade = function(data) {
     var target_btn = $(data.target);
     var form = target_btn.parent().parent();
     var problem_id = parseInt(form.data("problem_id"))

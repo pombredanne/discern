@@ -95,14 +95,19 @@ def action(request):
         rubric['problem_id'] = problem_id
         rubric_functions.create_rubric_objects(rubric, request)
 
-    if action in ["get", "post"] and model=="problem":
+    if (action in ["get", "post"] and model=="problem") or (action=="get" and model=="essay"):
         if isinstance(slumber_data,list):
             for i in xrange(0,len(slumber_data)):
                 try:
-                    rubric_data = rubric_functions.get_rubric_data(slumber_data[i]['id'])
+                    if model=="problem":
+                        problem_id = slumber_data[i]['id']
+                    else:
+                        problem_id = slumber_data[i]['problem'].split('/')[5]
+
+                    rubric_data = rubric_functions.get_rubric_data(problem_id)
                     slumber_data[i]['rubric'] = rubric_data
                 except:
-                    log.error("Could not find rubric for problem id {0}.".format(slumber_data[i]['id']))
+                    log.error("Could not find rubric for problem id {0}.".format(problem_id))
                     slumber_data[i]['rubric'] = []
         else:
             rubric_data = rubric_functions.get_rubric_data(slumber_data['id'])
