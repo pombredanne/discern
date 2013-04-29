@@ -1,30 +1,14 @@
-from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from slumber_models import SlumberModelDiscovery
-from django.conf import settings
 from django.contrib.auth.decorators import login_required
 import logging
 import json
 import rubric_functions
+import helpers
 
 log = logging.getLogger(__name__)
-
-def setup_slumber_models(user, model_types=None):
-    """
-    Sets up the slumber API models for a given user.  See slumber_models for a description of slumber
-    user - a django user object
-    model_types - if you only want to setup certain types of models, pass them in
-    """
-    #Get the api authentication dictionary for the user
-    api_auth = user.profile.get_api_auth()
-    #Instantiate the slumber model discovery class for the api endpoint specified in settings
-    slumber_discovery = SlumberModelDiscovery(settings.FULL_API_START, api_auth)
-    #Generate all the models
-    models = slumber_discovery.generate_models(model_types)
-    return models
 
 def register(request):
     """
@@ -95,7 +79,7 @@ def action(request):
         #Add in two needed fields (the api requires them)
         data.update({
             'max_target_scores' : [1 for i in xrange(0,len(data['rubric']['options']))],
-            'courses' : [construct_related_uri(data['course'], 'course')]
+            'courses' : [helpers.construct_related_uri(data['course'], 'course')]
         })
         #Remove these keys (posting to the api will fail if they are still in)
         del data['rubric']
@@ -103,18 +87,18 @@ def action(request):
 
     #We need to convert the integer id into a resource uri before posting to the API
     if action=="post" and model=="essay":
-        data['problem'] = construct_related_uri(data['problem'], 'problem')
+        data['problem'] = helpers.construct_related_uri(data['problem'], 'problem')
 
     #We need to convert the integer id into a resource uri before posting to the API
     if action=="post" and model=="essaygrade":
-        data['essay'] = construct_related_uri(data['essay'], 'essay')
+        data['essay'] = helpers.construct_related_uri(data['essay'], 'essay')
 
     #If we are deleting a problem, delete its local model uri
     if action=="delete" and model=="problem":
         rubric_functions.delete_rubric_data(id)
 
     #Setup all slumber models for the current user
-    slumber_models = setup_slumber_models(user)
+    slumber_models = helpers.setup_slumber_models(user)
 
     #Check to see if the user requested model exists at the API endpoint
     if model not in slumber_models:
@@ -144,74 +128,51 @@ def action(request):
     if (action in ["get", "post"] and model=="problem") or (action=="get" and model=="essay"):
         if isinstance(slumber_data,list):
             for i in xrange(0,len(slumber_data)):
-                    slumber_data[i]['rubric'] = get_rubric_data(model, slumber_data[i])
+                    slumber_data[i]['rubric'] = helpers.get_rubric_data(model, slumber_data[i])
         else:
-            slumber_data['rubric'] = get_rubric_data(model, slumber_data)
+            slumber_data['rubric'] = helpers.get_rubric_data(model, slumber_data)
 
     #append essaygrades to essay objects
     if action=="get" and model=="essay":
         essaygrades = slumber_models['essaygrade'].action('get')
         if isinstance(slumber_data,list):
             for i in xrange(0,len(slumber_data)):
-                slumber_data[i]['essaygrades_full'] = get_essaygrade_data(slumber_data[i], essaygrades)
+                slumber_data[i]['essaygrades_full'] = helpers.get_essaygrade_data(slumber_data[i], essaygrades)
         else:
-            slumber_data['essaygrades_full'] = get_essaygrade_data(slumber_data, essaygrades)
+            slumber_data['essaygrades_full'] = helpers.get_essaygrade_data(slumber_data, essaygrades)
 
     json_data = json.dumps(slumber_data)
     return HttpResponse(json_data)
 
-def get_rubric_data(model, slumber_data):
-    if model=="problem":
-        problem_id = slumber_data['id']
-    else:
-        problem_id = slumber_data['problem'].split('/')[5]
-
-    rubric_data = []
-    try:
-        rubric_data = rubric_functions.get_rubric_data(problem_id)
-    except:
-        log.error("Could not find rubric for problem id {0}.".format(problem_id))
-
-    return rubric_data
-
-def construct_related_uri(id, model_type):
-    return "/{api_url}{model_type}/{id}/".format(api_url=settings.API_URL_INTERMEDIATE, model_type=model_type, id=id)
-
-def get_essaygrade_data(slumber_data, essaygrades):
-    problem_id = slumber_data['problem'].split('/')[5]
-    essaygrade_data = []
-    for z in xrange(0,len(slumber_data['essaygrades'])):
-        essaygrade_id = slumber_data['essaygrades'][z].split('/')[5]
-        for i in xrange(0,len(essaygrades)):
-            if int(essaygrade_id) == int(essaygrades[i]['id']):
-                target_scores = essaygrades[i]['target_scores']
-                try:
-                    target_scores = json.loads(target_scores)
-                except:
-                    pass
-                rubric_data = rubric_functions.get_rubric_data(problem_id, target_scores)
-                essaygrades[i]['rubric'] = rubric_data
-                essaygrade_data.append(essaygrades[i])
-    return essaygrade_data
-
 @login_required
 def course(request):
+    """
+    Render the page for courses
+    """
     return render_to_response('course.html', RequestContext(request, {'model' : 'course', 'api_url' : "/grader/action"}))
 
 @login_required
 def problem(request):
+    """
+    Render the page for problems.  This can take the argument course_id.
+    """
+
+    #Accept either get or post requests
     if request.method == 'POST':
         args = request.POST
     else:
         args = request.GET
 
+    #If provided, get the course id argument
     matching_course_id = args.get('course_id', -1)
     match_course = False
     course_name = None
+
+    #If a course to match problems to has been specified, grab the matching course and return it
     if matching_course_id!= -1:
         match_course = True
         user = request.user
-        slumber_models = setup_slumber_models(user)
+        slumber_models = helpers.setup_slumber_models(user)
         course_object = slumber_models['course'].action('get',id=matching_course_id, data=None)
         course_name = course_object['course_name']
 
@@ -228,10 +189,16 @@ def problem(request):
 
 @login_required
 def write_essays(request):
+    """
+    Render the page for writing essays
+    """
     return render_to_response('write_essay.html', RequestContext(request, {'api_url' : "/grader/action", 'model' : 'essay',}))
 
 @login_required
 def grade_essays(request):
+    """
+    Render the page for grading essays
+    """
     return render_to_response('grade_essay.html', RequestContext(request, {'api_url' : "/grader/action", 'model' : 'essaygrade',}))
 
 
