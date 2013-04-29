@@ -46,8 +46,6 @@
                             <li>Created on: <%= created %></li>
                             <li>Last modified on: <%= modified %></li>
                         </ul>
-                        <h5>Existing Grades</h5>
-                        <%= essaygrades %>
                         <h5>Prompt</h5>
                         <p><%= prompt %></p>
 
@@ -58,11 +56,14 @@
                         <div class="grading-container">
                             <h5>Rubric</h5>
                             <form onsubmit="return false;">
-                            <%= rubric %>
-                            <textarea type="text" rows="3" class="essay-feedback" placeholder="Enter feedback"></textarea>
-                            <button type="submit" class="create-essaygrade" class="btn">Submit Grades</button>
+                                <%= rubric %>
+                                <textarea type="text" rows="3" class="essay-feedback" placeholder="Enter feedback"></textarea>
+                                <button type="submit" class="create-essaygrade" class="btn">Submit Grades</button>
+                            </form>
                         </div>
-                        </form>
+
+                        <h5>Existing Grades</h5>
+                        <%= essaygrades %>
                     </div>
                 </div>
             </div>
