@@ -116,42 +116,37 @@ def action(request):
     #Setup all slumber models for the current user
     slumber_models = setup_slumber_models(user)
 
+    #Check to see if the user requested model exists at the API endpoint
     if model not in slumber_models:
         error = "Invalid model specified :{0} .  Model does not appear to exist in list: {1}".format(model, slumber_models.keys())
         log.info(error)
         raise Exception(error)
 
     try:
+        #Try to see if we can perform the given action on the given model
         slumber_data = slumber_models[model].action(action,id=id,data=data)
     except Exception as inst:
-        log.debug(inst.args)
-        log.debug(inst.response)
-        log.debug(inst.content)
+        #If we cannot, log the error information from slumber.  Will likely contain the error message recieved from the api
+        error_message = "Could not perform action {action} on model type {model} with id {id} and data {data}.".format(action=action, model_type=model, id=id, data=data)
+        error_information = "Recieved the following from the server.  Args: {args} , response: {response}, content: {content}".format(args=inst.args, response=inst.response, content=inst.content)
+        log.error(error_message)
+        log.error(error_information)
         raise
 
+    #If we have posted a problem, we need to create a local rubric object to store our rubric (the api does not do this)
     if action=="post" and model=="problem":
         problem_id = slumber_data['id']
         rubric['problem_id'] = problem_id
+        #Create the rubric object
         rubric_functions.create_rubric_objects(rubric, request)
 
     #Append rubric to problem and essay objects
     if (action in ["get", "post"] and model=="problem") or (action=="get" and model=="essay"):
         if isinstance(slumber_data,list):
             for i in xrange(0,len(slumber_data)):
-                try:
-                    if model=="problem":
-                        problem_id = slumber_data[i]['id']
-                    else:
-                        problem_id = slumber_data[i]['problem'].split('/')[5]
-
-                    rubric_data = rubric_functions.get_rubric_data(problem_id)
-                    slumber_data[i]['rubric'] = rubric_data
-                except:
-                    log.error("Could not find rubric for problem id {0}.".format(problem_id))
-                    slumber_data[i]['rubric'] = []
+                    slumber_data[i]['rubric'] = get_rubric_data(model, slumber_data[i])
         else:
-            rubric_data = rubric_functions.get_rubric_data(slumber_data['id'])
-            slumber_data['rubric'] = rubric_data
+            slumber_data['rubric'] = get_rubric_data(model, slumber_data)
 
     #append essaygrades to essay objects
     if action=="get" and model=="essay":
@@ -164,6 +159,20 @@ def action(request):
 
     json_data = json.dumps(slumber_data)
     return HttpResponse(json_data)
+
+def get_rubric_data(model, slumber_data):
+    if model=="problem":
+        problem_id = slumber_data['id']
+    else:
+        problem_id = slumber_data['problem'].split('/')[5]
+
+    rubric_data = []
+    try:
+        rubric_data = rubric_functions.get_rubric_data(problem_id)
+    except:
+        log.error("Could not find rubric for problem id {0}.".format(problem_id))
+
+    return rubric_data
 
 def construct_related_uri(id, model_type):
     return "/{api_url}{model_type}/{id}/".format(api_url=settings.API_URL_INTERMEDIATE, model_type=model_type, id=id)
