@@ -38,6 +38,7 @@ CACHES = {
     }
 }
 
+#Avoid clashes with api by changing these
 SESSION_COOKIE_NAME = "problemgradersessionid"
 CSRF_COOKIE_NAME = "problemgradercsrftoken"
 
