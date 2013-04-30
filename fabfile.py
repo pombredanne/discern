@@ -30,11 +30,9 @@ from path import path
 
 #Define this path so that we can import the django settings
 ROOT_PATH = path(__file__).dirname()
+ENV_ROOT = ROOT_PATH.dirname()
 sys.path.append(ROOT_PATH)
-
-#Use django settings to define some paths
-django.settings_module('ml_service_api.settings')
-from django.conf import settings as django_settings
+sys.path.append(ENV_ROOT)
 
 #Disable annoyting log messages.
 logging.basicConfig(level=logging.ERROR)
@@ -80,9 +78,8 @@ def check_paths():
     """
     log = logging.getLogger(__name__)
     logging.basicConfig(level=logging.INFO)
-    log.info(django_settings.ROOT_PATH)
-    log.info(django_settings.REPO_PATH)
-    log.info(django_settings.ENV_ROOT)
+    log.info(ROOT_PATH)
+    log.info(ENV_ROOT)
 
 @task
 def deploy():
@@ -98,7 +95,7 @@ def deploy():
     database_dir = os.path.join(code_dir, "db")
     nltk_data_dir = '/usr/share/nltk_data'
     static_dir = os.path.join(code_dir, 'staticfiles')
-    deployment_config_dir = os.path.join(django_settings.REPO_PATH, "deployment/configuration/")
+    deployment_config_dir = os.path.join(ROOT_PATH, "deployment/configuration/")
     ml_service_api_repo_url = 'git@github.com:edx/ml-service-api.git'
     machine_learning_repo_url = 'git@github.com:edx/machine-learning.git'
 
