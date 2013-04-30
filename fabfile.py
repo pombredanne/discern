@@ -181,8 +181,7 @@ def deploy():
             sudo('mkdir -p {0}'.format(nltk_data_dir))
             if not exists(nltk_data_dir):
                 sudo('python -m nltk.downloader -d {0} all'.format(nltk_data_dir))
-                # TODO: don't hardcode vik
-            sudo('chown -R {0} {1}'.format(env.remote_user, nltk_data_dir))
+                sudo('chown -R {0} {1}'.format(env.remote_user, nltk_data_dir))
             run('python setup.py install')
 
     with lcd(deployment_config_dir), settings(warn_only=True):
