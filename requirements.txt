@@ -1,4 +1,8 @@
 scipy==0.11.0
 -r base-requirements.txt
 -e git+https://github.com/edx/machine-learning.git@41a81b92b334eaa1fdf22ebce333af7e78abc9b6#egg=machine-learning
-coverage==3.5.3
+coverage==3.5.3   # coverage breaks travis, so move it out of base-requirements
+fabric==1.6.0
+path.py==3.1
+sphinx==1.1.3
+django-sphinx-autodoc==0.2
