@@ -16,6 +16,8 @@ from fabric.contrib.files import exists
 from fabric.contrib import django
 from path import path
 
+#Overall usage is fab sandbox deploy or fab vagrant deploy.
+#Add in your own task instead of sandbox or vagrant to specify your own settings.
 
 # Deploy to Vagrant with:
 # fab  -i /Users/nateaune/.rvm/gems/ruby-1.9.3-p374/gems/vagrant-1.0.7/keys/vagrant deploy
@@ -58,7 +60,7 @@ def vagrant(debug=True):
 @task
 def sandbox():
     env.environment = 'sandbox'
-    env.hosts = ['vik@sandbox-service-api-001.m.edx.org']
+    env.hosts = ['vik@sandbox-servicn method of setting hosts or roles is by modifying two key-value pairs in the environment dictionary, env: hosts and roles. The value of these variables is checked at runtime, while constructing each tasks’s host list.e-api-001.m.edx.org']
     env.branch = 'master'
     env.remote_user = 'vik'
 
@@ -167,7 +169,9 @@ def deploy():
             run('python manage.py syncdb --noinput --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
             run('python manage.py migrate --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
             # TODO: check to see if there is a superuser already, and don't try to create it again
-            run('python manage.py createsuperuser --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
+            #Comment this line out to avoid prompts when deploying
+            #run('python manage.py createsuperuser --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
+
             run('python manage.py collectstatic -c --noinput --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
             run('python manage.py update_index --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
             sudo('chown -R www-data {0}'.format(up_one_level_dir))
