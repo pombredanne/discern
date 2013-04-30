@@ -15,6 +15,8 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
+LOGIN_REDIRECT_URL = '/grader'
+
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -36,6 +38,7 @@ CACHES = {
     }
 }
 
+#Avoid clashes with api by changing these
 SESSION_COOKIE_NAME = "problemgradersessionid"
 CSRF_COOKIE_NAME = "problemgradercsrftoken"
 
@@ -127,9 +130,17 @@ PIPELINE_JS = {
     'essay' : {
     'source_filenames': [
         'js/essay.js',
+        'js/essay_nav.js'
         ],
     'output_filename': 'js/essay.js',
     },
+    'essaygrade' : {
+        'source_filenames': [
+            'js/essaygrade.js',
+            'js/essay_nav.js',
+            ],
+        'output_filename': 'js/essaygrade.js',
+        },
 }
 
 PIPELINE_CSS = {
