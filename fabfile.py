@@ -60,7 +60,7 @@ def vagrant(debug=True):
 @task
 def sandbox():
     env.environment = 'sandbox'
-    env.hosts = ['vik@sandbox-servicn method of setting hosts or roles is by modifying two key-value pairs in the environment dictionary, env: hosts and roles. The value of these variables is checked at runtime, while constructing each tasks’s host list.e-api-001.m.edx.org']
+    env.hosts = ['vik@sandbox-service-api-001.m.edx.org', ]
     env.branch = 'master'
     env.remote_user = 'vik'
 
