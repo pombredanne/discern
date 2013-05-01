@@ -2129,7 +2129,7 @@
         "BastionHostIPAddress": {
             "Description":"Bastion public ip",
             "Value":{
-                "Fn::GetAtt": ["PublicIp", "PublicDnsName"]
+                "Ref" : "BastionIPAddress"
             }
         },
         "MlapiURL" : {
