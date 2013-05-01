@@ -1416,6 +1416,13 @@
                         "PropagateAtLaunch":true
                     },
                     {
+                        "Key":"Group",
+                        "Value": {
+                            "Fn::Join" : [ "", [ "mlapi", {"Ref" : "EnvironmentTag"} ] ]
+                        },
+                        "PropagateAtLaunch":true
+                    },
+                    {
                         "Key":"environment",
                         "Value":{
                             "Ref":"EnvironmentTag"
@@ -1788,7 +1795,14 @@
                 "Tags":[
                     {
                         "Key":"group",
-                        "Value":"rabbitmq",
+                        "Value":"mlapi-rabbitmq",
+                        "PropagateAtLaunch":true
+                    },
+                    {
+                        "Key":"Group",
+                        "Value": {
+                            "Fn::Join" : [ "", [ "mlapi-rabbitmq", {"Ref" : "EnvironmentTag"} ] ]
+                        },
                         "PropagateAtLaunch":true
                     },
                     {
@@ -2131,6 +2145,14 @@
             "Value":{
                 "Ref" : "BastionIPAddress"
             }
+        },
+        "MlapiPrivateIP" : {
+            "Description" : "Mlapi private ip",
+            "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MlapiELB", "DNSName" ]}]]}
+        },
+        "RabbitmqPrivateIP" : {
+            "Description" : "RabbitMQ private ip",
+            "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MlapiELB", "DNSName" ]}]]}
         },
         "MlapiURL" : {
             "Description" : "Mlapi ELB url",
