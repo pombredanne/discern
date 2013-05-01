@@ -1056,6 +1056,27 @@
                         "AMI"
                     ]
                 },
+                "Tags":[
+                    {
+                        "Key":"group",
+                        "Value":"mlapi-nat",
+                        "PropagateAtLaunch":true
+                    },
+                    {
+                        "Key":"Group",
+                        "Value": {
+                            "Fn::Join" : [ "", [ "mlapi-nat", {"Ref" : "EnvironmentTag"} ] ]
+                        },
+                        "PropagateAtLaunch":true
+                    },
+                    {
+                        "Key":"environment",
+                        "Value":{
+                            "Ref":"EnvironmentTag"
+                        },
+                        "PropagateAtLaunch":true
+                    }
+                ],
                 "SecurityGroupIds":[
                     {
                         "Ref":"NATSecurityGroup"
@@ -1146,6 +1167,27 @@
                         }
                     ]
                 },
+                "Tags":[
+                    {
+                        "Key":"group",
+                        "Value":"mlapi-bastion",
+                        "PropagateAtLaunch":true
+                    },
+                    {
+                        "Key":"Group",
+                        "Value": {
+                            "Fn::Join" : [ "", [ "mlapi-bastion", {"Ref" : "EnvironmentTag"} ] ]
+                        },
+                        "PropagateAtLaunch":true
+                    },
+                    {
+                        "Key":"environment",
+                        "Value":{
+                            "Ref":"EnvironmentTag"
+                        },
+                        "PropagateAtLaunch":true
+                    }
+                ],
                 "SecurityGroupIds":[
                     {
                         "Ref":"BastionSecurityGroup"
