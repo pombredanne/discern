@@ -2126,6 +2126,12 @@
                 "Ref":"MlapiBucket"
             }
         },
+        "BastionHostIPAddress": {
+            "Description":"Bastion public ip",
+            "Value":{
+                "Fn::GetAtt": ["PublicIp", "PublicDnsName"]
+            }
+        },
         "DatabaseConfigurationString":{
             "Description":"JDBC connection string for database",
             "Value":{
