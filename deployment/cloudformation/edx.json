@@ -153,9 +153,9 @@
             "NoEcho":"true",
             "Description":"The database admin account password",
             "Type":"String",
-            "MinLength":"8",
+            "MinLength":"4",
             "MaxLength":"41",
-            "ConstraintDescription":"must contain only alphanumeric characters."
+            "ConstraintDescription":"must contain only alphanumeric characters. Minimum length 4."
         },
         "DBClass":{
             "Default":"db.m1.small",
@@ -2118,6 +2118,12 @@
             "Description":"EC2 Security Group with access to the Mlapi server",
             "Value":{
                 "Ref":"MlapiServerSecurityGroup"
+            }
+        },
+        "MlapiS3Bucket":{
+            "Description":"S3 Bucket for Mlapi servers",
+            "Value":{
+                "Ref":"MlapiBucket"
             }
         },
         "DatabaseConfigurationString":{
