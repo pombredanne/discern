@@ -2132,6 +2132,10 @@
                 "Fn::GetAtt": ["PublicIp", "PublicDnsName"]
             }
         },
+        "MlapiURL" : {
+            "Description" : "Mlapi ELB url",
+            "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MlapiELB", "DNSName" ]}]]}
+        },
         "DatabaseConfigurationString":{
             "Description":"JDBC connection string for database",
             "Value":{
