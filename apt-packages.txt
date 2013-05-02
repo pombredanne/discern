@@ -1,4 +1,6 @@
 python-virtualenv
+gcc
+g++
 build-essential
 python-dev
 gfortran
