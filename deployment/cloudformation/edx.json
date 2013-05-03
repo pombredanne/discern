@@ -1696,7 +1696,7 @@
                         "FromPort":"8888",
                         "ToPort":"8888",
                         "CidrIp":"0.0.0.0/0"
-                    },
+                    }
                 ]
             }
         },
@@ -2362,7 +2362,7 @@
                     "",
                     [
                         "ec2-modify-vpc-attribute ",
-                        "-c ", { "Ref":"EdxVPC" }, " ",
+                        "-c ", { "Ref":"MlapiVPC" }, " ",
                         "-d true"
                     ]
                 ]
