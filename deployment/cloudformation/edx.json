@@ -1107,12 +1107,6 @@
                         "CidrIp":{
                             "Ref":"SSHLocation"
                         }
-                    },
-                    {
-                        "IpProtocol":"tcp",
-                        "FromPort":"9418",
-                        "ToPort":"9418",
-                        "CidrIp":"0.0.0.0/0"
                     }
                 ],
                 "SecurityGroupEgress":[
@@ -1126,6 +1120,20 @@
                         "IpProtocol":"tcp",
                         "FromPort":"443",
                         "ToPort":"443",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"22",
+                        "ToPort":"22",
+                        "CidrIp":{
+                            "Ref":"SSHLocation"
+                        }
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"9418",
+                        "ToPort":"9418",
                         "CidrIp":"0.0.0.0/0"
                     }
                 ]
@@ -1178,7 +1186,7 @@
                     {
                         "Key":"Group",
                         "Value": {
-                            "Fn::Join" : [ "", [ "mlapi-bastion", {"Ref" : "EnvironmentTag"} ] ]
+                            "Fn::Join" : [ "", [ "mlapi-bastion_", {"Ref" : "EnvironmentTag"} ] ]
                         },
                         "PropagateAtLaunch":true
                     },
@@ -1480,7 +1488,7 @@
                     {
                         "Key":"Group",
                         "Value": {
-                            "Fn::Join" : [ "", [ "mlapi", {"Ref" : "EnvironmentTag"} ] ]
+                            "Fn::Join" : [ "", [ "mlapi_", {"Ref" : "EnvironmentTag"} ] ]
                         },
                         "PropagateAtLaunch":true
                     },
@@ -1644,18 +1652,6 @@
                         "IpProtocol":"tcp",
                         "FromPort":"443",
                         "ToPort":"443",
-                        "CidrIp":"0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol":"tcp",
-                        "FromPort":"22",
-                        "ToPort":"22",
-                        "CidrIp":"0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol":"tcp",
-                        "FromPort":"9418",
-                        "ToPort":"9418",
                         "CidrIp":"0.0.0.0/0"
                     }
                 ]
@@ -1875,7 +1871,7 @@
                     {
                         "Key":"Group",
                         "Value": {
-                            "Fn::Join" : [ "", [ "mlapi-rabbitmq", {"Ref" : "EnvironmentTag"} ] ]
+                            "Fn::Join" : [ "", [ "mlapi-rabbitmq_", {"Ref" : "EnvironmentTag"} ] ]
                         },
                         "PropagateAtLaunch":true
                     },
@@ -2047,25 +2043,7 @@
                         "FromPort":"6163",
                         "ToPort":"6163",
                         "CidrIp":"10.0.0.0/16"
-                    },
-                    {
-                        "IpProtocol":"tcp",
-                        "FromPort":"22",
-                        "ToPort":"22",
-                        "CidrIp":"0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol":"tcp",
-                        "FromPort":"9418",
-                        "ToPort":"9418",
-                        "CidrIp":"0.0.0.0/0"
-                    },
-                    {
-                        "IpProtocol":"tcp",
-                        "FromPort":"80",
-                        "ToPort":"80",
-                        "CidrIp":"0.0.0.0/0"
-                    },
+                    }
                 ]
             }
         },
@@ -2355,6 +2333,19 @@
                             "Ref":"MlapiVPC"
                         },
                         "-ElasticCacheSubnetGroup"
+                    ]
+                ]
+            }
+        },
+        "EnableDNSHostnamesForVPCCommand":{
+            "Description":"MANUAL COMMAND #3: Change VPC setting to enable automatic DNS hostname resolution from within the VPC. Setting not supported in Cloudformation yet.",
+            "Value":{
+                "Fn::Join":[
+                    "",
+                    [
+                        "ec2-modify-vpc-attribute ",
+                        "-c ", { "Ref":"EdxVPC" }, " ",
+                        "-d true"
                     ]
                 ]
             }
