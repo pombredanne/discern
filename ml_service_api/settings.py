@@ -204,6 +204,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -220,6 +222,7 @@ MIDDLEWARE_CLASSES = (
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
+    "allauth.account.auth_backends.AuthenticationBackend",
 )
 
 ANONYMOUS_USER_ID = -1
@@ -256,6 +259,9 @@ INSTALLED_APPS = (
     'pipeline',
     'guardian',
     'haystack',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -342,6 +348,7 @@ THROTTLE_EXPIRATION= 24 * 60 * 60 # When to remove throttle entries from cache, 
 #Model settings
 MEMBERSHIP_LIMIT=1 #Currently users can only be in one organization
 
-#Django-user-accounts settings
-ACCOUNT_EMAIL_UNIQUE = True #Each user needs a unique email address
-ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = False #Don't do email activation in local settings
+#Django-allauth settings
+ACCOUNT_EMAIL_VERIFICATION = "none" #No email verification required locally
+ACCOUNT_EMAIL_REQUIRED = True #Ask user to enter an email
+ACCOUNT_AUTHENTICATION_METHOD="username_email" #Can enter username or email to login
