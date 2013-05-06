@@ -255,7 +255,8 @@ INSTALLED_APPS = (
     'djcelery',
     'pipeline',
     'guardian',
-    'haystack'
+    'haystack',
+    'registration'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -341,3 +342,6 @@ THROTTLE_EXPIRATION= 24 * 60 * 60 # When to remove throttle entries from cache, 
 
 #Model settings
 MEMBERSHIP_LIMIT=1 #Currently users can only be in one organization
+
+ACCOUNT_ACTIVATION_DAYS=7 #django-registration settings.  Users have this many days to activate their account,
+REGISTRATION_BACKEND = 'registration.backends.simple.urls' #Set to either "simple" or "default" to use different backends for django-registration

@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^$', include('frontend.urls')),
 )
 
+urlpatterns+= patterns('', (r'^accounts/', include(settings.REGISTRATION_BACKEND)),)
+
 if settings.DEBUG:
     #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT, show_indexes=True)
     urlpatterns+= patterns('',

@@ -1,0 +1,1 @@
+Thank you for signing up for the edX ML API!  Please click {{site}}/accounts/activate/{{ activation_key }}/ to activate your account.

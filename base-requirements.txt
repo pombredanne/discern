@@ -19,3 +19,4 @@ Whoosh==2.4.1
 nose==1.2.1
 django-nose==1.1
 path.py==3.1
+-e hg+https://bitbucket.org/ubernostrum/django-registration#egg=django-registration
