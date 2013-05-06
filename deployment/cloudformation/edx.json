@@ -1616,6 +1616,9 @@
                 "Subnets":[
                     {
                         "Ref":"PublicSubnet01"
+                    },
+                    {
+                        "Ref":"PublicSubnet02"
                     }
                 ]
             }
