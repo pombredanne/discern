@@ -1662,6 +1662,12 @@
                         "FromPort":"22",
                         "ToPort":"22",
                         "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"8888",
+                        "ToPort":"8888",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
             }
