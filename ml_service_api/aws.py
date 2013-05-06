@@ -7,6 +7,8 @@ import json
 
 DEBUG=False
 
+ALLOWED_HOSTS += ['.elb.amazonaws.com']
+
 TIME_BETWEEN_INDEX_REBUILDS = 60 * 30 # seconds
 
 #Tastypie throttle settings
