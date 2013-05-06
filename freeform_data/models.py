@@ -6,6 +6,8 @@ from django.db.models.signals import pre_delete, pre_save, post_save, post_delet
 from request_provider.signals import get_request
 from guardian.shortcuts import assign_perm
 from django.conf import settings
+from django.contrib import admin
+
 import logging
 log=logging.getLogger(__name__)
 
@@ -289,6 +291,14 @@ pre_delete.connect(remove_user_from_groups, sender=Membership)
 
 #Maps the get_profile() function of a user to an attribute profile
 User.profile = property(lambda u: u.get_profile())
+
+#Register models with the django admin
+admin.site.register(Organization)
+admin.site.register(Course)
+admin.site.register(Problem)
+admin.site.register(Essay)
+admin.site.register(EssayGrade)
+admin.site.register(Membership)
 
 
 

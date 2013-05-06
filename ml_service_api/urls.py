@@ -4,14 +4,15 @@ from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^essay_site/', include('freeform_data.urls')),
     url(r'^frontend/', include('frontend.urls')),
     url(r'^$', include('frontend.urls')),
     url(r'^accounts/', include('allauth.urls')),
+    (r'^admin/', include(admin.site.urls)),
 )
 
 if settings.DEBUG:
