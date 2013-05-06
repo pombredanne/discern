@@ -204,7 +204,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
-    "account.context_processors.account",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -216,8 +215,6 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'request_provider.middleware.RequestProvider',
-    "account.middleware.LocaleMiddleware",
-    "account.middleware.TimezoneMiddleware",
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -259,7 +256,6 @@ INSTALLED_APPS = (
     'pipeline',
     'guardian',
     'haystack',
-    "account",
 )
 
 # A sample logging configuration. The only tangible logging
