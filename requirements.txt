@@ -6,4 +6,3 @@ fabric==1.6.0
 sphinx==1.1.3
 django-sphinx-autodoc==0.2
 MySQL-python==1.2.4c1
-django-allauth==0.10.1

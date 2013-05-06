@@ -353,3 +353,6 @@ ACCOUNT_EMAIL_VERIFICATION = "none" #No email verification required locally
 ACCOUNT_EMAIL_REQUIRED = True #Ask user to enter an email
 ACCOUNT_AUTHENTICATION_METHOD="username_email" #Can enter username or email to login
 ACCOUNT_PASSWORD_MIN_LENGTH = 3 #For testing, set password minimum low.
+
+#Django email backend for local testing
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
