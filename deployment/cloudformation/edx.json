@@ -47,7 +47,7 @@
         "WebServerPort":{
             "Description":"The TCP port for the Web Server",
             "Type":"Number",
-            "Default":"8888"
+            "Default":"80"
         },
         "BastionInstanceType":{
             "Description":"Bastion Host EC2 instance type",
