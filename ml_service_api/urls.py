@@ -11,9 +11,8 @@ urlpatterns = patterns('',
     url(r'^essay_site/', include('freeform_data.urls')),
     url(r'^frontend/', include('frontend.urls')),
     url(r'^$', include('frontend.urls')),
+    url(r"^account/", include("account.urls")),
 )
-
-urlpatterns+= patterns('', (r'^accounts/', include(settings.REGISTRATION_BACKEND)),)
 
 if settings.DEBUG:
     #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT, show_indexes=True)

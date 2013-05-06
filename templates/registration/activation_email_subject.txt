@@ -1,1 +1,0 @@
-Activate your account with the edX ML API.

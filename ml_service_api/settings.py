@@ -204,6 +204,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
+    "account.context_processors.account",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -215,6 +216,8 @@ MIDDLEWARE_CLASSES = (
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'request_provider.middleware.RequestProvider',
+    "account.middleware.LocaleMiddleware",
+    "account.middleware.TimezoneMiddleware",
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -256,7 +259,7 @@ INSTALLED_APPS = (
     'pipeline',
     'guardian',
     'haystack',
-    'registration'
+    "account",
 )
 
 # A sample logging configuration. The only tangible logging
@@ -343,5 +346,6 @@ THROTTLE_EXPIRATION= 24 * 60 * 60 # When to remove throttle entries from cache, 
 #Model settings
 MEMBERSHIP_LIMIT=1 #Currently users can only be in one organization
 
-ACCOUNT_ACTIVATION_DAYS=7 #django-registration settings.  Users have this many days to activate their account,
-REGISTRATION_BACKEND = 'registration.backends.simple.urls' #Set to either "simple" or "default" to use different backends for django-registration
+#Django-user-accounts settings
+ACCOUNT_EMAIL_UNIQUE = True #Each user needs a unique email address
+ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = False #Don't do email activation in local settings

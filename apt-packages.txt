@@ -22,4 +22,3 @@ liblapack-dev
 libatlas-base-dev
 curl
 yui-compressor
-mercurial

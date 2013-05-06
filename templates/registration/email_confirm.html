@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Confirm your email</h1>
+
+    <form action="{% url "account_confirm_email" key=confirmation.key %}" method="post">
+        <p>You entered your email as {{ confirmation.email_address.email }}.  Please confirm.M</p>
+        {{ email }}
+        {% csrf_token %}
+        <input type="submit" value="Confirm Email">
+    </form>
+{% endblock %}
