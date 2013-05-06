@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^essay_site/', include('freeform_data.urls')),
     url(r'^frontend/', include('frontend.urls')),
     url(r'^$', include('frontend.urls')),
+    url(r'^accounts/', include('allauth.urls')),
 )
 
 if settings.DEBUG:

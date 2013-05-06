@@ -20,7 +20,13 @@ ML_MODEL_PATH=os.path.join(ENV_ROOT,"ml_models_api/") #Path to save and retrieve
 TIME_BETWEEN_ML_CREATOR_CHECKS= 1 * 60 # seconds.  Time between ML creator checking to see if models need to be made.
 TIME_BETWEEN_ML_GRADER_CHECKS= 10 # seconds.  Time between ML grader checking to see if models need to be made.
 USE_S3_TO_STORE_MODELS= False #Determines whether or not models are placed in Amazon S3
+
+#Credentials for the S3 bucket.  Do not edit here, but provide the right settings in env.json and auth.json, and then
+#use aws.py as the settings file.
 S3_BUCKETNAME="OpenEnded"
+AWS_ACCESS_KEY_ID = None
+AWS_SECRET_ACCESS_KEY = None
+
 TIME_BEFORE_REMOVING_STARTED_MODEL = 10 * 60 * 60 # in seconds, time before removing an ml model that was started (assume it wont finish)
 
 LOGIN_REDIRECT_URL = "/frontend/"
@@ -198,6 +204,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -214,6 +222,7 @@ MIDDLEWARE_CLASSES = (
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
+    "allauth.account.auth_backends.AuthenticationBackend",
 )
 
 ANONYMOUS_USER_ID = -1
@@ -249,7 +258,10 @@ INSTALLED_APPS = (
     'djcelery',
     'pipeline',
     'guardian',
-    'haystack'
+    'haystack',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -335,3 +347,12 @@ THROTTLE_EXPIRATION= 24 * 60 * 60 # When to remove throttle entries from cache, 
 
 #Model settings
 MEMBERSHIP_LIMIT=1 #Currently users can only be in one organization
+
+#Django-allauth settings
+ACCOUNT_EMAIL_VERIFICATION = "none" #No email verification required locally
+ACCOUNT_EMAIL_REQUIRED = True #Ask user to enter an email
+ACCOUNT_AUTHENTICATION_METHOD="username_email" #Can enter username or email to login
+ACCOUNT_PASSWORD_MIN_LENGTH = 3 #For testing, set password minimum low.
+
+#Django email backend for local testing
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

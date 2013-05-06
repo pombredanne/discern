@@ -7,12 +7,8 @@ django-tastypie==0.9.12
 south==0.7.6
 django-celery==3.0.11
 celery-with-redis==3.0
-path.py==3.0
-fabric==1.6.0
 gunicorn==0.17.2
 requests==1.1.0
-sphinx==1.1.3
-django-sphinx-autodoc==0.2
 dogstatsd-python==0.2
 boto==2.6.0
 django-pipeline==1.3.6
@@ -22,3 +18,5 @@ django-haystack==1.2.7
 Whoosh==2.4.1
 nose==1.2.1
 django-nose==1.1
+path.py==3.1
+django-allauth==0.10.1
