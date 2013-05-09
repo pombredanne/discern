@@ -2341,6 +2341,11 @@
                         ",",
                         {
                             "Ref":"Cache02"
+                        },
+                        " ",
+                        "--region=",
+                        {
+                            "Ref":"AWS::Region"
                         }
                     ]
                 ]
@@ -2378,7 +2383,32 @@
                         {
                             "Ref":"MlapiVPC"
                         },
-                        "-ElasticCacheSubnetGroup"
+                        "-ElasticCacheSubnetGroup ",
+                        "--region=",
+                        {
+                            "Ref":"AWS::Region"
+                        }
+                    ]
+                ]
+            }
+        },
+        "ElasticCacheDescribeNodeCommand":{
+            "Description":"Gets the cache nodes you just created",
+            "Value":{
+                "Fn::Join":[
+                    "",
+                    [
+                        "elasticache-describe-cache-clusters",
+                        " ",
+                        {
+                            "Ref":"MlapiVPC"
+                        },
+                        "-Cache --show-cache-node-info",
+                        " ",
+                        "--region=",
+                        {
+                            "Ref":"AWS::Region"
+                        }
                     ]
                 ]
             }
