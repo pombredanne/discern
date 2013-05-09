@@ -2356,7 +2356,7 @@
             }
         },
         "ElasticCacheCreateCacheClusterCommand":{
-            "Description":"Foo",
+            "Description":"Create elasticcache cluster.  Run after creating the cache subnets!",
             "Value":{
                 "Fn::Join":[
                     "",
