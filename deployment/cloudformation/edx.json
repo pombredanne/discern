@@ -1725,6 +1725,12 @@
                         "FromPort":"22",
                         "ToPort":"22",
                         "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"11211",
+                        "ToPort":"11211",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
                 }
@@ -2239,6 +2245,12 @@
                         "SourceSecurityGroupId":{
                             "Ref":"MlapiELBSecurityGroup"
                         }
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"11211",
+                        "ToPort":"11211",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
             }
@@ -2387,6 +2399,11 @@
                         "--region=",
                         {
                             "Ref":"AWS::Region"
+                        },
+                        " ",
+                        "--security-group-ids ",
+                        {
+                            "Ref": "CacheSecurityGroup"
                         }
                     ]
                 ]
