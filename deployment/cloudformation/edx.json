@@ -2255,10 +2255,6 @@
             "Description":"S3 Bucket for Mlapi servers",
             "Value":{
                 "Ref":"MlapiBucket"
-            },
-            "Name" : {
-                "Value" : { "Fn::GetAtt" : [ "MlapiBucket", "DomainName" ]},
-                "Description" : "Name of S3 bucket"
             }
         },
         "BastionHostIPAddress": {
