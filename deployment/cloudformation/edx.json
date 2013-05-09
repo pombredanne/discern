@@ -2374,8 +2374,7 @@
                             ]
                         },
                         " --cache-parameter-group-name default.memcached1.4 --auto-minor-version-upgrade true",
-                        " --cache-subnet-group-name ElasticCacheSubnetGroup",
-                        " ",
+                        " --cache-subnet-group-name ",
                         {
                             "Ref":"MlapiVPC"
                         },
