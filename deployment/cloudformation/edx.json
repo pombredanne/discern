@@ -2275,14 +2275,6 @@
                 "Ref" : "BastionIPAddress"
             }
         },
-        "MlapiPrivateIP" : {
-            "Description" : "Mlapi private ip",
-            "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MlapiELB", "DNSName" ]}]]}
-        },
-        "RabbitmqPrivateIP" : {
-            "Description" : "RabbitMQ private ip",
-            "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MlapiELB", "DNSName" ]}]]}
-        },
         "MlapiURL" : {
             "Description" : "Mlapi ELB url",
             "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MlapiELB", "DNSName" ]}]]}
