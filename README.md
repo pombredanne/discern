@@ -23,7 +23,7 @@ How to Contribute
 -----------------------
 Contributions are very welcome.  The easiest way is to fork this repo, and then make a pull request from your fork.
 
-The current backlog is in the [issues section](http://github.com/edx/ml-service-api/issues?labels=&page=1&state=open).
+The current backlog is in the [issues section](http://github.com/edx/discern/issues?labels=&page=1&state=open).
 Please feel free to open new issues or work on existing ones.
 
 Detailed Information

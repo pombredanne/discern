@@ -92,13 +92,13 @@ def deploy():
     #Setup needed directory paths
     #May need to edit if you are using this for deployment
     up_one_level_dir = '/opt/wwc'
-    code_dir = os.path.join(up_one_level_dir, "ml-service-api")
+    code_dir = os.path.join(up_one_level_dir, "discern")
     ml_code_dir = os.path.join(up_one_level_dir, 'machine-learning')
     database_dir = os.path.join(code_dir, "db")
     nltk_data_dir = '/usr/share/nltk_data'
     static_dir = os.path.join(code_dir, 'staticfiles')
     deployment_config_dir = os.path.join(ROOT_PATH, "deployment/configuration/")
-    ml_service_api_repo_url = 'git@github.com:edx/ml-service-api.git'
+    discern_repo_url = 'git@github.com:edx/discern.git'
     machine_learning_repo_url = 'git@github.com:edx/machine-learning.git'
 
     #this is needed for redis-server to function properly
@@ -107,7 +107,7 @@ def deploy():
     with settings(warn_only=True):
         #Stop services
         sudo('service celery stop')
-        sudo('service ml-service-api stop')
+        sudo('service discern stop')
         static_dir_exists = exists(static_dir, use_sudo=True)
         if not static_dir_exists:
             sudo('mkdir -p {0}'.format(static_dir))
@@ -120,7 +120,7 @@ def deploy():
                 sudo('mkdir -p {0}'.format(up_one_level_dir))
             with cd(up_one_level_dir):
                 #TODO: Insert repo name here
-                run('git clone {0}'.format(ml_service_api_repo_url))
+                run('git clone {0}'.format(discern_repo_url))
 
         sudo('chmod -R g+w {0}'.format(code_dir))
 
@@ -166,14 +166,14 @@ def deploy():
             run('pip install -r pre-requirements.txt')
             run('pip install -r requirements.txt')
             # Sync django db and migrate it using south migrations
-            run('python manage.py syncdb --noinput --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
-            run('python manage.py migrate --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
+            run('python manage.py syncdb --noinput --settings=discern.aws --pythonpath={0}'.format(code_dir))
+            run('python manage.py migrate --settings=discern.aws --pythonpath={0}'.format(code_dir))
             # TODO: check to see if there is a superuser already, and don't try to create it again
             #Comment this line out to avoid prompts when deploying
-            #run('python manage.py createsuperuser --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
+            #run('python manage.py createsuperuser --settings=discern.aws --pythonpath={0}'.format(code_dir))
 
-            run('python manage.py collectstatic -c --noinput --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
-            run('python manage.py update_index --settings=ml_service_api.aws --pythonpath={0}'.format(code_dir))
+            run('python manage.py collectstatic -c --noinput --settings=discern.aws --pythonpath={0}'.format(code_dir))
+            run('python manage.py update_index --settings=discern.aws --pythonpath={0}'.format(code_dir))
             sudo('chown -R www-data {0}'.format(up_one_level_dir))
 
         with cd(ml_code_dir):
@@ -197,13 +197,13 @@ def deploy():
         with cd('/etc/init'):
             #Upstart tasks that start and stop the needed services
             put('service-celery.conf', 'celery.conf', use_sudo=True)
-            put('service-ml-service-api.conf', 'ml-service-api.conf', use_sudo=True)
+            put('service-discern.conf', 'discern.conf', use_sudo=True)
         with cd('/etc/nginx/sites-available'):
-            #Modify nginx settings to pass through ml-service-api
+            #Modify nginx settings to pass through discern
             put('service-nginx', 'default', use_sudo=True)
 
     with settings(warn_only=True):
         #Start all services back up
         sudo('service celery start')
-        sudo('service ml-service-api start')
+        sudo('service discern start')
         sudo('service nginx restart')

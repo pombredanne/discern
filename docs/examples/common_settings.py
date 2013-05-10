@@ -11,5 +11,5 @@ import requests
 import json
 
 #This tells us where the API is running.
-#In order to run the API, you need to navigate to ml-service-api and run python manage.py runserver 127.0.0.1:7999 --nostatic
+#In order to run the API, you need to navigate to discern and run python manage.py runserver 127.0.0.1:7999 --nostatic
 API_BASE_URL = "http://127.0.0.1:7999"
