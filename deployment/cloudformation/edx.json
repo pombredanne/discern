@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion":"2010-09-09",
-    "Description":"Bring up the ML Service API stack in a VPC.",
+    "Description":"Bring up the edX Discern stack in a VPC.",
     "Parameters":{
         "EnvironmentTag":{
             "Type":"String",

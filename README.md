@@ -1,4 +1,4 @@
-ML Service API
+Discern
 ====================
 
 Questions?
