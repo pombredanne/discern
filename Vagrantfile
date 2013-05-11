@@ -6,7 +6,7 @@ Vagrant::Config.run do |config|
   
   # http://docs-v1.vagrantup.com/v1/docs/config/vm/share_folder.html
   # config.vm.share_folder "foo", "/guest/path", "/host/path"
-  config.vm.share_folder "ml-service-api", "/home/vagrant/ml-service-api", "."
+  config.vm.share_folder "discern", "/home/vagrant/discern", "."
   # setting an IP address with config.vm.network, we can use Fabric to configure the Vagrant box
   config.vm.network :hostonly, "33.33.33.10"
 end

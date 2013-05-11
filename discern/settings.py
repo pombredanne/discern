@@ -61,7 +61,7 @@ DATABASES = {
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'ml-service-api-cache'
+        'LOCATION': 'discern-cache'
     }
 }
 
@@ -227,10 +227,10 @@ AUTHENTICATION_BACKENDS = (
 
 ANONYMOUS_USER_ID = -1
 
-ROOT_URLCONF = 'ml_service_api.urls'
+ROOT_URLCONF = 'discern.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'ml_service_api.wsgi.application'
+WSGI_APPLICATION = 'discern.wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -327,7 +327,7 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/5'
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 #Haystack settings
-HAYSTACK_SITECONF = 'ml_service_api.search_sites'
+HAYSTACK_SITECONF = 'discern.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index")
 TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds

@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion":"2010-09-09",
-    "Description":"Bring up the ML Service API stack in a VPC.",
+    "Description":"Bring up the edX Discern stack in a VPC.",
     "Parameters":{
         "EnvironmentTag":{
             "Type":"String",
@@ -1725,6 +1725,24 @@
                         "FromPort":"22",
                         "ToPort":"22",
                         "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"11211",
+                        "ToPort":"11211",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"3306",
+                        "ToPort":"3306",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"12345",
+                        "ToPort":"12345",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
                 }
@@ -2239,6 +2257,12 @@
                         "SourceSecurityGroupId":{
                             "Ref":"MlapiELBSecurityGroup"
                         }
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"11211",
+                        "ToPort":"11211",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
             }
@@ -2255,10 +2279,6 @@
             "Description":"S3 Bucket for Mlapi servers",
             "Value":{
                 "Ref":"MlapiBucket"
-            },
-            "Name" : {
-                "Value" : { "Fn::GetAtt" : [ "MlapiBucket", "DomainName" ]},
-                "Description" : "Name of S3 bucket"
             }
         },
         "BastionHostIPAddress": {
@@ -2266,14 +2286,6 @@
             "Value":{
                 "Ref" : "BastionIPAddress"
             }
-        },
-        "MlapiPrivateIP" : {
-            "Description" : "Mlapi private ip",
-            "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MlapiELB", "DNSName" ]}]]}
-        },
-        "RabbitmqPrivateIP" : {
-            "Description" : "RabbitMQ private ip",
-            "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "MlapiELB", "DNSName" ]}]]}
         },
         "MlapiURL" : {
             "Description" : "Mlapi ELB url",
@@ -2345,13 +2357,18 @@
                         ",",
                         {
                             "Ref":"Cache02"
+                        },
+                        " ",
+                        "--region=",
+                        {
+                            "Ref":"AWS::Region"
                         }
                     ]
                 ]
             }
         },
         "ElasticCacheCreateCacheClusterCommand":{
-            "Description":"Foo",
+            "Description":"Create elasticcache cluster.  Run after creating the cache subnets!",
             "Value":{
                 "Fn::Join":[
                     "",
@@ -2378,12 +2395,41 @@
                             ]
                         },
                         " --cache-parameter-group-name default.memcached1.4 --auto-minor-version-upgrade true",
-                        " --cache-subnet-group-name ElasticCacheSubnetGroup",
+                        " --cache-subnet-group-name ",
+                        {
+                            "Ref":"MlapiVPC"
+                        },
+                        "-ElasticCacheSubnetGroup ",
+                        "--region=",
+                        {
+                            "Ref":"AWS::Region"
+                        },
+                        " ",
+                        "--security-group-ids ",
+                        {
+                            "Ref": "CacheSecurityGroup"
+                        }
+                    ]
+                ]
+            }
+        },
+        "ElasticCacheDescribeNodeCommand":{
+            "Description":"Gets the cache nodes you just created",
+            "Value":{
+                "Fn::Join":[
+                    "",
+                    [
+                        "elasticache-describe-cache-clusters",
                         " ",
                         {
                             "Ref":"MlapiVPC"
                         },
-                        "-ElasticCacheSubnetGroup"
+                        "-Cache --show-cache-node-info",
+                        " ",
+                        "--region=",
+                        {
+                            "Ref":"AWS::Region"
+                        }
                     ]
                 ]
             }
