@@ -23,14 +23,14 @@ from freeform_data.models import Problem, Essay, EssayGrade, GraderTypes
 from ml_grading.models import CreatedModel
 
 from ml_grading import ml_grading_util
+log = logging.getLogger(__name__)
 
 if settings.FOUND_ML:
     from ease import grade
 else:
+    log.info("Could not find ML grading package (EASE).")
     import mock_ml_grading
     grade = Mock(grade=mock_ml_grading.grade)
-
-log = logging.getLogger(__name__)
 
 #this is returned if the ML algorithm fails
 RESULT_FAILURE_DICT={'success' : False, 'errors' : 'Errors!', 'confidence' : 0, 'feedback' : "", 'score' : 0}
