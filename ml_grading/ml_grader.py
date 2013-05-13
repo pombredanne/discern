@@ -25,7 +25,7 @@ from ml_grading.models import CreatedModel
 from ml_grading import ml_grading_util
 
 if settings.FOUND_ML:
-    from machine_learning import grade
+    from ease import grade
 else:
     import mock_ml_grading
     grade = Mock(grade=mock_ml_grading.grade)

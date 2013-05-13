@@ -17,7 +17,7 @@ from ml_grading import ml_grading_util
 from mock import Mock
 
 if settings.FOUND_ML:
-    from machine_learning import create
+    from ease import create
 else:
     import mock_ml_grading
     create = Mock(create=mock_ml_grading.create)
@@ -144,7 +144,7 @@ def handle_single_problem(problem):
                         prompt = ""
                 prompt = prompt.encode('ascii', 'ignore')
 
-                #Call on the machine-learning repo to create a model
+                #Call on the ease repo to create a model
                 results = create.create(essay_text, scores, prompt)
 
                 scores = [int(score_item) for score_item in scores]

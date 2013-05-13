@@ -335,7 +335,7 @@ TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds
 #Check to see if the ml repo is available or not
 FOUND_ML = False
 try:
-    import machine_learning.grade
+    import ease.grade
     FOUND_ML = True
 except:
     pass

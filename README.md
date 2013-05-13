@@ -13,7 +13,7 @@ This is licensed under the AGPL, please see LICENSE.txt for details.
 The goal here is to provide a high-performance, scalable solution that can effectively help students learn.
 Feedback is a major part of this process, the feedback system has been left very flexible on purpose (you will see this later on).
 
-Note that you will need the machine-learning repository to use all of the functionality here.  This repo is now open source.  You will need to install both repos in the same directory.  Install directions for machine learning can be found at [Github](https://github.com/edx/machine-learning)
+Note that you will need the ease repository to use all of the functionality here.  This repo is now open source.  You will need to install both repos in the same directory.  Install directions for ease can be found at [Github](https://github.com/edx/ease)
 
 Examples and getting started
 -----------------------

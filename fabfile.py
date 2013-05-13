@@ -93,13 +93,13 @@ def deploy():
     #May need to edit if you are using this for deployment
     up_one_level_dir = '/opt/wwc'
     code_dir = os.path.join(up_one_level_dir, "discern")
-    ml_code_dir = os.path.join(up_one_level_dir, 'machine-learning')
+    ml_code_dir = os.path.join(up_one_level_dir, 'ease')
     database_dir = os.path.join(code_dir, "db")
     nltk_data_dir = '/usr/share/nltk_data'
     static_dir = os.path.join(code_dir, 'staticfiles')
     deployment_config_dir = os.path.join(ROOT_PATH, "deployment/configuration/")
     discern_repo_url = 'git@github.com:edx/discern.git'
-    machine_learning_repo_url = 'git@github.com:edx/machine-learning.git'
+    ease_repo_url = 'git@github.com:edx/ease.git'
 
     #this is needed for redis-server to function properly
     sudo('sysctl vm.overcommit_memory=1')
@@ -128,7 +128,7 @@ def deploy():
         ml_repo_exists = exists(ml_code_dir, use_sudo=True)
         if not ml_repo_exists:
             with cd(up_one_level_dir):
-                run('git clone {0}'.format(machine_learning_repo_url))
+                run('git clone {0}'.format(ease_repo_url))
 
         db_exists = exists(database_dir, use_sudo=True)
         if not db_exists:
