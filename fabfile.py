@@ -1,5 +1,5 @@
 """
-This fabfile currently works to deploy this repo and machine-learning to a new server.
+This fabfile currently works to deploy this repo and ease to a new server.
 A lot of settings and names will need to be changed around for your specific config, so
 look through carefully.
 """

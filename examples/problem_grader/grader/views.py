@@ -111,7 +111,7 @@ def action(request):
         slumber_data = slumber_models[model].action(action,id=id,data=data)
     except Exception as inst:
         #If we cannot, log the error information from slumber.  Will likely contain the error message recieved from the api
-        error_message = "Could not perform action {action} on model type {model} with id {id} and data {data}.".format(action=action, model_type=model, id=id, data=data)
+        error_message = "Could not perform action {action} on model type {model} with id {id} and data {data}.".format(action=action, model=model, id=id, data=data)
         error_information = "Recieved the following from the server.  Args: {args} , response: {response}, content: {content}".format(args=inst.args, response=inst.response, content=inst.content)
         log.error(error_message)
         log.error(error_information)
