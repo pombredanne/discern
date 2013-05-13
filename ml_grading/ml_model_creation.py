@@ -16,13 +16,14 @@ from ml_grading.models import CreatedModel
 from ml_grading import ml_grading_util
 from mock import Mock
 
+log = logging.getLogger(__name__)
+
 if settings.FOUND_ML:
-    from machine_learning import create
+    from ease import create
 else:
     import mock_ml_grading
+    log.info("Could not find ML grading package (EASE).")
     create = Mock(create=mock_ml_grading.create)
-
-log = logging.getLogger(__name__)
 
 MAX_ESSAYS_TO_TRAIN_WITH = 1000
 MIN_ESSAYS_TO_TRAIN_WITH = 10
@@ -144,7 +145,7 @@ def handle_single_problem(problem):
                         prompt = ""
                 prompt = prompt.encode('ascii', 'ignore')
 
-                #Call on the machine-learning repo to create a model
+                #Call on the ease repo to create a model
                 results = create.create(essay_text, scores, prompt)
 
                 scores = [int(score_item) for score_item in scores]

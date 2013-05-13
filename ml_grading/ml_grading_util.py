@@ -113,7 +113,7 @@ def get_pickle_data(prompt_string, feature_ext, classifier, text, score):
     """
     Dumps data to a pickle string
     prompt string is a string containing the prompt
-    feature_ext is a trained FeatureExtractor object (found in machine-learning repo)
+    feature_ext is a trained FeatureExtractor object (found in ease repo)
     classifier is a trained classifier
     model_path is the path of write out the model file to
     """
