@@ -1,6 +1,6 @@
 scipy==0.11.0
 -r base-requirements.txt
--e git+https://github.com/edx/ease.git@41a81b92b334eaa1fdf22ebce333af7e78abc9b6#egg=ease
+-e git+https://github.com/edx/ease.git@8cc465cbcca2f925f52581654763fde618cd1203#egg=ease
 coverage==3.5.3   # coverage breaks travis, so move it out of base-requirements
 fabric==1.6.0
 sphinx==1.1.3
