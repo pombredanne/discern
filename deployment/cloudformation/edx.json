@@ -169,6 +169,7 @@
             "AllowedValues":[
                 "db.m1.micro",
                 "db.m1.small",
+                "db.m1.medium",
                 "db.m1.large",
                 "db.m1.xlarge",
                 "db.m2.xlarge",
