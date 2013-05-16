@@ -5,6 +5,7 @@ import sys
 import os
 from path import path
 import logging
+log = logging.getLogger(__name__)
 
 #Initialize celery
 import djcelery
