@@ -54,6 +54,11 @@
             "Type":"Number",
             "Default":"11211"
         },
+        "RabbitMQPort":{
+            "Description":"The TCP port for the rabbitMQ node",
+            "Type":"Number",
+            "Default":"5672"
+        },
         "BastionInstanceType":{
             "Description":"Bastion Host EC2 instance type",
             "Type":"String",
@@ -1755,8 +1760,8 @@
                     },
                     {
                         "IpProtocol":"tcp",
-                        "FromPort":"5672",
-                        "ToPort":"5672",
+                        "FromPort":{ "Ref":"RabbitMQPort" },
+                        "ToPort":{ "Ref":"RabbitMQPort" },
                         "CidrIp":"0.0.0.0/0"
                     },
                     {
@@ -2294,10 +2299,14 @@
         }
     },
     "Outputs":{
-        "MlapiSecurityGroup":{
-            "Description":"EC2 Security Group with access to the Mlapi server",
+        "RabbitMQCelery":{
+            "Description":"Celery string for rabbit",
             "Value":{
-                "Ref":"MlapiServerSecurityGroup"
+                "Value" :  {
+                    "Fn::Join" :
+                        [ "", [ "amqp://guest:guest@", { "Ref" : "RabbitMQELB"}, ":5672/"]
+                        ]
+                }
             }
         },
         "MlapiS3Bucket":{
