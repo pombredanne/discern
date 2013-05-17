@@ -20,4 +20,4 @@ cover/
 db/*
 examples/problem_grader/staticfiles/*
 examples/problem_grader/db/*
-ml_models_api/
+ml_models_api/*
