@@ -4,8 +4,8 @@ Usage
 
 You will need to run both the API server, and the celery backend to process tasks.
 
-1. python manage.py runserver 127.0.0.1:7999 --nostatic --settings=discern.settings --pythonpath=.
-2. python manage.py celeryd -B --settings=discern.settings --pythonpath=DIR WHERE YOU CLONED REPO  --loglevel=debug
+1. ``python manage.py runserver 127.0.0.1:7999 --nostatic --settings=discern.settings --pythonpath=.``
+2. ``python manage.py celeryd -B --settings=discern.settings --pythonpath=DIR WHERE YOU CLONED REPO  --loglevel=debug``
 
 Frontend Usage
 ------------------------------
