@@ -17,7 +17,7 @@ Note that you will need the ease repository to use all of the functionality here
 
 Examples and getting started
 -----------------------
-Please see docs/installation for installation information.  Examples can be found in docs/examples.  A built version of these can be found at [ReadtheDocs](http://ml-api.readthedocs.org/en/latest/), or you can feel free to clone the repo and build these yourself.
+Please see docs/installation for installation information.  Examples can be found in docs/examples.  A built version of these can be found at [ReadtheDocs](http://discern.readthedocs.org/en/latest/), or you can feel free to clone the repo and build these yourself.
 
 How to Contribute
 -----------------------
@@ -31,4 +31,4 @@ Detailed Information
 Please look in the docs folder for more detailed documentation.  There is a README there that explains how to build
 and view the docs.
 
-You can also see the latest documentation at [ReadtheDocs](http://ml-api.readthedocs.org/en/latest/) .
+You can also see the latest documentation at [ReadtheDocs](http://discern.readthedocs.org/en/latest/) .
