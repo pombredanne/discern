@@ -43,6 +43,7 @@ def grade_ml():
     #TODO: Add in some checking to ensure that count is of instructor graded essays only
     problems = Problem.objects.all().annotate(essay_count=Count('essay')).filter(essay_count__gt=(MIN_ESSAYS_TO_TRAIN_WITH-1))
     essays = Essay.objects.filter(problem__in=problems, has_been_ml_graded=False)
+    #TODO: Grade essays in batches so ml model doesn't have to be loaded every single time (or cache the model files)
     for essay in essays:
         grade_ml_single_essay(essay)
 

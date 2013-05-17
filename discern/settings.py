@@ -5,6 +5,7 @@ import sys
 import os
 from path import path
 import logging
+log = logging.getLogger(__name__)
 
 #Initialize celery
 import djcelery
@@ -16,7 +17,7 @@ REPO_PATH = ROOT_PATH.dirname()
 ENV_ROOT = REPO_PATH.dirname()
 
 #ML Specific settings
-ML_MODEL_PATH=os.path.join(ENV_ROOT,"ml_models_api/") #Path to save and retrieve ML models from
+ML_MODEL_PATH=os.path.join(REPO_PATH,"ml_models_api/") #Path to save and retrieve ML models from
 TIME_BETWEEN_ML_CREATOR_CHECKS= 1 * 60 # seconds.  Time between ML creator checking to see if models need to be made.
 TIME_BETWEEN_ML_GRADER_CHECKS= 10 # seconds.  Time between ML grader checking to see if models need to be made.
 USE_S3_TO_STORE_MODELS= False #Determines whether or not models are placed in Amazon S3
@@ -329,7 +330,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 #Haystack settings
 HAYSTACK_SITECONF = 'discern.search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index")
+HAYSTACK_WHOOSH_PATH = os.path.join(REPO_PATH,"whoosh_api_index")
 TIME_BETWEEN_INDEX_REBUILDS = 60 # seconds
 
 #Check to see if the ml repo is available or not

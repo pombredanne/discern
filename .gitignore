@@ -8,7 +8,6 @@ _build/
 tmpfile
 celerybeat-schedule
 staticfiles/*
-whoosh_api_index/
 build/
 .vagrant
 whoosh_api_index_test/
@@ -16,8 +15,9 @@ whoosh_api_index_test/
 nosetests.xml
 cover/
 .coverage
-!.vc
 db/*
 examples/problem_grader/staticfiles/*
 examples/problem_grader/db/*
-ml_models_api/
+ml_models_api/*
+whoosh_api_index/*
+!.vc

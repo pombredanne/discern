@@ -52,14 +52,14 @@ def handle_single_problem(problem):
             #If a grade could successfully be found, then add the essay text.  Both lists need to be in sync.
             essay_text.append(essay_text_vals[i]['essay_text'])
         except:
-            log.exception("Could not get latest instructor scored for {0}".format(essays[i]))
+            log.error("Could not get latest instructor scored for {0}".format(essays[i].id))
 
     try:
         #This is needed to remove stray characters that could break the machine learning code
         essay_text = [et.encode('ascii', 'ignore') for et in essay_text]
     except:
         error_message = "Could not correctly encode some submissions: {0}".format(essay_text)
-        log.exception(error_message)
+        log.error(error_message)
         return False, error_message
 
     #Get the maximum target scores from the problem

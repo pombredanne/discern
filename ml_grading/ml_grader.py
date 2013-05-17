@@ -15,6 +15,7 @@ import os
 from path import path
 import pickle
 from mock import Mock
+from freeform_data import helpers
 
 log=logging.getLogger(__name__)
 
@@ -114,6 +115,8 @@ def handle_single_essay(essay):
     #Update the essay so that it doesn't keep trying to re-grade
     essay.has_been_ml_graded = True
     essay.save()
+    #copy permissions from the essay to the essaygrade
+    helpers.copy_permissions(essay, Essay, essay_grade, EssayGrade)
     transaction.commit_unless_managed()
     return True, "Successfully scored!"
 

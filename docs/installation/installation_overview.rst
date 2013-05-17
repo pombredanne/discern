@@ -5,20 +5,20 @@ Looking at fabfile.py is also a good idea of how to install this.  The commands 
 from a fresh start to a fully working install.
 The main steps are:
 
-1. apt-get install git python
-2. git clone git@github.com:edx/discern.git
-3. xargs -a apt-packages.txt apt-get install
-4. apt-get install python-pip
-5. pip install virtualenv
-6. virtualenv /opt/edx
-7. source /opt/edx/bin/activate
-8. cd discern
-9. pip install -r pre-requirements.txt
-10. pip install -r requirements.txt
-11. python manage.py syncdb --settings=discern.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO
+1. ``apt-get install git python``
+2. ``git clone git@github.com:edx/discern.git``
+3. ``xargs -a apt-packages.txt apt-get install``
+4. ``apt-get install python-pip``
+5. ``pip install virtualenv``
+6. ``virtualenv /opt/edx``
+7. ``source /opt/edx/bin/activate``
+8. ``cd discern``
+9. ``pip install -r pre-requirements.txt``
+10. ``pip install -r requirements.txt``
+11. ``python manage.py syncdb --settings=discern.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO``
 12. Choose "no" for create superuser if syncdb prompts you for it.
-13. python manage.py migrate --settings=discern.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO
-14. python manage.py collectstatic -c --noinput --settings=discern.settings --pythonpath=DIR WHERE YOU CLONED REPO
+13. ``python manage.py migrate --settings=discern.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO``
+14. ``python manage.py collectstatic -c --noinput --settings=discern.settings --pythonpath=DIR WHERE YOU CLONED REPO``
 
 See "usage" for how to run this.  You will both need to run the server and the celery tasks.
 
