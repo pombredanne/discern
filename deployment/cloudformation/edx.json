@@ -2072,8 +2072,8 @@
                 ],
                 "Listeners":[
                     {
-                        "LoadBalancerPort":"5672",
-                        "InstancePort":"5672",
+                        "LoadBalancerPort":{ "Ref":"RabbitMQPort" },
+                        "InstancePort":{ "Ref":"RabbitMQPort" },
                         "Protocol":"TCP"
                     },
                     {
@@ -2109,8 +2109,8 @@
                 "SecurityGroupIngress":[
                     {
                         "IpProtocol":"tcp",
-                        "FromPort":"5672",
-                        "ToPort":"5672",
+                        "FromPort":{ "Ref":"RabbitMQPort" },
+                        "ToPort":{ "Ref":"RabbitMQPort" },
                         "CidrIp":"10.0.0.0/16"
                     },
                     {
@@ -2123,8 +2123,8 @@
                 "SecurityGroupEgress":[
                     {
                         "IpProtocol":"tcp",
-                        "FromPort":"5672",
-                        "ToPort":"5672",
+                        "FromPort":{ "Ref":"RabbitMQPort" },
+                        "ToPort":{ "Ref":"RabbitMQPort" },
                         "CidrIp":"10.0.0.0/16"
                     },
                     {
@@ -2158,8 +2158,8 @@
                     },
                     {
                         "IpProtocol":"tcp",
-                        "FromPort":"5672",
-                        "ToPort":"5672",
+                        "FromPort":{ "Ref":"RabbitMQPort" },
+                        "ToPort":{ "Ref":"RabbitMQPort" },
                         "SourceSecurityGroupId" : {
                             "Ref" : "RabbitMQELBSecurityGroup"
                         }
@@ -2304,7 +2304,7 @@
             "Value":{
                 "Value" :  {
                     "Fn::Join" :
-                        [ "", [ "amqp://guest:guest@", { "Ref" : "RabbitMQELB"}, ":5672/"]
+                        [ "", [ "amqp://guest:guest@", { "Ref" : "RabbitMQELB"}, ":", { "Ref":"RabbitMQPort" },"/"]
                         ]
                 }
             }
