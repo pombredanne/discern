@@ -1275,6 +1275,30 @@
                 ]
             }
         },
+				"MlapiRole": {
+						"Type": "AWS::IAM::Role",
+						"Properties": {
+								"AssumeRolePolicyDocument": {
+										"Statement": [ {
+												"Effect": "Allow",
+												"Principal": {
+														"Service": [ "ec2.amazonaws.com" ]
+												},
+												"Action": [ "sts:AssumeRole" ]
+										} ]
+								},
+								"Path": "/"
+						}
+				},
+				"MlapiInstanceProfile": {
+						"Type": "AWS::IAM::InstanceProfile",
+						"Properties": {
+								"Path": "/",
+								"Roles": [ {
+										"Ref": "MlapiRole"
+								} ]
+						}
+				},
         "MlapiServerUser":{
             "Type":"AWS::IAM::User",
             "Properties":{
@@ -1363,6 +1387,7 @@
                 }
             },
             "Properties":{
+								"IamInstanceProfile":{ "Ref":"MlapiInstanceProfile" },
                 "SecurityGroups":[
                     {
                         "Ref":"MlapiServerSecurityGroup"
