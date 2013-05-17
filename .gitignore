@@ -16,8 +16,8 @@ whoosh_api_index_test/
 nosetests.xml
 cover/
 .coverage
-!.vc
 db/*
 examples/problem_grader/staticfiles/*
 examples/problem_grader/db/*
 ml_models_api/*
+!.vc
