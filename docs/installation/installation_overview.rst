@@ -20,7 +20,7 @@ The main steps are:
 13. ``python manage.py migrate --settings=discern.settings --noinput --pythonpath=DIR WHERE YOU CLONED REPO``
 14. ``python manage.py collectstatic -c --noinput --settings=discern.settings --pythonpath=DIR WHERE YOU CLONED REPO``
 
-See "usage" for how to run this.  You will both need to run the server and the celery tasks.
+See :doc:`usage` for how to run this.  You will both need to run the server and the celery tasks.
 
 You can skip the virtualenv commands if you like, but they will be a major help in keeping the packages
 for this repo separate from the rest of your system.
