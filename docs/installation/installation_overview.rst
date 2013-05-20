@@ -27,31 +27,31 @@ for this repo separate from the rest of your system.
 
 If all has gone well, you see a database directory called db. An sqlite3 database was created in it. The sqlite3 
 command can be used to inspect the tables which Django generated.  
-
-		$ sqlite3 db/service-api-db.db 
-		SQLite version 3.7.9 2011-11-01 00:52:41
-		Enter ".help" for instructions
-		Enter SQL statements terminated with a ";"
-		sqlite> .tables
-		account_emailaddress                freeform_data_course              
-		account_emailconfirmation           freeform_data_course_organizations
-		auth_group                          freeform_data_course_users        
-		auth_group_permissions              freeform_data_essay               
-		auth_permission                     freeform_data_essaygrade          
-		auth_user                           freeform_data_membership          
-		auth_user_groups                    freeform_data_organization        
-		auth_user_user_permissions          freeform_data_problem             
-		celery_taskmeta                     freeform_data_problem_courses     
-		celery_tasksetmeta                  freeform_data_userprofile         
-		django_admin_log                    guardian_groupobjectpermission    
-		django_content_type                 guardian_userobjectpermission     
-		django_session                      ml_grading_createdmodel           
-		django_site                         socialaccount_socialaccount       
-		djcelery_crontabschedule            socialaccount_socialapp           
-		djcelery_intervalschedule           socialaccount_socialapp_sites     
-		djcelery_periodictask               socialaccount_socialtoken         
-		djcelery_periodictasks              south_migrationhistory            
-		djcelery_taskstate                  tastypie_apiaccess                
-		djcelery_workerstate                tastypie_apikey    
+::
+	$ sqlite3 db/service-api-db.db 
+	SQLite version 3.7.9 2011-11-01 00:52:41
+	Enter ".help" for instructions
+	Enter SQL statements terminated with a ";"
+	sqlite> .tables
+	account_emailaddress                freeform_data_course              
+	account_emailconfirmation           freeform_data_course_organizations
+	auth_group                          freeform_data_course_users        
+	auth_group_permissions              freeform_data_essay               
+	auth_permission                     freeform_data_essaygrade          
+	auth_user                           freeform_data_membership          
+	auth_user_groups                    freeform_data_organization        
+	auth_user_user_permissions          freeform_data_problem             
+	celery_taskmeta                     freeform_data_problem_courses     
+	celery_tasksetmeta                  freeform_data_userprofile         
+	django_admin_log                    guardian_groupobjectpermission    
+	django_content_type                 guardian_userobjectpermission     
+	django_session                      ml_grading_createdmodel           
+	django_site                         socialaccount_socialaccount       
+	djcelery_crontabschedule            socialaccount_socialapp           
+	djcelery_intervalschedule           socialaccount_socialapp_sites     
+	djcelery_periodictask               socialaccount_socialtoken         
+	djcelery_periodictasks              south_migrationhistory            
+	djcelery_taskstate                  tastypie_apiaccess                
+	djcelery_workerstate                tastypie_apikey    
 
 You will need to install the ease repo (https://github.com/edx/ease) in the same base directory that you installed discern in order to get all functionality.  Follow the install instructions in that repo.
