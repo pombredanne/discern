@@ -2,10 +2,22 @@
 Usage
 ==================================
 
-You will need to run both the API server, and the celery backend to process tasks.
+This page walks you through lauching discern and exploring its APIs. Before we begin, let's sanity check for ease module installation. Simply import the ease.grade module. 
+::
+	$ python manage.py shell 
+	Python 2.7.3 (default, Aug  1 2012, 05:16:07) 
+	[GCC 4.6.3] on linux2
+	Type "help", "copyright", "credits" or "license" for more information.
+	(InteractiveConsole)
+	>>> import ease.grade
+	>>> 
 
-1. python manage.py runserver 127.0.0.1:7999 --nostatic --settings=discern.settings --pythonpath=.
-2. python manage.py celeryd -B --settings=discern.settings --pythonpath=DIR WHERE YOU CLONED REPO  --loglevel=debug
+On success, it should simply return you to the python prompt. If it throws an exception, there is a problem with the ease installation. 
+
+Now let's run discern. You will need to run both the API server and the celery backend to process tasks.
+
+1. ``python manage.py runserver 127.0.0.1:7999 --nostatic --settings=discern.settings --pythonpath=. &``
+2. ``python manage.py celeryd -B --settings=discern.settings --pythonpath=. --loglevel=debug --logfile=/tmp/celery$$.out &``
 
 Frontend Usage
 ------------------------------
