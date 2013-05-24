@@ -2,8 +2,8 @@
 Usage
 ==================================
 
-This page walks you through lauching discern and exploring its APIs. Before we begin, let's sanity check for ease module installation. Simply import the ease.grade module. 
-::
+This page walks you through lauching discern and exploring its APIs. Before we begin, let's sanity check for ease module installation. Simply import the ease.grade module.::
+
 	$ python manage.py shell 
 	Python 2.7.3 (default, Aug  1 2012, 05:16:07) 
 	[GCC 4.6.3] on linux2
@@ -26,9 +26,11 @@ There is an easy to use frontend for Admin Interface.  In order to use it, just 
 Getting started - the plan
 ------------------------------
 
-Discern allows anyone to use machine learning based automated textual classification as an API service. You would generally want text that is associated with one or more *scores*. These *scores* can be anything. One example would be a corpus of essays that are scored. Another example would be `reddit <http://www.reddit.com/>`_ comments/posts, which are associated with upvotes/downvotes, which are a *score*. Another example would be news articles and stock prices before/after the news articles were released.
+Discern allows anyone to use machine learning based automated textual classification as an API service. You would generally want text that is associated with one or more *scores*. These *scores* can be anything. One example would be a corpus of essays that are scored. Another example would be `reddit <http://www.reddit.com/>`_ comments/posts, which are associated with upvotes/downvotes, which are a *score*. Another example would be news articles and stock prices before/after the news articles were released.  This tutorial will use reddit. 
 
-We will use the python `Request module <http://docs.python-requests.org/en/latest/>`_ to interact with our Discern server. For our examples,the response will be in `JSON <http://en.wikipedia.org/wiki/JSON>`_. The example code is broken down into small programs(e.g., to login, to create a user, etc). Each will include this python module. 
+We will use the python `request module <http://docs.python-requests.org/en/latest/>`_ to interact with our Discern server. For our examples,the response will be in `JSON <http://en.wikipedia.org/wiki/JSON>`_. To access reddit, the examples use `PRAW: The Python Reddit Api Wrapper <https://github.com/praw-dev/praw>`_.
+
+The example code is broken down into small programs. Each will include this python module. 
 
 .. literalinclude:: ../examples/common_settings.py
    :language: python
@@ -43,7 +45,7 @@ The basic outline for this tutorial is:
 #. Add 10 essay grade objects that are instructor scored and associate each one with an essay.
 #. A model will now be created, and from now on, each additional essay you add will automatically have an essay grade object associated with it that contains the machine score.
 
-Getting started - becoming familiar with the API
+Getting started - the API
 --------------------------------------------------
 
 As configured in this tutorial, the main end point for discern is `http://127.0.0.1:7999/essay_site/api/v1`. 
@@ -53,8 +55,8 @@ Consider the following code segment which enumerates the endpoints offered by Di
    :language: python
    :linenos:
 
-and here is the resulting output.
-::
+and here is the resulting output.::
+
 	$ python connect_to_api.py 
 	Status Code: 200
 	{u'essay': {u'list_endpoint': u'/essay_site/api/v1/essay/', u'schema': u'/essay_site/api/v1/essay/schema/'}, u'essaygrade': {u'list_endpoint': u'/essay_site/api/v1/essaygrade/', u'schema': u'/essay_site/api/v1/essaygrade/schema/'}, u'course': {u'list_endpoint': u'/essay_site/api/v1/course/', u'schema': u'/essay_site/api/v1/course/schema/'}, u'membership': {u'list_endpoint': u'/essay_site/api/v1/membership/', u'schema': u'/essay_site/api/v1/membership/schema/'}, u'user': {u'list_endpoint': u'/essay_site/api/v1/user/', u'schema': u'/essay_site/api/v1/user/schema/'}, u'createuser': {u'list_endpoint': u'/essay_site/api/v1/createuser/', u'schema': u'/essay_site/api/v1/createuser/schema/'}, u'organization': {u'list_endpoint': u'/essay_site/api/v1/organization/', u'schema': u'/essay_site/api/v1/organization/schema/'}, u'problem': {u'list_endpoint': u'/essay_site/api/v1/problem/', u'schema': u'/essay_site/api/v1/problem/schema/'}, u'userprofile': {u'list_endpoint': u'/essay_site/api/v1/userprofile/', u'schema': u'/essay_site/api/v1/userprofile/schema/'}}
@@ -78,7 +80,64 @@ The last status code from the output was 401 because we aren't logged in. To pro
 
 Alternatively, if you want a UI to interactively play around with these APIs, the POSTMAN add-on for Chrome is highly recommended. The endpoint is http://127.0.0.1:7999/essay_site/api/v1/createuser/. Just POST a JSON data dictionary containing the keys username and password (i.e., *{"username" : "test", "password" : "test"}* ).
 
+Later in this tutorial, we will need to establish relationships between a course and its organization. This code segment enumates the schema for course. 
+
+.. literalinclude:: ../examples/enumate_schema.py
+   :language: python
+   :linenos:
+
+The resulting output is...::
+
+	$ python enumate_schema.py 
+	Name: course_name 
+		 Can be blank: False 
+		 Type: string 
+		 Help Text: Unicode string data. Ex: "Hello World"
+
+	Name: created 
+		 Can be blank: False 
+		 Type: datetime 
+		 Help Text: A date & time as a string. Ex: "2010-11-10T03:07:43"
+
+	Name: id 
+		 Can be blank: False 
+		 Type: integer 
+		 Help Text: Integer data. Ex: 2673
+
+	Name: modified 
+		 Can be blank: False 
+		 Type: datetime 
+		 Help Text: A date & time as a string. Ex: "2010-11-10T03:07:43"
+
+	Name: organizations 
+		 Can be blank: True 
+		 Type: related 
+		 Help Text: Many related resources. Can be either a list of URIs or list of individually nested resource data.
+
+	Name: problems 
+		 Can be blank: True 
+		 Type: related 
+		 Help Text: Many related resources. Can be either a list of URIs or list of individually nested resource data.
+
+	Name: resource_uri 
+		 Can be blank: False 
+		 Type: string 
+		 Help Text: Unicode string data. Ex: "Hello World"
+
+	Name: users 
+		 Can be blank: True 
+		 Type: related 
+		 Help Text: Many related resources. Can be either a list of URIs or list of individually nested resource data.
+
+The fields **id**, **created**, and **modified** are automatically generated and we do not need to provide them. Given this, we only need to provide the non-blank field **course_name**. In the next section, we use the **organizations** key to link a course to our organization.
+
 Getting started - creating objects 
 ---------------------------------------
 
-At this point, you'll want to create an organization object, a course object, and a problem object. To allow us to focus on the Discern API, we will use reddit.  
+When interacting with the Discern Server, you'll want to create an organization object, a course object, and a problem object for your institution. This script creates an organization and course object for this tutorial. 
+
+.. literalinclude:: ../examples/create_objects_for_tutorial.py
+   :language: python
+   :linenos:
+
+As mentioned above we will be using reddit. The heart of the matter is to have responses to a questions which have a score associated with them. 
