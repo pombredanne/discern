@@ -39,8 +39,6 @@ class GuardianAuthorization(Authorization):
             return []
 
         for obj in object_list:
-            log.info(obj)
-            log.info(check_permissions("view", bundle.request.user, obj))
             if check_permissions("view", bundle.request.user, obj):
                 read_list.append(obj)
             #Permissions cannot be created for user models, so hack the permissions to show users their own info

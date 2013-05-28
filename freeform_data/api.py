@@ -199,9 +199,9 @@ class OrganizationResource(SearchModelResource):
     essays = fields.ToManyField('freeform_data.api.EssayResource', 'essay_set', null=True)
     #This maps the organization users to the users model via membership
     user_query = lambda bundle: bundle.obj.users.through.objects.all() or bundle.obj.users
-    users = fields.ToManyField("freeform_data.api.MembershipResource", attribute=user_query, null=True)
+    users = fields.ToManyField("freeform_data.api.MembershipResource", attribute=user_query, null=True, related_name="organizations")
     #Also show members in the organization (useful for getting role)
-    memberships = fields.ToManyField("freeform_data.api.MembershipResource", 'membership_set', null=True)
+    memberships = fields.ToManyField("freeform_data.api.MembershipResource", 'membership_set', null=True, related_name="organization")
     class Meta:
         queryset = Organization.objects.all()
         resource_name = 'organization'
@@ -264,8 +264,8 @@ class UserResource(SearchModelResource):
     essays = fields.ToManyField('freeform_data.api.EssayResource', 'essay_set', null=True, related_name='user')
     courses = fields.ToManyField('freeform_data.api.CourseResource', 'course_set', null=True)
     userprofile = fields.ToOneField('freeform_data.api.UserProfileResource', 'userprofile', related_name='user')
-    organizations = fields.ToManyField('freeform_data.api.OrganizationResource', 'organization_set', null=True)
-    memberships = fields.ToManyField("freeform_data.api.MembershipResource", 'membership_set', null=True)
+    organizations = fields.ToManyField('freeform_data.api.OrganizationResource', 'organization_set', null=True, related_name="users")
+    memberships = fields.ToManyField("freeform_data.api.MembershipResource", 'membership_set', null=True, related_name="user")
     class Meta:
         queryset = User.objects.all()
         resource_name = 'user'
@@ -275,6 +275,7 @@ class UserResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = User
+        excludes = ['password']
 
     def obj_create(self, bundle, **kwargs):
         return super(UserResource, self).obj_create(bundle)
@@ -287,8 +288,8 @@ class MembershipResource(SearchModelResource):
     """
     Encapsulates the Membership Model
     """
-    user = fields.ToOneField('freeform_data.api.UserResource', 'user')
-    organization = fields.ToOneField('freeform_data.api.OrganizationResource', 'organization')
+    user = fields.ToOneField('freeform_data.api.UserResource', 'user', related_name="memberships")
+    organization = fields.ToOneField('freeform_data.api.OrganizationResource', 'organization', related_name="memberships")
     class Meta:
         queryset = Membership.objects.all()
         resource_name = 'membership'
