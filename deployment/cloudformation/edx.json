@@ -2233,6 +2233,18 @@
                         "FromPort":"4369",
                         "ToPort":"4369",
                         "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"80",
+                        "ToPort":"80",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"9418",
+                        "ToPort":"9418",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
             }
