@@ -2219,6 +2219,20 @@
                         "SourceSecurityGroupId" : {
                             "Ref" : "RabbitMQELBSecurityGroup"
                         }
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"4369",
+                        "ToPort":"4369",
+                        "CidrIp":"0.0.0.0/0"
+                    }
+                ],
+                "SecurityGroupEgress":[
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"4369",
+                        "ToPort":"4369",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
             }
@@ -2349,12 +2363,11 @@
     "Outputs":{
         "RabbitMQCelery":{
             "Description":"Celery string for rabbit",
-            "Value":{
-                "Value" :  {
-                    "Fn::Join" :
-                        [ "", [ "amqp://guest:guest@", { "Ref" : "RabbitMQELB"}, ":", { "Ref":"RabbitMQPort" },"/"]
-                        ]
-                }
+            "Value" :  {
+                "Fn::Join" :
+                    [
+                        "", [ "amqp://guest:guest@", { "Fn::GetAtt" : [ "RabbitMQELB", "DNSName" ]}, ":", { "Ref":"RabbitMQPort" },"/"]
+                    ]
             }
         },
         "MlapiS3Bucket":{

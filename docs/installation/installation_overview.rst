@@ -25,6 +25,8 @@ See :doc:`usage` for how to run this.  You will both need to run the server and 
 You can skip the virtualenv commands if you like, but they will be a major help in keeping the packages
 for this repo separate from the rest of your system.
 
+You will need to install the ease repo (https://github.com/edx/ease) in the same base directory that you installed discern in order to get all functionality.  Follow the install instructions in that repo.
+
 If all has gone well, you see a database directory called db. An sqlite3 database was created in it. The sqlite3 
 command can be used to inspect the tables which Django generated.  
 ::
@@ -53,5 +55,3 @@ command can be used to inspect the tables which Django generated.
 	djcelery_periodictasks              south_migrationhistory            
 	djcelery_taskstate                  tastypie_apiaccess                
 	djcelery_workerstate                tastypie_apikey    
-
-You will need to install the ease repo (https://github.com/edx/ease) in the same base directory that you installed discern in order to get all functionality.  Follow the install instructions in that repo.
