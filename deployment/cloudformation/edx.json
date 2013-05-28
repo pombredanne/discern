@@ -1299,6 +1299,12 @@
                         "FromPort":"9418",
                         "ToPort":"9418",
                         "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"443",
+                        "ToPort":"443",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
             }
@@ -2244,6 +2250,12 @@
                         "IpProtocol":"tcp",
                         "FromPort":"9418",
                         "ToPort":"9418",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"443",
+                        "ToPort":"443",
                         "CidrIp":"0.0.0.0/0"
                     }
                 ]
