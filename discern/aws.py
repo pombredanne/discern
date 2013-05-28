@@ -55,6 +55,9 @@ if AWS_SES_REGION_NAME is not None:
 
 #Try to set the domain for the current site
 #Needed to get the right site name for email activation
+#Comment out, as this is causing issues in deployment.
+#TODO: Move to a fixture
+"""
 try:
     if DNS_HOSTNAME is not None:
         from django.contrib.sites.models import Site
@@ -65,3 +68,4 @@ try:
         current_site.save()
 except:
     log.info("Could not set site name and domain.  Not a problem if this is a dev/sandbox environment.  May cause confusion with email activation in production.")
+"""
