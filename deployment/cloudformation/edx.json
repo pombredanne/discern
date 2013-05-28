@@ -2363,12 +2363,11 @@
     "Outputs":{
         "RabbitMQCelery":{
             "Description":"Celery string for rabbit",
-            "Value":{
-                "Value" :  {
-                    "Fn::Join" :
-                        [ "", [ "amqp://guest:guest@", { "Ref" : "RabbitMQELB"}, ":", { "Ref":"RabbitMQPort" },"/"]
-                        ]
-                }
+            "Value" :  {
+                "Fn::Join" :
+                    [
+                        "", [ "amqp://guest:guest@", { "Ref" : "RabbitMQELB"}, ":", { "Ref":"RabbitMQPort" },"/"]
+                    ]
             }
         },
         "MlapiS3Bucket":{
