@@ -23,13 +23,27 @@ class GuardianAuthorization(Authorization):
 
         # If it doesn't look like a model, we can't check permissions.
         if not model_klass or not getattr(model_klass, '_meta', None):
-            return False
+            raise Unauthorized("Improper model class defined.")
 
         # User must be logged in to check permissions.
         if not hasattr(request, 'user'):
-            return False
+            raise Unauthorized("You must be logged in.")
 
         return model_klass
+
+    #Delete and update permissions can be consolidated into this function
+    def check_permissions(self, object_list,bundle, permission_name):
+        klass = self.base_checks(bundle.request, object_list.model)
+        update_list=[]
+
+        if klass is False:
+            return []
+
+        for obj in object_list:
+            if check_permissions(permission_name, bundle.request.user, obj):
+                update_list.append(obj)
+
+        return update_list
 
     def read_list(self, object_list, bundle):
         klass = self.base_checks(bundle.request, object_list.model)
@@ -41,6 +55,9 @@ class GuardianAuthorization(Authorization):
         for obj in object_list:
             if check_permissions("view", bundle.request.user, obj):
                 read_list.append(obj)
+            #Permissions cannot be created for user models, so hack the permissions to show users their own info
+            if getattr(klass,'__name__')=="User" and bundle.request.user.id == obj.id:
+                read_list.append(obj)
         # GET-style methods are always allowed.
         return read_list
 
@@ -48,13 +65,15 @@ class GuardianAuthorization(Authorization):
         klass = self.base_checks(bundle.request, bundle.obj.__class__)
         read_list=[]
 
+        #Users don't exist when their own User model is created, so hack to display user info to people
+        #This circumvents the normal permissions model and just shows users their own info
+        if getattr(klass,'__name__')=="User":
+            if bundle.request.user.id == object_list[0].id:
+                return True
 
-        if klass is False:
+        read_list = self.check_permissions(object_list,bundle, "view")
+        if len(read_list)==0:
             raise Unauthorized("You are not allowed to access that resource.")
-
-        for obj in object_list:
-            if check_permissions("view", bundle.request.user, obj):
-                read_list.append(obj)
 
         return True
 
@@ -66,7 +85,6 @@ class GuardianAuthorization(Authorization):
             return []
 
         for obj in object_list:
-            #if check_permissions("add", bundle.request.user, obj):
             create_list.append(obj)
 
         return create_list
@@ -79,68 +97,32 @@ class GuardianAuthorization(Authorization):
             raise Unauthorized("You are not allowed to access that resource.")
 
         for obj in object_list:
-            #if check_permissions("add", bundle.request.user, obj):
             create_list.append(obj)
+
+        #If the user cannot view the object list that was passed in, then they are unauthorized.
+        if len(create_list) != len(object_list):
+            raise Unauthorized("You are not allowed to access that resource.")
 
         return True
 
     def update_list(self, object_list, bundle):
-        klass = self.base_checks(bundle.request, object_list.model)
-        update_list=[]
-
-        if klass is False:
-            return []
-
-        for obj in object_list:
-            if check_permissions("change", bundle.request.user, obj):
-                update_list.append(obj)
-
-        if update_list:
-            return update_list
-        raise Unauthorized("You are not allowed to access that resource.")
+        update_list = self.check_permissions(object_list,bundle, "change")
+        return update_list
 
     def update_detail(self, object_list, bundle):
-        update_list=[]
-        klass = self.base_checks(bundle.request, bundle.obj.__class__)
-
-        if klass is False:
+        update_list = self.check_permissions(object_list,bundle, "change")
+        if len(update_list)==0:
             raise Unauthorized("You are not allowed to access that resource.")
 
-        for obj in object_list:
-            if check_permissions("change", bundle.request.user, obj):
-                update_list.append(obj)
-
-        if update_list:
-            return update_list
-        raise Unauthorized("You are not allowed to access that resource.")
+        return True
 
     def delete_list(self, object_list, bundle):
-        delete_list=[]
-        klass = self.base_checks(bundle.request, object_list.model)
-
-        if klass is False:
-            return []
-
-        for obj in object_list:
-            if check_permissions("delete", bundle.request.user, obj):
-                delete_list.append(obj)
-
-        if delete_list:
-            return delete_list
-        raise Unauthorized("You are not allowed to access that resource.")
+        delete_list = self.check_permissions(object_list,bundle, "delete")
+        return delete_list
 
     def delete_detail(self, object_list, bundle):
-        delete_list=[]
-
-        klass = self.base_checks(bundle.request, bundle.obj.__class__)
-
-        if klass is False:
+        delete_list = self.check_permissions(object_list,bundle, "delete")
+        if len(delete_list)==0:
             raise Unauthorized("You are not allowed to access that resource.")
 
-        for obj in object_list:
-            if check_permissions("delete", bundle.request.user, obj):
-                delete_list.append(obj)
-
-        if delete_list:
-            return delete_list
-        raise Unauthorized("You are not allowed to access that resource.")
+        return True
