@@ -19,14 +19,18 @@ def copy_permissions(base_instance, base_model, new_instance, new_model):
     base_permissions = get_object_permissions(base_instance, base_model)
     new_content_type = get_content_type(new_model)
     for permission in  base_permissions:
-        permission.pk = None
-        permission.id = None
-        permission.content_type = new_content_type
-        permission.object_pk = new_instance.pk
+        content_type = new_content_type
+        object_pk = new_instance.pk
         new_permission_name = generate_new_permission(permission.permission.codename, new_content_type.name)
         django_permission = Permission.objects.get(codename=new_permission_name)
-        permission.permission = django_permission
-        permission.save()
+        permission_obj = django_permission
+        perm_dict = {
+            'user' : permission.user,
+            'content_type' : content_type,
+            'permission' : permission_obj,
+            'object_pk' : object_pk,
+            }
+        perm, created = UserObjectPermission.objects.get_or_create(**perm_dict)
 
 def generate_new_permission(permission_name, new_model_name):
     new_model_name = re.sub(r"[_\W]", "", new_model_name).lower()
