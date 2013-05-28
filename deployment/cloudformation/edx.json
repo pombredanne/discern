@@ -2366,7 +2366,7 @@
             "Value" :  {
                 "Fn::Join" :
                     [
-                        "", [ "amqp://guest:guest@", { "Ref" : "RabbitMQELB"}, ":", { "Ref":"RabbitMQPort" },"/"]
+                        "", [ "amqp://guest:guest@", { "Fn::GetAtt" : [ "RabbitMQELB", "DNSName" ]}, ":", { "Ref":"RabbitMQPort" },"/"]
                     ]
             }
         },
