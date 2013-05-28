@@ -302,9 +302,6 @@ class MembershipResource(SearchModelResource):
     def obj_create(self, bundle, request=None, **kwargs):
         return super(MembershipResource, self).obj_create(bundle,user=bundle.request.user)
 
-    def apply_authorization_limits(self, request, object_list):
-        return object_list.filter(user_id=request.user.id)
-
 class CourseResource(SearchModelResource):
     """
     Encapsulates the Course Model
@@ -325,9 +322,6 @@ class CourseResource(SearchModelResource):
     def obj_create(self, bundle, **kwargs):
         return super(CourseResource, self).obj_create(bundle, user=bundle.request.user)
 
-    def apply_authorization_limits(self, request, object_list):
-        return object_list.filter(organization__in=request.user.organizations)
-
 class ProblemResource(SearchModelResource):
     """
     Encapsulates the problem Model
@@ -347,9 +341,6 @@ class ProblemResource(SearchModelResource):
 
     def obj_create(self, bundle, **kwargs):
         return super(ProblemResource, self).obj_create(bundle)
-
-    def apply_authorization_limits(self, request, object_list):
-        return object_list.filter(course__in=request.user.organizations.courses)
 
 class EssayResource(SearchModelResource):
     """
@@ -377,9 +368,6 @@ class EssayResource(SearchModelResource):
         bundle.obj.save()
         return bundle
 
-    def apply_authorization_limits(self, request, object_list):
-        return object_list.filter(user_id=request.user.id)
-
 class EssayGradeResource(SearchModelResource):
     """
     Encapsulates the EssayGrade Model
@@ -402,9 +390,6 @@ class EssayGradeResource(SearchModelResource):
         bundle.obj.user = bundle.request.user
         bundle.obj.save()
         return bundle
-
-    def apply_authorization_limits(self, request, object_list):
-        return object_list.filter(essay__user_id=Q(request.user.id)|Q(user_id=request.user.id))
 
 def add_membership(user,organization):
     """

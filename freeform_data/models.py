@@ -75,7 +75,7 @@ class Membership(models.Model):
         )
 
     def save(self, *args, **kwargs):
-        members_count = Membership.objects.filter(user = self.user).count()
+        members_count = Membership.objects.filter(user = self.user).exclude(id=self.id).count()
         if members_count>=settings.MEMBERSHIP_LIMIT:
             error_message = "You can currently only be a member of a single organization.  This will hopefully be changed in the future.  Generated for user {0}.".format(self.user)
             log.info(error_message)
@@ -263,13 +263,14 @@ def get_group_name(membership):
 def add_creator_permissions(sender, instance, **kwargs):
     try:
         instance_name = instance.__class__.__name__.lower()
-        if instance_name=="user":
+        if isinstance(instance, User):
             user = instance
-        elif instance_name=="userprofile":
+        elif isinstance(instance, UserProfile):
             user=instance.user
         else:
             user = get_request().user
         if instance_name in PERMISSION_MODELS:
+            log.info("Assigning perms to {0}".format(instance_name))
             for perm in PERMISSIONS:
                 assign_perm('{0}_{1}'.format(perm, instance_name), user, instance)
     except:
