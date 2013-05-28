@@ -270,7 +270,6 @@ def add_creator_permissions(sender, instance, **kwargs):
         else:
             user = get_request().user
         if instance_name in PERMISSION_MODELS:
-            log.info("Assigning perms to {0}".format(instance_name))
             for perm in PERMISSIONS:
                 assign_perm('{0}_{1}'.format(perm, instance_name), user, instance)
     except:
