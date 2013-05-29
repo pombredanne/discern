@@ -71,6 +71,7 @@ and here is the resulting output.::
 	Model: userprofile Endpoint: /essay_site/api/v1/userprofile/ Schema: /essay_site/api/v1/userprofile/schema/
 	Status Code: 401
 
+These endpoints map directly to the discern models. `HTTP verbs <http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods>`_ are used to perform operations on these objects. This tutorial will mainly use two verbs. POST and the associated data will create objects. GET will retrive it. You might find DELETE handy to clean up while you exploring this API. 
 
 The last status code from the output was 401 because we aren't logged in. To proceed, we will have to create a user. Here is the code to create a user called *test*. Let's create one. 
 

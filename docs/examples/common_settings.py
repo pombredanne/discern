@@ -10,6 +10,8 @@ import requests
 #See http://en.wikipedia.org/wiki/JSON for information on JSON.
 import json
 
+from pprint import *
+
 #This tells us where the API is running.
 #In order to run the API, you need to navigate to discern and run python manage.py runserver 127.0.0.1:7999 --nostatic
 API_BASE_URL = "http://127.0.0.1:7999"

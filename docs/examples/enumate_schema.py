@@ -1,6 +1,6 @@
 '''
-Tutorial - Getting started - create a organization object
-Here we create an institution(i.e., Reddit). 
+Tutorial - Getting started - the API
+Enumates the schema API for course. 
 '''
 
 from common_settings import *

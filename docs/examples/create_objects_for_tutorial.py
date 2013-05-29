@@ -1,9 +1,10 @@
 '''
-Tutorial - Getting started - create a organization object
+Tutorial - Getting started - create a organization, course and problem objects
 Here we create an institution(i.e., Reddit). 
 '''
 
 from common_settings import *
+
 
 session = requests.session()
 response = login_to_discern(session)
@@ -18,12 +19,39 @@ org_response = session.post(API_BASE_URL + "/essay_site/api/v1/organization/?for
 organization_object = json.loads(org_response.text)
 organization_resource_uri = organization_object['resource_uri']
 
-import pdb; pdb.set_trace()
+
 # create a course and associate it with the organization
 course_response = session.post(API_BASE_URL + "/essay_site/api/v1/course/?format=json", 
  	data=json.dumps(
 		{"course_name": "Discern Tutorial",
-		 "organizations": organization_resource_uri
+		 "organizations": [organization_resource_uri]
 		}),
  	headers=headers)
 
+# Get the URI for the course
+course_object = json.loads(course_response.text)
+
+if course_response.status_code >= 400: 
+	pprint("status: {0} msg: {1}".format(
+		course_response.status_code, 
+		course_response._content))
+	pprint (vars( course_response.request))
+	exit(1)
+
+course_uri = course_object['resource_uri']
+
+import praw # Python Reddit API Wrapper
+# use the movie title as problem statement. 
+r = praw.Reddit(user_agent='Discern Tutorial')
+# get a movie from Reddit
+submissions = r.get_subreddit('movies').get_hot(limit=10)
+m = submissions.next() 
+
+problem_response = session.post(API_BASE_URL + "/essay_site/api/v1/problem/?format=json", 
+ 	data=json.dumps(
+		{ "name": "movie question",
+		"prompt": m.title,
+		 "courses": [course_uri]
+		}),
+ 	headers=headers)
+ 
