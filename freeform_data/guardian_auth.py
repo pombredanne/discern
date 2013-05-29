@@ -45,6 +45,12 @@ class GuardianAuthorization(Authorization):
 
         return update_list
 
+    def check_detail_permissions(self, object_list, bundle, permission_name):
+        update_list = self.check_permissions(object_list,bundle, permission_name)
+        if len(update_list)==0:
+            raise Unauthorized("You are not allowed to access that resource.")
+        return True
+
     def read_list(self, object_list, bundle):
         klass = self.base_checks(bundle.request, object_list.model)
         read_list=[]
@@ -72,6 +78,12 @@ class GuardianAuthorization(Authorization):
                 return True
 
         read_list = self.check_permissions(object_list,bundle, "view")
+
+        #For some reason, checking if the user has access to the schema calls this function.
+        #Handle the case where the user has no objects available to show, but should be able to see the schema.
+        if "schema" in bundle.request.path:
+            return True
+
         if len(read_list)==0:
             raise Unauthorized("You are not allowed to access that resource.")
 
@@ -106,23 +118,13 @@ class GuardianAuthorization(Authorization):
         return True
 
     def update_list(self, object_list, bundle):
-        update_list = self.check_permissions(object_list,bundle, "change")
-        return update_list
+        return self.check_permissions(object_list,bundle, "change")
 
     def update_detail(self, object_list, bundle):
-        update_list = self.check_permissions(object_list,bundle, "change")
-        if len(update_list)==0:
-            raise Unauthorized("You are not allowed to access that resource.")
-
-        return True
+        return self.check_detail_permissions(object_list,bundle, "change")
 
     def delete_list(self, object_list, bundle):
-        delete_list = self.check_permissions(object_list,bundle, "delete")
-        return delete_list
+        return self.check_permissions(object_list,bundle, "delete")
 
     def delete_detail(self, object_list, bundle):
-        delete_list = self.check_permissions(object_list,bundle, "delete")
-        if len(delete_list)==0:
-            raise Unauthorized("You are not allowed to access that resource.")
-
-        return True
+        return self.check_detail_permissions(object_list,bundle, "delete")

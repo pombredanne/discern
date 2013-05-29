@@ -253,9 +253,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'tastypie',
-    'freeform_data',
     'south',
-    'ml_grading',
     'djcelery',
     'pipeline',
     'guardian',
@@ -263,6 +261,8 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'freeform_data',
+    'ml_grading',
 )
 
 # A sample logging configuration. The only tangible logging
