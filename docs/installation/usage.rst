@@ -135,10 +135,16 @@ The fields **id**, **created**, and **modified** are automatically generated and
 Getting started - creating objects 
 ---------------------------------------
 
-When interacting with the Discern Server, you'll want to create an organization object, a course object, and a problem object for your institution. This script creates an organization and course object for this tutorial. 
+When interacting with the Discern Server, you'll want to create an organization object and a course object. This script creates them for this tutorial. 
 
 .. literalinclude:: ../examples/create_objects_for_tutorial.py
    :language: python
    :linenos:
 
-As mentioned above we will be using reddit. The heart of the matter is to have responses to a questions which have a score associated with them. 
+As mentioned above we will be using reddit.  The heart of the matter is to have responses to a questions which have a score associated with them. With the reddit data, the title is used as the problem statement. The associated comments are the essays. The sum of up and down votes is the score. 
+
+.. literalinclude:: ../examples/populate_essays.py
+   :language: python
+   :linenos:
+
+At this point, I think I have a machine learning model. How do I validate it? Is there a method to retrieve some feedback(e.g., general descriptive statistics) with respect to the model created?

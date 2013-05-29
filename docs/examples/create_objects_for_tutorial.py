@@ -1,10 +1,10 @@
 '''
-Tutorial - Getting started - create a organization, course and problem objects
-Here we create an institution(i.e., Reddit). 
+Tutorial - Getting started - create a organization course objects
+Here we create an institution(i.e., Reddit). Make a note of the resulting URIs.
+We will use them with other example programs. 
 '''
 
 from common_settings import *
-
 
 session = requests.session()
 response = login_to_discern(session)
@@ -40,18 +40,6 @@ if course_response.status_code >= 400:
 
 course_uri = course_object['resource_uri']
 
-import praw # Python Reddit API Wrapper
-# use the movie title as problem statement. 
-r = praw.Reddit(user_agent='Discern Tutorial')
-# get a movie from Reddit
-submissions = r.get_subreddit('movies').get_hot(limit=10)
-m = submissions.next() 
-
-problem_response = session.post(API_BASE_URL + "/essay_site/api/v1/problem/?format=json", 
- 	data=json.dumps(
-		{ "name": "movie question",
-		"prompt": m.title,
-		 "courses": [course_uri]
-		}),
- 	headers=headers)
- 
+print ("We will be uses the URI for these objects in other scripts. Please make a note")
+print ("org URI: {0} ".format(organization_resource_uri))
+print ("course URI: {0} ".format(course_uri))
