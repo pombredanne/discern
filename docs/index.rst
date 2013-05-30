@@ -22,6 +22,7 @@ Installation and Usage
    :maxdepth: 1
 
    installation/installation_overview
+   installation/vagrant-ansible-install
    installation/install_notes
    installation/usage
 
