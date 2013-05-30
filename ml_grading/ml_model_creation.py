@@ -28,6 +28,7 @@ else:
 MAX_ESSAYS_TO_TRAIN_WITH = 1000
 MIN_ESSAYS_TO_TRAIN_WITH = 10
 
+@transaction.commit_manually
 def handle_single_problem(problem):
     """
     Creates a machine learning model for a given problem.
@@ -35,7 +36,7 @@ def handle_single_problem(problem):
     """
     overall_success = False
     #This function is called by celery.  This ensures that the database is not stuck in an old transaction
-    transaction.commit_unless_managed()
+    transaction.commit()
     #Get prompt and essays from problem (needed to train a model)
     prompt = problem.prompt
     essays = problem.essay_set.filter(essay_type="train")
@@ -97,7 +98,7 @@ def handle_single_problem(problem):
         #Get paths to ml model from database
         relative_model_path, full_model_path= ml_grading_util.get_model_path(problem,m)
         #Get last created model for given location
-        transaction.commit_unless_managed()
+        transaction.commit()
         success, latest_created_model=ml_grading_util.get_latest_created_model(problem,m)
 
         if success:
@@ -136,7 +137,7 @@ def handle_single_problem(problem):
                     }
                 created_model = CreatedModel(**created_model_dict_initial)
                 created_model.save()
-                transaction.commit_unless_managed()
+                transaction.commit()
 
                 if not isinstance(prompt, basestring):
                     try:
@@ -180,7 +181,7 @@ def handle_single_problem(problem):
                     'model_full_path' : full_model_path,
                     }
 
-                transaction.commit_unless_managed()
+                transaction.commit()
                 try:
                     CreatedModel.objects.filter(pk=created_model.pk).update(**created_model_dict_final)
                 except:
@@ -191,7 +192,7 @@ def handle_single_problem(problem):
                     results['success'],
                     results['errors'],
                 ))
-    transaction.commit_unless_managed()
+    transaction.commit()
     return overall_success, "Creation succeeded."
 
 def save_model_file(results, save_to_s3):
