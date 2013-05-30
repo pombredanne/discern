@@ -1,0 +1,86 @@
+---
+
+# tested only on Ubuntu, may need adaptations for other operating systems
+
+# TODO: configure Nginx
+# TODO: configure Celery
+# TODO: install and configure NLTK
+
+- hosts: 33.33.33.10
+  gather_facts: False
+  user: vagrant
+  vars_files:
+    - vars/vars.yml
+
+  tasks:
+
+      - name: install packages from apt
+        apt: name=$item state=installed
+        with_items:
+          - build-essential
+          - curl
+          - gfortran
+          - git
+          - ipython
+          - libatlas-base-dev
+          - libblas-dev
+          - libblas3gf
+          - libfreetype6-dev
+          - liblapack-dev
+          - liblapack3gf
+          - libmysqlclient-dev
+          - libpng12-dev
+          - libreadline6-dev
+          - libxml2-dev
+          - libxslt-dev
+          - nginx
+          - python-dev
+          - python-pip
+          - python-virtualenv
+          - redis-server
+          - yui-compressor
+
+      # TODO: create a virtualenv to install the packages into
+      - name: install python modules from pip
+        pip: requirements=${working_dir}/pre-requirements.txt
+
+      - name: install python modules from pip
+        pip: requirements=${working_dir}/requirements.txt
+
+        # TODO: replace PostgreSQL with MySQL since that's what we use in production
+      - name: configure the database authentication more or less open for setup
+        template: src=templates/pg_hba_low.j2 dest=/etc/postgresql/9.1/main/pg_hba.conf owner=postgres
+
+      - name: restart postgresql
+        service: name=postgresql state=restarted
+
+      - name: setup the postgresql user
+        postgresql_user: >
+          name=ml_service_api 
+          password=${database_password} 
+          login_user=postgres
+        sudo_user: postgres
+
+      - name: create the database
+        postgresql_db: name=ml_service_api state=present
+
+      - name: configure the database authentication for runtime mode
+        template: src=templates/pg_hba.j2 dest=/etc/postgresql/9.1/main/pg_hba.conf owner=postgres
+
+      - name: restart postgresql
+        service: name=postgresql state=restarted
+
+      - name: configure python settings (with database password)
+        template: src=templates/local_settings.py.j2 dest=${working_dir}/lib/settings/local_settings.py
+
+      - name: sync django database
+        command: python ${working_dir}/manage.py syncdb --noinput --settings=ml_service_api.aws
+
+      - name: run south migrations
+        command: python ${working_dir}/manage.py migrate --noinput --settings=ml_service_api.aws
+
+      - name: run collect static
+        command: python ${working_dir}/manage.py collectstatic -c --noinput --settings=ml_service_api.aws
+
+      - name: run update index
+        command: python ${working_dir}/manage.py update_index --settings=ml_service_api.aws

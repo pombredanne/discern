@@ -1,0 +1,74 @@
+---
+
+- hosts: webservers
+  user: vagrant
+  sudo: True
+
+  tasks:
+    - name: update apt
+      action: command /usr/bin/apt-get update
+
+    - name: install python-software-properties
+      action: apt pkg=python-software-properties state=present
+
+    - name: add nginx ppa
+      action: apt_repository repo=ppa:nginx/stable state=present
+
+    - name: install web server packages
+      action: apt pkg=$item state=installed
+      with_items:
+        - build-essential
+        - python-virtualenv
+        - python-dev
+        - python-pip
+        - gfortran
+        - libfreetype6-dev
+        - libpng12-dev
+        - libxml2-dev
+        - libxslt-dev
+        - libreadline6
+        - libreadline6-dev
+        - redis-server
+        - ipython
+        - nginx
+        - libmysqlclient-dev
+        - libblas3gf
+        - libblas-dev
+        - liblapack3gf
+        - liblapack-dev
+        - libatlas-base-dev
+        - curl
+        - yui-compressor
+        - git
+        - nginx
+
+    - name: install pip
+      action: easy_install name=pip
+
+    - name: install various libraries with pip
+      action: pip name=$item state=present
+      with_items:
+        - virtualenv
+        - supervisor
+        - uwsgi
+
+    - name: remove default nginx site
+      action: file path=/etc/nginx/sites-enabled/default state=absent
+
+    - name: write nginx.conf
+      action: template src=templates/nginx.conf dest=/etc/nginx/nginx.conf
+
+    - name: create supervisord config folder
+      action: file dest=/etc/supervisor state=directory owner=root
+
+    - name: create supervisord config
+      action: template src=templates/supervisord.conf dest=/etc/supervisord.conf
+
+    - name: create supervisord init script
+      action: template src=templates/supervisord.sh dest=/etc/init.d/supervisord mode=0755
+
+    - name: start supervisord service and have it run during system startup
+      action: service name=supervisord state=started enabled=yes
+
+    - name: create webapps directory
+      action: file dest=/srv/webapps state=directory
