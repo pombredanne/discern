@@ -13,7 +13,7 @@ from helpers import single_instance_task
 log = logging.getLogger(__name__)
 
 @periodic_task(run_every=timedelta(seconds=settings.TIME_BETWEEN_INDEX_REBUILDS))
-@single_instance_task(24 * 60 * 60)
+@single_instance_task(settings.INDEX_REFRESH_CACHE_LOCK_TIME)
 def refresh_search_index():
     """
     A task that will periodically update the search index

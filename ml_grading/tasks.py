@@ -18,7 +18,7 @@ from django.core.cache import cache
 log=logging.getLogger(__name__)
 
 @periodic_task(run_every=timedelta(seconds=settings.TIME_BETWEEN_ML_CREATOR_CHECKS))
-@single_instance_task(60 * 60)
+@single_instance_task(settings.MODEL_CREATION_CACHE_LOCK_TIME)
 def create_ml_models():
     """
     Called periodically by celery.  Loops through each problem and tries to create a model for it.
@@ -35,7 +35,7 @@ def create_ml_models_single_problem(problem):
     """
     transaction.commit_unless_managed()
     lock_id = "celery-model-creation-{0}".format(problem.id)
-    acquire_lock = lambda: cache.add(lock_id, "true", 60 * 60)
+    acquire_lock = lambda: cache.add(lock_id, "true", settings.MODEL_CREATION_CACHE_LOCK_TIME)
     release_lock = lambda: cache.delete(lock_id)
     if acquire_lock():
         try:
@@ -44,7 +44,7 @@ def create_ml_models_single_problem(problem):
             release_lock()
 
 @periodic_task(run_every=timedelta(seconds=settings.TIME_BETWEEN_ML_GRADER_CHECKS))
-@single_instance_task(60 * 60)
+@single_instance_task(settings.GRADING_CACHE_LOCK_TIME)
 def grade_ml():
     """
     Called periodically by celery.  Loops through each problem, sees if there are enough essays for ML grading to work,
@@ -63,7 +63,7 @@ def grade_ml_essays(problem):
     """
     transaction.commit_unless_managed()
     lock_id = "celery-essay-grading-{0}".format(problem.id)
-    acquire_lock = lambda: cache.add(lock_id, "true", 60 * 60)
+    acquire_lock = lambda: cache.add(lock_id, "true", settings.GRADING_CACHE_LOCK_TIME)
     release_lock = lambda: cache.delete(lock_id)
     if acquire_lock():
         try:
