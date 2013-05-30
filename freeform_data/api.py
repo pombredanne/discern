@@ -1,29 +1,32 @@
-from tastypie.resources import ModelResource, Resource
-from freeform_data.models import Organization, UserProfile, Course, Problem, Essay, EssayGrade, Membership, UserRoles
-from django.contrib.auth.models import User
-from tastypie.authorization import Authorization, DjangoAuthorization
-from tastypie.authentication import Authentication, ApiKeyAuthentication, BasicAuthentication, MultiAuthentication
-from tastypie import fields
-from django.conf.urls import url
-from tastypie.utils import trailing_slash
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from tastypie.http import HttpGone, HttpMultipleChoices
-from django.db.models import Q
-from tastypie.serializers import Serializer
-from django.db import IntegrityError
-from tastypie.exceptions import BadRequest
-from guardian_auth import GuardianAuthorization
 import logging
-from haystack.query import SearchQuerySet
+
+from django.contrib.auth.models import User
+from django.conf.urls import url
+from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
+from django.db import IntegrityError
 from django.http import Http404
+
+from tastypie.resources import ModelResource
+from tastypie.authorization import Authorization
+from tastypie.authentication import Authentication, ApiKeyAuthentication, MultiAuthentication
+
+from tastypie import fields
+from tastypie.utils import trailing_slash
+from tastypie.serializers import Serializer
+from tastypie.exceptions import BadRequest
+from tastypie_validators import CustomFormValidation
+
+from guardian_auth import GuardianAuthorization
+from haystack.query import SearchQuerySet
+
+from freeform_data.models import Organization, UserProfile, Course, Problem, Essay, EssayGrade, Membership, UserRoles
+
 from collections import Iterator
 from throttle import UserAccessThrottle
-from django.conf import settings
-from tastypie_validators import CustomFormValidation
 from forms import ProblemForm, EssayForm, EssayGradeForm
 
-log=logging.getLogger(__name__)
+log = logging.getLogger(__name__)
 
 
 class SessionAuthentication(Authentication):
