@@ -55,11 +55,9 @@ def handle_single_essay(essay):
         success, created_model=ml_grading_util.get_latest_created_model(essay.problem,m)
 
         if not success:
-            error_message = "Could not identify a valid created model!"
-            log.error(error_message)
             results= RESULT_FAILURE_DICT
             formatted_feedback="error"
-            return False, error_message
+            return False, formatted_feedback
 
         #Create grader path from location in submission
         grader_path = os.path.join(settings.ML_MODEL_PATH,created_model.model_relative_path)
