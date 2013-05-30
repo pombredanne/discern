@@ -58,6 +58,7 @@ def handle_single_essay(essay):
         if not success:
             results= RESULT_FAILURE_DICT
             formatted_feedback="error"
+            transaction.commit()
             return False, formatted_feedback
 
         #Try to load the model file
@@ -86,6 +87,7 @@ def handle_single_essay(essay):
         if results['success'] == False:
             error_message = "Unsuccessful grading: {0}".format(results)
             log.exception(error_message)
+            transaction.commit()
             return False, error_message
         target_scores.append(int(results['score']))
 

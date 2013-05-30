@@ -61,6 +61,7 @@ def handle_single_problem(problem):
     except:
         error_message = "Could not correctly encode some submissions: {0}".format(essay_text)
         log.error(error_message)
+        transaction.commit()
         return False, error_message
 
     #Get the maximum target scores from the problem
@@ -87,6 +88,7 @@ def handle_single_problem(problem):
     if graded_sub_count < MIN_ESSAYS_TO_TRAIN_WITH:
         error_message = "Too few too create a model for problem {0}  need {1} only have {2}".format(problem, MIN_ESSAYS_TO_TRAIN_WITH, graded_sub_count)
         log.error(error_message)
+        transaction.commit()
         return False, error_message
 
     #Loops through each potential target
