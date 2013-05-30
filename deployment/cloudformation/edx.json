@@ -1681,7 +1681,7 @@
                     }
                 ],
                 "HealthCheck":{
-                    "Target":"HTTP:80/frontend/",
+                    "Target":"HTTP:80/status/",
                     "HealthyThreshold":"3",
                     "UnhealthyThreshold":"5",
                     "Interval":"30",
