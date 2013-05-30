@@ -245,6 +245,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    # remove django.contrib.sites to avoid this issue: https://github.com/edx/discern/issues/85
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
