@@ -36,9 +36,10 @@ else:
 #this is returned if the ML algorithm fails
 RESULT_FAILURE_DICT={'success' : False, 'errors' : 'Errors!', 'confidence' : 0, 'feedback' : "", 'score' : 0}
 
+@transaction.commit_manually
 def handle_single_essay(essay):
     #Needed to ensure that the DB is not wrapped in a transaction and pulls old data
-    transaction.commit_unless_managed()
+    transaction.commit()
 
     #strip out unicode and other characters in student response
     #Needed, or grader may potentially fail
@@ -115,7 +116,7 @@ def handle_single_essay(essay):
     essay.save()
     #copy permissions from the essay to the essaygrade
     helpers.copy_permissions(essay, Essay, essay_grade, EssayGrade)
-    transaction.commit_unless_managed()
+    transaction.commit()
     return True, "Successfully scored!"
 
 def load_model_file(created_model,use_full_path):

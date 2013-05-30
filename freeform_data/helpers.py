@@ -3,6 +3,9 @@ from guardian.models import UserObjectPermission
 from django.contrib.auth.models import Permission
 import re
 import logging
+import functools
+from django.core.cache import cache
+
 log = logging.getLogger(__name__)
 
 def get_content_type(model):
@@ -39,3 +42,18 @@ def generate_new_permission(permission_name, new_model_name):
     permission_list += [new_model_name]
     new_permission = "_".join(permission_list)
     return new_permission
+
+def single_instance_task(timeout):
+    def task_exc(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            lock_id = "celery-single-instance-" + func.__name__
+            acquire_lock = lambda: cache.add(lock_id, "true", timeout)
+            release_lock = lambda: cache.delete(lock_id)
+            if acquire_lock():
+                try:
+                    func(*args, **kwargs)
+                finally:
+                    release_lock()
+        return wrapper
+    return task_exc
