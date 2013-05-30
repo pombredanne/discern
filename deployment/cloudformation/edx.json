@@ -1681,7 +1681,7 @@
                     }
                 ],
                 "HealthCheck":{
-                    "Target":"TCP:22",
+                    "Target":"HTTP:80/frontend/",
                     "HealthyThreshold":"3",
                     "UnhealthyThreshold":"5",
                     "Interval":"30",
