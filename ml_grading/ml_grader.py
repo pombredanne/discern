@@ -60,12 +60,6 @@ def handle_single_essay(essay):
             formatted_feedback="error"
             return False, formatted_feedback
 
-        #Create grader path from location in submission
-        grader_path = os.path.join(settings.ML_MODEL_PATH,created_model.model_relative_path)
-
-        #Indicates whether the model is stored locally or in the cloud
-        model_stored_in_s3=created_model.model_stored_in_s3
-
         #Try to load the model file
         success, grader_data=load_model_file(created_model,use_full_path=False)
         if success:
@@ -76,8 +70,6 @@ def handle_single_essay(essay):
 
         #If the above fails, try using the full path in the created_model object
         if not results['success'] and not created_model.model_stored_in_s3:
-            #Before, we used the relative path to load.  Possible that the full path may work
-            grader_path=created_model.model_full_path
             try:
                 success, grader_data=load_model_file(created_model,use_full_path=True)
                 if success:
