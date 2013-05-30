@@ -19,9 +19,9 @@ Now let's run discern. You will need to run both the API server and the celery b
 1. ``python manage.py runserver 127.0.0.1:7999 --nostatic --settings=discern.settings --pythonpath=. &``
 2. ``python manage.py celeryd -B --settings=discern.settings --pythonpath=. --loglevel=debug --logfile=/tmp/celery$$.out &``
 
-Admin Interface
+Frontend User Interface
 ------------------------------
-There is an easy to use frontend for Admin Interface.  In order to use it, just navigate to 127.0.0.1:7999.  After that, you will be able to register using the links at the top.  After you register, you will see links to the API models.  Each model will allow you to get a list of existing models, add new ones, delete existing ones, and update them.  See the :ref:`api_models` section for more details on the models.
+There is an easy to use frontend.  In order to use it, just navigate to 127.0.0.1:7999.  After that, you will be able to register using the links at the top.  After you register, you will see links to the API models.  Each model will allow you to get a list of existing models, add new ones, delete existing ones, and update them.  See the :ref:`api_models` section for more details on the models.
 
 Getting started - the plan
 ------------------------------
@@ -39,8 +39,7 @@ The example code is broken down into small programs. Each will include this pyth
 The basic outline for this tutorial is:
 
 #. Becoming familiar with the API and logging into Discern. 
-#. Created an organization object, a course object, and a problem object.
-#. Associate the course with the organization and the problem with the course.
+#. Created an organization object and a course object
 #. Add 10 essay objects and associate them with the problem.
 #. Add 10 essay grade objects that are instructor scored and associate each one with an essay.
 #. A model will now be created, and from now on, each additional essay you add will automatically have an essay grade object associated with it that contains the machine score.
@@ -147,4 +146,49 @@ As mentioned above we will be using reddit.  The heart of the matter is to have 
    :language: python
    :linenos:
 
-At this point, I think I have a machine learning model. How do I validate it? Is there a method to retrieve some feedback(e.g., general descriptive statistics) with respect to the model created?
+No further action is required, the Discern Server will use the Enhanced AI Scoring Engine (or ease) to create a machine learning model. As the Discern Server processes the training essays, we will see more EssayGrades. Here is a script which queries discern about the essays and associcated scores. 
+
+.. literalinclude:: ../examples/monitor_essay_processing.py
+   :language: python
+   :linenos:
+
+Here is the output:: 
+
+	$ python monitor_essay_processing.py 
+	Scores for essay /essay_site/api/v1/essay/1/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [651], type: IN 
+		 confidence: 0, score: [654], type: ML 
+	Scores for essay /essay_site/api/v1/essay/2/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [276], type: IN 
+		 confidence: 0, score: [285], type: ML 
+	Scores for essay /essay_site/api/v1/essay/3/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [97], type: IN 
+		 confidence: 0, score: [243], type: ML 
+	Scores for essay /essay_site/api/v1/essay/4/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [858], type: IN 
+		 confidence: 0, score: [741], type: ML 
+	Scores for essay /essay_site/api/v1/essay/5/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [408], type: IN 
+		 confidence: 0, score: [243], type: ML 
+	Scores for essay /essay_site/api/v1/essay/6/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [137], type: IN 
+		 confidence: 0, score: [243], type: ML 
+	Scores for essay /essay_site/api/v1/essay/7/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [132], type: IN 
+		 confidence: 0, score: [243], type: ML 
+	Scores for essay /essay_site/api/v1/essay/8/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [502], type: IN 
+		 confidence: 0, score: [538], type: ML 
+	Scores for essay /essay_site/api/v1/essay/9/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [4], type: IN 
+		 confidence: 0, score: [40], type: ML 
+	Scores for essay /essay_site/api/v1/essay/10/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [525], type: IN 
+		 confidence: 0, score: [243], type: ML 
+	Scores for essay /essay_site/api/v1/essay/11/, problem /essay_site/api/v1/problem/1/
+		 confidence: 1, score: [142], type: IN 
+		 confidence: 0, score: [243], type: ML 
+
+The *IN* type is the score we provided to the Discern Server. The *ML* type is the score provided by ease. 
+
+

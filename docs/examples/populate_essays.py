@@ -11,11 +11,11 @@ session = requests.session()
 response = login_to_discern(session)
 
 # add a problem statement. For the reddit example, we will use the title. 
-def add_problem(the_prompt, max_value, the_class):
+def add_problem(the_prompt, the_class):
 	uri = None
 	problem_response = session.post(API_BASE_URL + "/essay_site/api/v1/problem/?format=json", 
 		data=json.dumps({ "name": "movie question", "courses" :[the_class],
-			"prompt": the_prompt,"max_target_scores": json.dumps([max_value])}), headers=headers)
+			"prompt": the_prompt,"max_target_scores": json.dumps([10000])}), headers=headers)
 	if problem_response.status_code >= 400: 
 		print ("Problem creation failure.")
 		pprint("status: {0} msg: {1}".format(
@@ -78,22 +78,12 @@ movie = submissions.next()
 org_uri = '/essay_site/api/v1/organization/1/'
 course_uri = '/essay_site/api/v1/course/1/'
 
+problem_uri = add_problem(movie.title, course_uri)
+
 comment_count = 0
-max_score = -1 
-essays = []
 for comment in movie.comments:
 	if comment_count > 10:
 		break;
-	score = comment.ups - comment.downs
-	if score > max_score:
-		max_score = score
+	essay_uri = add_essay(comment.body, problem_uri)
+	add_score(essay_uri, comment.ups - comment.downs)
 	comment_count += 1 
-	essays.append(comment)
-
-problem_uri = add_problem(movie.title,max_score, course_uri)
-
-for essay in essays:
-	essay_uri = add_essay(essay.body, problem_uri)
-	add_score(essay_uri, essay.ups - essay.downs)
-
-	

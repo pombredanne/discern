@@ -1,6 +1,6 @@
 '''
-Tutorial - This script examples the EssayGrades. The assumption is  that the populate_essays.py
-script has been run.
+Tutorial - This script inspects ease's progress grading essays. 
+The assumption is that the populate_essays.py script has been run.
 '''
 
 from common_settings import *
