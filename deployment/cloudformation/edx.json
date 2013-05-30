@@ -54,6 +54,11 @@
             "Type":"Number",
             "Default":"11211"
         },
+        "RabbitMQPort":{
+            "Description":"The TCP port for the rabbitMQ node",
+            "Type":"Number",
+            "Default":"5672"
+        },
         "BastionInstanceType":{
             "Description":"Bastion Host EC2 instance type",
             "Type":"String",
@@ -79,6 +84,29 @@
         },
         "NATInstanceType":{
             "Description":"NET Device EC2 instance type",
+            "Type":"String",
+            "Default":"m1.small",
+            "AllowedValues":[
+                "t1.micro",
+                "m1.small",
+                "m1.medium",
+                "m1.large",
+                "m1.xlarge",
+                "m2.xlarge",
+                "m2.2xlarge",
+                "m2.4xlarge",
+                "m3.xlarge",
+                "m3.2xlarge",
+                "c1.medium",
+                "c1.xlarge",
+                "cc1.4xlarge",
+                "cc2.8xlarge",
+                "cg1.4xlarge"
+            ],
+            "ConstraintDescription":"must be a valid EC2 instance type."
+        },
+        "RabbitMQInstanceType":{
+            "Description":"RabbitMQ EC2 instance type",
             "Type":"String",
             "Default":"m1.small",
             "AllowedValues":[
@@ -1068,7 +1096,7 @@
                     {
                         "Key":"Group",
                         "Value": {
-                            "Fn::Join" : [ "", [ "mlapi-nat", {"Ref" : "EnvironmentTag"} ] ]
+                            "Fn::Join" : [ "", [ "mlapi-nat_", {"Ref" : "EnvironmentTag"} ] ]
                         },
                         "PropagateAtLaunch":true
                     },
@@ -1270,6 +1298,12 @@
                         "IpProtocol":"tcp",
                         "FromPort":"9418",
                         "ToPort":"9418",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"443",
+                        "ToPort":"443",
                         "CidrIp":"0.0.0.0/0"
                     }
                 ]
@@ -1777,6 +1811,18 @@
                         "FromPort":{ "Ref":"CacheNodePort" },
                         "ToPort":{ "Ref":"CacheNodePort" },
                         "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":{ "Ref":"RabbitMQPort" },
+                        "ToPort":{ "Ref":"RabbitMQPort" },
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"6163",
+                        "ToPort":"6163",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
                 }
@@ -1847,7 +1893,7 @@
                             "Fn::FindInMap":[
                                 "AWSInstanceType2Arch",
                                 {
-                                    "Ref":"InstanceType"
+                                    "Ref":"RabbitMQInstanceType"
                                 },
                                 "Arch"
                             ]
@@ -1912,7 +1958,7 @@
                     "Ref":"KeyName"
                 },
                 "InstanceType":{
-                    "Ref":"InstanceType"
+                    "Ref":"RabbitMQInstanceType"
                 },
                 "BlockDeviceMappings":[
                     {
@@ -2080,8 +2126,8 @@
                 ],
                 "Listeners":[
                     {
-                        "LoadBalancerPort":"5672",
-                        "InstancePort":"5672",
+                        "LoadBalancerPort":{ "Ref":"RabbitMQPort" },
+                        "InstancePort":{ "Ref":"RabbitMQPort" },
                         "Protocol":"TCP"
                     },
                     {
@@ -2117,8 +2163,8 @@
                 "SecurityGroupIngress":[
                     {
                         "IpProtocol":"tcp",
-                        "FromPort":"5672",
-                        "ToPort":"5672",
+                        "FromPort":{ "Ref":"RabbitMQPort" },
+                        "ToPort":{ "Ref":"RabbitMQPort" },
                         "CidrIp":"10.0.0.0/16"
                     },
                     {
@@ -2131,8 +2177,8 @@
                 "SecurityGroupEgress":[
                     {
                         "IpProtocol":"tcp",
-                        "FromPort":"5672",
-                        "ToPort":"5672",
+                        "FromPort":{ "Ref":"RabbitMQPort" },
+                        "ToPort":{ "Ref":"RabbitMQPort" },
                         "CidrIp":"10.0.0.0/16"
                     },
                     {
@@ -2166,8 +2212,8 @@
                     },
                     {
                         "IpProtocol":"tcp",
-                        "FromPort":"5672",
-                        "ToPort":"5672",
+                        "FromPort":{ "Ref":"RabbitMQPort" },
+                        "ToPort":{ "Ref":"RabbitMQPort" },
                         "SourceSecurityGroupId" : {
                             "Ref" : "RabbitMQELBSecurityGroup"
                         }
@@ -2179,6 +2225,38 @@
                         "SourceSecurityGroupId" : {
                             "Ref" : "RabbitMQELBSecurityGroup"
                         }
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"4369",
+                        "ToPort":"4369",
+                        "CidrIp":"0.0.0.0/0"
+                    }
+                ],
+                "SecurityGroupEgress":[
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"4369",
+                        "ToPort":"4369",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"80",
+                        "ToPort":"80",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"9418",
+                        "ToPort":"9418",
+                        "CidrIp":"0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol":"tcp",
+                        "FromPort":"443",
+                        "ToPort":"443",
+                        "CidrIp":"0.0.0.0/0"
                     }
                 ]
             }
@@ -2307,10 +2385,13 @@
         }
     },
     "Outputs":{
-        "MlapiSecurityGroup":{
-            "Description":"EC2 Security Group with access to the Mlapi server",
-            "Value":{
-                "Ref":"MlapiServerSecurityGroup"
+        "RabbitMQCelery":{
+            "Description":"Celery string for rabbit",
+            "Value" :  {
+                "Fn::Join" :
+                    [
+                        "", [ "amqp://guest:guest@", { "Fn::GetAtt" : [ "RabbitMQELB", "DNSName" ]}, ":", { "Ref":"RabbitMQPort" },"/"]
+                    ]
             }
         },
         "MlapiS3Bucket":{

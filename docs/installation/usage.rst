@@ -190,5 +190,3 @@ Here is the output::
 		 confidence: 0, score: [243], type: ML 
 
 The *IN* type is the score we provided to the Discern Server. The *ML* type is the score provided by ease. 
-
-

@@ -52,3 +52,20 @@ ACCOUNT_EMAIL_VERIFICATION = ENV_TOKENS.get('ACCOUNT_EMAIL_VERIFICATION', ACCOUN
 AWS_SES_REGION_NAME = ENV_TOKENS.get('AWS_SES_REGION_NAME', 'us-east-1')
 if AWS_SES_REGION_NAME is not None:
     AWS_SES_REGION_ENDPOINT = 'email.{0}.amazonaws.com'.format(AWS_SES_REGION_NAME)
+
+#Try to set the domain for the current site
+#Needed to get the right site name for email activation
+#Comment out, as this is causing issues in deployment.
+#TODO: Move to a fixture
+"""
+try:
+    if DNS_HOSTNAME is not None:
+        from django.contrib.sites.models import Site
+        current_site = Site.objects.get(id=SITE_ID)
+
+        current_site.domain = DNS_HOSTNAME
+        current_site.name = DNS_HOSTNAME
+        current_site.save()
+except:
+    log.info("Could not set site name and domain.  Not a problem if this is a dev/sandbox environment.  May cause confusion with email activation in production.")
+"""
