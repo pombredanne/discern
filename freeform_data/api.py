@@ -28,6 +28,8 @@ from forms import ProblemForm, EssayForm, EssayGradeForm, UserForm
 
 from django.forms.util import ErrorDict
 
+from allauth.account.forms import SignupForm
+
 log = logging.getLogger(__name__)
 
 
@@ -186,11 +188,15 @@ class CreateUserResource(ModelResource):
         errors = validator.is_valid(bundle)
         if isinstance(errors, ErrorDict):
             raise BadRequest(errors.as_text())
-        username, password = bundle.data['username'], bundle.data['password']
+        username, password, email = bundle.data['username'], bundle.data['password'], bundle.data['email']
+        data_dict = {'username' : username, 'email' : email, 'password' : password, 'password1' : password, 'password2' : password}
+        signup_form = SignupForm()
+        signup_form.cleaned_data = data_dict
         try:
-            bundle.obj = User.objects.create_user(username, '', password)
+            user = signup_form.save(bundle.request)
+            bundle.obj = user
         except IntegrityError:
-            raise BadRequest('That username already exists')
+            raise BadRequest("Username is already taken.")
         return bundle
 
     def dehydrate(self, bundle):

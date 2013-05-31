@@ -62,5 +62,6 @@ class UserForm(forms.Form):
     """
     username = CharField(min_length=3, required=True)
     email = EmailField(min_length=3, required=True)
+    password = CharField(widget=forms.PasswordInput())
     def __init__(self, user_object= None, **kwargs):
         super(UserForm, self).__init__(**kwargs)
