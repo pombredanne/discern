@@ -29,6 +29,7 @@ from forms import ProblemForm, EssayForm, EssayGradeForm, UserForm
 from django.forms.util import ErrorDict
 
 from allauth.account.forms import SignupForm
+from allauth.account.views import complete_signup
 
 log = logging.getLogger(__name__)
 
@@ -196,11 +197,20 @@ class CreateUserResource(ModelResource):
         signup_form = SignupForm()
         signup_form.cleaned_data = data_dict
         try:
-            user = signup_form.save(bundle.request)
+            try:
+                user = signup_form.save(bundle.request)
+                profile, created = UserProfile.objects.get_or_create(user=user)
+            except AssertionError:
+                #If this fails, the user has a non-unique email address.
+                user = User.objects.get(username=username)
+                user.delete()
+                raise BadRequest("Email address has already been used, try another.")
+
             #Need this so that the object is added to the bundle and exists during the dehydrate cycle.
+            html = complete_signup(bundle.request, user, "")
             bundle.obj = user
         except IntegrityError:
-            raise BadRequest("Username is already taken.")
+            raise BadRequest("Username is already taken, try another.")
 
         return bundle
 
