@@ -177,6 +177,7 @@ class CreateUserResource(ModelResource):
         fields = ['username']
         resource_name = "createuser"
         always_return_data = True
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         username, password = bundle.data['username'], bundle.data['password']
@@ -214,6 +215,7 @@ class OrganizationResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Organization
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(OrganizationResource, self).obj_create(bundle)
@@ -255,6 +257,7 @@ class UserProfileResource(SearchModelResource):
         always_return_data = True
         model_type = UserProfile
         excludes = ['throttle_at']
+        throttle = default_throttling()
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(UserProfileResource, self).obj_create(bundle,user=bundle.request.user)
@@ -279,6 +282,7 @@ class UserResource(SearchModelResource):
         always_return_data = True
         model_type = User
         excludes = ['password']
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         return super(UserResource, self).obj_create(bundle)
@@ -302,6 +306,7 @@ class MembershipResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Membership
+        throttle = default_throttling()
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(MembershipResource, self).obj_create(bundle,user=bundle.request.user)
@@ -322,6 +327,7 @@ class CourseResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Course
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         return super(CourseResource, self).obj_create(bundle, user=bundle.request.user)
@@ -341,6 +347,7 @@ class ProblemResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Problem
+        throttle = default_throttling()
         validation = CustomFormValidation(form_class=ProblemForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):
@@ -387,6 +394,7 @@ class EssayGradeResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = EssayGrade
+        throttle = default_throttling()
         validation = CustomFormValidation(form_class=EssayGradeForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):

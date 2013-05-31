@@ -265,6 +265,7 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'analytical',
     'freeform_data',
     'ml_grading',
 )
