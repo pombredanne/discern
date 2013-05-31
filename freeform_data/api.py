@@ -202,7 +202,7 @@ class CreateUserResource(ModelResource):
                 user = signup_form.save(bundle.request)
             except AssertionError:
                 user = User.objects.get(username=username)
-                email = setup_user_email(bundle.request,user)
+                email = setup_user_email(bundle.request,user, [])
                 send_email_confirmation(bundle.request, user, email_address=email)
 
             #Need this so that the object is added to the bundle and exists during the dehydrate cycle.
