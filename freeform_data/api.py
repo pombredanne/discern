@@ -199,6 +199,7 @@ class CreateUserResource(ModelResource):
         try:
             try:
                 user = signup_form.save(bundle.request)
+                profile, created = UserProfile.objects.get_or_create(user=user)
             except AssertionError:
                 #If this fails, the user has a non-unique email address.
                 user = User.objects.get(username=username)
