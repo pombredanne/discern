@@ -8,4 +8,4 @@ Install Vagrant 1.1 and vagrant-ansible plugin:
 
 From the root directory, run this command:
 
-	$ ansible-playbook deployment/playbooks/setup.yml --verbose -i "127.0.0.1," -c local -e working_dir=`pwd`
+	$ ansible-playbook -vvv discern-dev.yml -i hosts -c ssh --private-key=~/.vagrant.d/insecure_private_key
