@@ -36,9 +36,10 @@ else:
 #this is returned if the ML algorithm fails
 RESULT_FAILURE_DICT={'success' : False, 'errors' : 'Errors!', 'confidence' : 0, 'feedback' : "", 'score' : 0}
 
+@transaction.commit_manually
 def handle_single_essay(essay):
     #Needed to ensure that the DB is not wrapped in a transaction and pulls old data
-    transaction.commit_unless_managed()
+    transaction.commit()
 
     #strip out unicode and other characters in student response
     #Needed, or grader may potentially fail
@@ -55,17 +56,10 @@ def handle_single_essay(essay):
         success, created_model=ml_grading_util.get_latest_created_model(essay.problem,m)
 
         if not success:
-            error_message = "Could not identify a valid created model!"
-            log.error(error_message)
             results= RESULT_FAILURE_DICT
             formatted_feedback="error"
-            return False, error_message
-
-        #Create grader path from location in submission
-        grader_path = os.path.join(settings.ML_MODEL_PATH,created_model.model_relative_path)
-
-        #Indicates whether the model is stored locally or in the cloud
-        model_stored_in_s3=created_model.model_stored_in_s3
+            transaction.commit()
+            return False, formatted_feedback
 
         #Try to load the model file
         success, grader_data=load_model_file(created_model,use_full_path=False)
@@ -77,8 +71,6 @@ def handle_single_essay(essay):
 
         #If the above fails, try using the full path in the created_model object
         if not results['success'] and not created_model.model_stored_in_s3:
-            #Before, we used the relative path to load.  Possible that the full path may work
-            grader_path=created_model.model_full_path
             try:
                 success, grader_data=load_model_file(created_model,use_full_path=True)
                 if success:
@@ -95,6 +87,7 @@ def handle_single_essay(essay):
         if results['success'] == False:
             error_message = "Unsuccessful grading: {0}".format(results)
             log.exception(error_message)
+            transaction.commit()
             return False, error_message
         target_scores.append(int(results['score']))
 
@@ -117,7 +110,7 @@ def handle_single_essay(essay):
     essay.save()
     #copy permissions from the essay to the essaygrade
     helpers.copy_permissions(essay, Essay, essay_grade, EssayGrade)
-    transaction.commit_unless_managed()
+    transaction.commit()
     return True, "Successfully scored!"
 
 def load_model_file(created_model,use_full_path):

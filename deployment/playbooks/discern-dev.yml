@@ -7,8 +7,6 @@
   vars:
     # read-only ease repo
     ease_source_repo: git://github.com/edx/ease.git
-    # discern_dir: $app_base_dir/discern
-    # ease_dir: $app_base_dir/ease
     discern_dir: /home/vagrant/discern
     ease_dir: /home/vagrant/ease
     venv_dir: /home/vagrant/venv-discern
@@ -28,32 +26,6 @@
 
     - name: install git
       action: apt pkg=git state=present
-
-    # - name: install web server packages
-    #   action: apt pkg=$item state=installed
-    #   with_items:
-    #     - build-essential
-    #     - python-virtualenv
-    #     - python-dev
-    #     - python-pip
-    #     - gfortran
-    #     - libfreetype6-dev
-    #     - libpng12-dev
-    #     - libxml2-dev
-    #     - libxslt1-dev
-    #     - libreadline6-dev
-    #     - redis-server
-    #     - ipython
-    #     - libmysqlclient-dev
-    #     - libblas3gf
-    #     - libblas-dev
-    #     - liblapack3gf
-    #     - liblapack-dev
-    #     - libatlas-base-dev
-    #     - curl
-    #     - yui-compressor
-    #     - git
-    #     - nginx
 
     #Install system packages
     - name: install discern and ease apt packages

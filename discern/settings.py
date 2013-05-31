@@ -29,6 +29,9 @@ AWS_ACCESS_KEY_ID = None
 AWS_SECRET_ACCESS_KEY = None
 
 TIME_BEFORE_REMOVING_STARTED_MODEL = 10 * 60 * 60 # in seconds, time before removing an ml model that was started (assume it wont finish)
+MODEL_CREATION_CACHE_LOCK_TIME = 5 * 60 * 60
+GRADING_CACHE_LOCK_TIME = 60 * 60
+INDEX_REFRESH_CACHE_LOCK_TIME = 24 * 60 * 60
 
 LOGIN_REDIRECT_URL = "/frontend/"
 

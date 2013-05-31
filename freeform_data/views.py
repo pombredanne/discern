@@ -53,3 +53,9 @@ def error_response(message):
 def generic_response(message, success):
     message = {'success' : success, 'message' : message}
     return HttpResponse(json.dumps(message))
+
+def status(request):
+    """
+    Returns a simple status update
+    """
+    return success_response("Status: OK")
