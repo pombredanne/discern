@@ -40,7 +40,7 @@ The basic outline for this tutorial is:
 
 #. Becoming familiar with the API and logging into Discern. 
 #. Created an organization object and a course object
-#. Add 10 essay objects and associate them with the problem.
+#. Add 10 essay objects and associate them with the problem. (note that although we are using 10 essay objects, higher accuracy will be achieved by using more)
 #. Add 10 essay grade objects that are instructor scored and associate each one with an essay.
 #. A model will now be created, and from now on, each additional essay you add will automatically have an essay grade object associated with it that contains the machine score.
 
@@ -190,3 +190,16 @@ Here is the output::
 		 confidence: 0, score: [243], type: ML 
 
 The *IN* type is the score we provided to the Discern Server. The *ML* type is the score provided by ease. 
+
+Next Steps
+---------------------------------------
+
+We now know how to add essays to a problem object and score some, after which automatic scoring is enabled.
+
+Some things that we can try next are:
+
+#. Adding more essays with **essay_type** "train" and scoring them by adding essaygrades.  This will make our models more accurate.
+#. Add in essays with **essay_type** "test" in order for the machine to automatically score them. ("test" indicates that the essays will not be used as data to train the machine learning model).
+#. Evaluate the accuracy of the scoring by comparing the *ML* scores to the *IN* scores.
+#. Get the essays re-scored by setting the **has_been_ml_graded** field on the essays to false.  This will cause the system to add a new essaygrade object to them that is *ML* scored.
+#. And, most importantly, try this with an alternative data source, and see what happens! We will be very interested to hear your results.
