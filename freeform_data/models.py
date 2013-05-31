@@ -7,6 +7,7 @@ from request_provider.signals import get_request
 from guardian.shortcuts import assign_perm
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth.models import SiteProfileNotAvailable
 
 import logging
 log=logging.getLogger(__name__)
@@ -230,7 +231,11 @@ def pre_delete_user(sender,instance,**kwargs):
     """
     Removes the user's profile and removes foreign key relations from objects
     """
-    user_profile = instance.profile
+    try:
+        user_profile = instance.profile
+    except SiteProfileNotAvailable:
+        log.error("Could not get profile for user {0}".format(instance.username))
+        return
     essays = instance.essay_set.all()
     essay_grades = instance.essaygrade_set.all()
     user_profile.delete()
