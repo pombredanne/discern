@@ -1,29 +1,36 @@
-from tastypie.resources import ModelResource, Resource
-from freeform_data.models import Organization, UserProfile, Course, Problem, Essay, EssayGrade, Membership, UserRoles
-from django.contrib.auth.models import User
-from tastypie.authorization import Authorization, DjangoAuthorization
-from tastypie.authentication import Authentication, ApiKeyAuthentication, BasicAuthentication, MultiAuthentication
-from tastypie import fields
-from django.conf.urls import url
-from tastypie.utils import trailing_slash
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from tastypie.http import HttpGone, HttpMultipleChoices
-from django.db.models import Q
-from tastypie.serializers import Serializer
-from django.db import IntegrityError
-from tastypie.exceptions import BadRequest
-from guardian_auth import GuardianAuthorization
 import logging
-from haystack.query import SearchQuerySet
+
+from django.contrib.auth.models import User
+from django.conf.urls import url
+from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
+from django.db import IntegrityError
 from django.http import Http404
+
+from tastypie.resources import ModelResource
+from tastypie.authorization import Authorization
+from tastypie.authentication import Authentication, ApiKeyAuthentication, MultiAuthentication
+
+from tastypie import fields
+from tastypie.utils import trailing_slash
+from tastypie.serializers import Serializer
+from tastypie.exceptions import BadRequest
+from tastypie_validators import CustomFormValidation
+
+from guardian_auth import GuardianAuthorization
+from haystack.query import SearchQuerySet
+
+from freeform_data.models import Organization, UserProfile, Course, Problem, Essay, EssayGrade, Membership, UserRoles
+
 from collections import Iterator
 from throttle import UserAccessThrottle
-from django.conf import settings
-from tastypie_validators import CustomFormValidation
-from forms import ProblemForm, EssayForm, EssayGradeForm
+from forms import ProblemForm, EssayForm, EssayGradeForm, UserForm
 
-log=logging.getLogger(__name__)
+from django.forms.util import ErrorDict
+
+from allauth.account.forms import SignupForm
+
+log = logging.getLogger(__name__)
 
 
 class SessionAuthentication(Authentication):
@@ -171,16 +178,30 @@ class CreateUserResource(ModelResource):
         #No authentication for create user, or authorization.  Anyone can create.
         authentication = Authentication()
         authorization = Authorization()
-        fields = ['username']
+        fields = ['username', 'email']
         resource_name = "createuser"
         always_return_data = True
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
-        username, password = bundle.data['username'], bundle.data['password']
+        #Validate that the needed fields exist
+        validator = CustomFormValidation(form_class=UserForm, model_type=self._meta.resource_name)
+        errors = validator.is_valid(bundle)
+        if isinstance(errors, ErrorDict):
+            raise BadRequest(errors.as_text())
+        #Extract needed fields
+        username, password, email = bundle.data['username'], bundle.data['password'], bundle.data['email']
+        data_dict = {'username' : username, 'email' : email, 'password' : password, 'password1' : password, 'password2' : password}
+        #Pass the fields to django-allauth.  We want to use its email verification setup.
+        signup_form = SignupForm()
+        signup_form.cleaned_data = data_dict
         try:
-            bundle.obj = User.objects.create_user(username, '', password)
+            user = signup_form.save(bundle.request)
+            #Need this so that the object is added to the bundle and exists during the dehydrate cycle.
+            bundle.obj = user
         except IntegrityError:
-            raise BadRequest('That username already exists')
+            raise BadRequest("Username is already taken.")
+
         return bundle
 
     def dehydrate(self, bundle):
@@ -211,6 +232,7 @@ class OrganizationResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Organization
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(OrganizationResource, self).obj_create(bundle)
@@ -252,6 +274,7 @@ class UserProfileResource(SearchModelResource):
         always_return_data = True
         model_type = UserProfile
         excludes = ['throttle_at']
+        throttle = default_throttling()
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(UserProfileResource, self).obj_create(bundle,user=bundle.request.user)
@@ -276,6 +299,7 @@ class UserResource(SearchModelResource):
         always_return_data = True
         model_type = User
         excludes = ['password']
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         return super(UserResource, self).obj_create(bundle)
@@ -299,6 +323,7 @@ class MembershipResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Membership
+        throttle = default_throttling()
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(MembershipResource, self).obj_create(bundle,user=bundle.request.user)
@@ -319,6 +344,7 @@ class CourseResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Course
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         return super(CourseResource, self).obj_create(bundle, user=bundle.request.user)
@@ -338,6 +364,7 @@ class ProblemResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Problem
+        throttle = default_throttling()
         validation = CustomFormValidation(form_class=ProblemForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):
@@ -384,6 +411,7 @@ class EssayGradeResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = EssayGrade
+        throttle = default_throttling()
         validation = CustomFormValidation(form_class=EssayGradeForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):

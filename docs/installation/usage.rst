@@ -28,6 +28,7 @@ Getting started - the plan
 
 Discern allows anyone to use machine learning based automated textual classification as an API service. You would generally want text that is associated with one or more *scores*. These *scores* can be anything. One example would be a corpus of essays that are scored. Another example would be `reddit <http://www.reddit.com/>`_ comments/posts, which are associated with upvotes/downvotes, which are a *score*. Another example would be news articles and stock prices before/after the news articles were released.  This tutorial will use reddit. 
 
+Once you create a user, you will be able to interact with the various API resources.  I will get into how they are organized below.
 We will use the python `request module <http://docs.python-requests.org/en/latest/>`_ to interact with our Discern server. For our examples,the response will be in `JSON <http://en.wikipedia.org/wiki/JSON>`_. To access reddit, the examples use `PRAW: The Python Reddit Api Wrapper <https://github.com/praw-dev/praw>`_.
 
 The example code is broken down into small programs. Each will include this python module. 

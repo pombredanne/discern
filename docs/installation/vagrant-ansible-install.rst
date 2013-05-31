@@ -1,3 +1,7 @@
+==============================
+Vagrant + Ansible Installation
+==============================
+
 Install Virtualbox
 ------------------
 
@@ -45,12 +49,12 @@ If you need to run Ansible separately from vagrant for debugging, you can use th
 	$ cd deployment/playbooks
 	$ ansible-playbook -vvv discern-dev.yml -i hosts -c ssh --private-key=~/.vagrant.d/insecure_private_key 
 
-If you get this error:
+If you get this error::
 
 	The box 'precise' is still stored on disk in the Vagrant 1.0.x
 	format. This box must be upgraded in order to work properly with
 	this version of Vagrant.
 
-You can then run this command:
+You can then run this command::
 
 	$ vagrant box repackage precise64 virtualbox

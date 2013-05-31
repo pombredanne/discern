@@ -2,10 +2,11 @@
 Installation Overview
 =================================
 
-There are two ways to install the Discern project:
+There are three ways to install the Discern project:
 
 1) Manually using the following instructions
-2) Automatically using the Ansible playbooks. See the configuration_ repo and ml-api branch.
+2) Automatically to a VirtualBox using Vagrant and the Ansible-dev playbook. See :doc:`vagrant-ansible-install`
+3) Automatically to an Amazon EC2 instance using the Ansible AWS playbooks. See the configuration_ repo and ml-api branch.
 
 .. _configuration: https://github.com/edx/configuration/tree/vik/ml-api 
 
@@ -36,9 +37,8 @@ If you get errors using the above, you may need to create a database directory o
 
 You will need to install the ease repo (https://github.com/edx/ease) in the same base directory that you installed discern in order to get all functionality.  Follow the install instructions in that repo.
 
-If all has gone well, you see a database directory called db. An sqlite3 database was created in it. The sqlite3  command can be used to inspect the tables which Django generated.  
+If all has gone well, you see a database directory called db. An sqlite3 database was created in it. The sqlite3 command can be used to inspect the tables which Django generated::
 
-::
 	$ sqlite3 db/service-api-db.db 
 	SQLite version 3.7.9 2011-11-01 00:52:41
 	Enter ".help" for instructions

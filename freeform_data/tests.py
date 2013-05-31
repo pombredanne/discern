@@ -300,6 +300,7 @@ class CreateUserTest(unittest.TestCase):
         self.post_data = {
             'username' : 'test1',
             'password' : 'test1',
+            'email' : 'test1@test1.com'
         }
 
     def test_create(self):

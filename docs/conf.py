@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# ML API documentation build configuration file, created by
+# Discern documentation build configuration file, created by
 # sphinx-quickstart on Fri Mar  1 09:51:10 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -48,7 +48,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'ML API'
+project = u'Discern'
 copyright = u'2013, edX'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -172,7 +172,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'MLAPIdoc'
+htmlhelp_basename = 'Discerndoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -191,7 +191,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'MLAPI.tex', u'ML API Documentation',
+  ('index', 'Discern.tex', u'Discern Documentation',
    u'edX', 'manual'),
 ]
 
@@ -221,7 +221,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'mlapi', u'ML API Documentation',
+    ('index', 'discern', u'Discern Documentation',
      [u'edX'], 1)
 ]
 
@@ -235,8 +235,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'MLAPI', u'ML API Documentation',
-   u'edX', 'MLAPI', 'One line description of project.',
+  ('index', 'Discern', u'Discern Documentation',
+   u'edX', 'Discern', 'One line description of project.',
    'Miscellaneous'),
 ]
 
