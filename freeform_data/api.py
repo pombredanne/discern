@@ -30,7 +30,6 @@ from django.forms.util import ErrorDict
 
 from allauth.account.forms import SignupForm
 from allauth.account.views import complete_signup
-from allauth.account.utils import setup_user_email, send_email_confirmation
 
 log = logging.getLogger(__name__)
 
@@ -201,17 +200,16 @@ class CreateUserResource(ModelResource):
             try:
                 user = signup_form.save(bundle.request)
             except AssertionError:
+                #If this fails, the user has a non-unique email address.
                 user = User.objects.get(username=username)
-                email = setup_user_email(bundle.request,user, [])
-                send_email_confirmation(bundle.request, user, email_address=email)
+                user.delete()
+                raise BadRequest("Email address has already been used, try another.")
 
             #Need this so that the object is added to the bundle and exists during the dehydrate cycle.
-            html = complete_signup(bundle.request, user,
-                            settings.EMAIL_VERIFICATION,
-                            "")
+            html = complete_signup(bundle.request, user, "")
             bundle.obj = user
         except IntegrityError:
-            raise BadRequest("Username is already taken.")
+            raise BadRequest("Username is already taken, try another.")
 
         return bundle
 
