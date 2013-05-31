@@ -62,8 +62,9 @@ class Command(BaseCommand):
 
         course, created = Course.objects.get_or_create(
             course_name = "edX101",
-            organization = organization
         )
+        if created:
+            course.organizations.add(organization)
 
         user.profile.organization = organization
         user.save()

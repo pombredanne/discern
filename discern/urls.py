@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^$', include('frontend.urls')),
     url(r'^accounts/', include('allauth.urls')),
     (r'^admin/', include(admin.site.urls)),
+    (r'^status/', 'freeform_data.views.status')
 )
 
 if settings.DEBUG:
