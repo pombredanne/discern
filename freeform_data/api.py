@@ -29,6 +29,7 @@ from forms import ProblemForm, EssayForm, EssayGradeForm, UserForm
 from django.forms.util import ErrorDict
 
 from allauth.account.forms import SignupForm
+from allauth.account.views import complete_signup
 
 log = logging.getLogger(__name__)
 
@@ -198,6 +199,9 @@ class CreateUserResource(ModelResource):
         try:
             user = signup_form.save(bundle.request)
             #Need this so that the object is added to the bundle and exists during the dehydrate cycle.
+            html = complete_signup(bundle.request, user,
+                            settings.EMAIL_VERIFICATION,
+                            "")
             bundle.obj = user
         except IntegrityError:
             raise BadRequest("Username is already taken.")
