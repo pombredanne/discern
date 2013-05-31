@@ -2,7 +2,7 @@ from django import forms
 import fields
 import django_validators
 import logging
-from django.forms.fields import Field, FileField, IntegerField, CharField, ChoiceField, BooleanField, DecimalField
+from django.forms.fields import Field, FileField, IntegerField, CharField, ChoiceField, BooleanField, DecimalField, EmailField
 from django.core.exceptions import ValidationError
 from models import ESSAY_TYPES, GRADER_TYPES
 
@@ -55,3 +55,12 @@ class EssayGradeForm(forms.Form):
         validator = django_validators.JSONListValidator(matching_list=self.max_target_scores)
 
         self.fields['target_scores'] = fields.JSONListField(required = True, validators=[validator])
+
+class UserForm(forms.Form):
+    """
+    A form to validate User resources
+    """
+    username = CharField(min_length=3, required=True)
+    email = EmailField(min_length=3, required=True)
+    def __init__(self, user_object= None, **kwargs):
+        super(UserForm, self).__init__(**kwargs)

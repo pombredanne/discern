@@ -24,7 +24,9 @@ from freeform_data.models import Organization, UserProfile, Course, Problem, Ess
 
 from collections import Iterator
 from throttle import UserAccessThrottle
-from forms import ProblemForm, EssayForm, EssayGradeForm
+from forms import ProblemForm, EssayForm, EssayGradeForm, UserForm
+
+from django.forms.util import ErrorDict
 
 log = logging.getLogger(__name__)
 
@@ -174,12 +176,16 @@ class CreateUserResource(ModelResource):
         #No authentication for create user, or authorization.  Anyone can create.
         authentication = Authentication()
         authorization = Authorization()
-        fields = ['username']
+        fields = ['username', 'email']
         resource_name = "createuser"
         always_return_data = True
         throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
+        validator = CustomFormValidation(form_class=UserForm, model_type=self._meta.resource_name)
+        errors = validator.is_valid(bundle)
+        if isinstance(errors, ErrorDict):
+            raise BadRequest(errors.as_text())
         username, password = bundle.data['username'], bundle.data['password']
         try:
             bundle.obj = User.objects.create_user(username, '', password)
