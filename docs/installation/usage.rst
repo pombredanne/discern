@@ -80,15 +80,15 @@ The last status code from the output was 401 because we aren't logged in. To pro
 
 Alternatively, if you want a UI to interactively play around with these APIs, the POSTMAN add-on for Chrome is highly recommended. The endpoint is http://127.0.0.1:7999/essay_site/api/v1/createuser/. Just POST a JSON data dictionary containing the keys username and password (i.e., *{"username" : "test", "password" : "test"}* ).
 
-Later in this tutorial, we will need to establish relationships between a course and its organization. This code segment enumates the schema for course. 
+Later in this tutorial, we will need to establish relationships between a course and its organization. This code segment enumerates the schema for course.
 
-.. literalinclude:: ../examples/enumate_schema.py
+.. literalinclude:: ../examples/enumerate_schema.py
    :language: python
    :linenos:
 
 The resulting output is...::
 
-	$ python enumate_schema.py 
+	$ python enumerate_schema.py
 	Name: course_name 
 		 Can be blank: False 
 		 Type: string 
