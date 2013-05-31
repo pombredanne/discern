@@ -184,19 +184,24 @@ class CreateUserResource(ModelResource):
         throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
+        #Validate that the needed fields exist
         validator = CustomFormValidation(form_class=UserForm, model_type=self._meta.resource_name)
         errors = validator.is_valid(bundle)
         if isinstance(errors, ErrorDict):
             raise BadRequest(errors.as_text())
+        #Extract needed fields
         username, password, email = bundle.data['username'], bundle.data['password'], bundle.data['email']
         data_dict = {'username' : username, 'email' : email, 'password' : password, 'password1' : password, 'password2' : password}
+        #Pass the fields to django-allauth.  We want to use its email verification setup.
         signup_form = SignupForm()
         signup_form.cleaned_data = data_dict
         try:
             user = signup_form.save(bundle.request)
+            #Need this so that the object is added to the bundle and exists during the dehydrate cycle.
             bundle.obj = user
         except IntegrityError:
             raise BadRequest("Username is already taken.")
+
         return bundle
 
     def dehydrate(self, bundle):
