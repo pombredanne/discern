@@ -7,6 +7,7 @@ from request_provider.signals import get_request
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import SiteProfileNotAvailable
+from guardian.shortcuts import assign_perm
 
 import logging
 log=logging.getLogger(__name__)
@@ -265,18 +266,6 @@ def get_group_name(membership):
     group_name = "{0}_{1}".format(membership.organization.id,membership.role)
     return group_name
 
-def assign_guardian_perm(perm, user, obj):
-    from guardian.models import UserObjectPermission
-    from django.contrib.contenttypes.models import ContentType
-    perm = perm.split('.')[-1]
-    ctype = ContentType.objects.get_for_model(obj)
-    permission = Permission.objects.get(content_type=ctype, codename=perm)
-
-    kwargs = {'permission': permission, 'user': user, 'content_type' : ctype, 'object_pk' : obj.id}
-    obj_perm = UserObjectPermission(**kwargs)
-    obj_perm.save()
-    return obj_perm
-
 def add_creator_permissions(sender, instance, **kwargs):
     try:
         instance_name = instance.__class__.__name__.lower()
@@ -288,7 +277,7 @@ def add_creator_permissions(sender, instance, **kwargs):
             user = get_request().user
         if instance_name in PERMISSION_MODELS:
             for perm in PERMISSIONS:
-                assign_guardian_perm('{0}_{1}'.format(perm, instance_name), user, instance)
+                assign_perm('{0}_{1}'.format(perm, instance_name), user, instance)
     except:
         log.debug("Cannot generate perms.  This is probably okay.")
 
