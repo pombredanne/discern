@@ -14,11 +14,11 @@ from unicodedata import category
 
 valid_jsid_categories_start = frozenset([
     'Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Nl'
-    ])
+])
 
 valid_jsid_categories = frozenset([
     'Lu', 'Ll', 'Lt', 'Lm', 'Lo', 'Nl', 'Mn', 'Mc', 'Nd', 'Pc'
-    ])
+])
 
 valid_jsid_chars = ('$', '_')
 
@@ -48,12 +48,13 @@ is_reserved_js_word = frozenset([
 
     # potentially reserved in a future version of the ES5 standard
     # 'let', 'yield'
-    
-    ]).__contains__
+
+]).__contains__
 
 # ------------------------------------------------------------------------------
 # the core validation functions
 # ------------------------------------------------------------------------------
+
 
 def is_valid_javascript_identifier(identifier, escape=r'\u', ucd_cat=category):
     """Return whether the given ``id`` is a valid Javascript identifier."""
@@ -81,7 +82,7 @@ def is_valid_javascript_identifier(identifier, escape=r'\u', ucd_cat=category):
             except Exception:
                 return False
             add_char(segment[4:])
-            
+
         identifier = u''.join(new)
 
     if is_reserved_js_word(identifier):
@@ -117,6 +118,7 @@ def is_valid_jsonp_callback_value(value):
 # ------------------------------------------------------------------------------
 # test
 # ------------------------------------------------------------------------------
+
 
 def test():
     """

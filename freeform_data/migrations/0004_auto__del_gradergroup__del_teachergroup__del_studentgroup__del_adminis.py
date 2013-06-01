@@ -32,7 +32,6 @@ class Migration(SchemaMigration):
         # Removing M2M table for field users on 'Organization'
         db.delete_table('freeform_data_organization_users')
 
-
     def backwards(self, orm):
         # Adding model 'GraderGroup'
         db.create_table('freeform_data_gradergroup', (
@@ -72,7 +71,6 @@ class Migration(SchemaMigration):
             ('user', models.ForeignKey(orm['auth.user'], null=False))
         ))
         db.create_unique('freeform_data_organization_users', ['organization_id', 'user_id'])
-
 
     models = {
         'auth.group': {

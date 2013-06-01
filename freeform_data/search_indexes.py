@@ -3,6 +3,7 @@ from haystack.indexes import *
 from haystack import site
 from models import Organization, Course, Problem, Essay, EssayGrade
 
+
 class BaseIndex(SearchIndex):
     """
     Define a base search index class for all models.  Fields text, created, and modified are generic across all models.
@@ -23,26 +24,31 @@ class BaseIndex(SearchIndex):
         """
         return self.get_model().objects.all()
 
+
 class OrganizationIndex(BaseIndex):
     model_type = Organization
+
 
 class CourseIndex(BaseIndex):
     model_type = Course
 
+
 class ProblemIndex(BaseIndex):
     model_type = Problem
+
 
 class EssayIndex(BaseIndex):
     type = CharField(model_attr="essay_type")
     ml_graded = BooleanField(model_attr="has_been_ml_graded")
     model_type = Essay
 
+
 class EssayGradeIndex(BaseIndex):
     success = BooleanField(model_attr="success")
     confidence = DecimalField(model_attr="confidence")
     model_type = EssayGrade
 
-#Register all of the search indexes.  Must be done in pairs.
+# Register all of the search indexes.  Must be done in pairs.
 site.register(Organization, OrganizationIndex)
 site.register(Course, CourseIndex)
 site.register(Problem, ProblemIndex)

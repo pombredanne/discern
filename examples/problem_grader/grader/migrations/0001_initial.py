@@ -38,7 +38,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'grader', ['UserProfile'])
 
-
     def backwards(self, orm):
         # Deleting model 'Rubric'
         db.delete_table(u'grader_rubric')
@@ -48,7 +47,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'UserProfile'
         db.delete_table(u'grader_userprofile')
-
 
     models = {
         u'auth.group': {

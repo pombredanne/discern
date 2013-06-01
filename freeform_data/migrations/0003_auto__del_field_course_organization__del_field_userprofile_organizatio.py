@@ -22,7 +22,6 @@ class Migration(SchemaMigration):
         # Deleting field 'UserProfile.organization'
         db.delete_column('freeform_data_userprofile', 'organization_id')
 
-
         # Changing field 'UserProfile.user'
         db.alter_column('freeform_data_userprofile', 'user_id', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, null=True))
         # Adding M2M table for field users on 'Organization'
@@ -32,7 +31,6 @@ class Migration(SchemaMigration):
             ('user', models.ForeignKey(orm['auth.user'], null=False))
         ))
         db.create_unique('freeform_data_organization_users', ['organization_id', 'user_id'])
-
 
     def backwards(self, orm):
         # Adding field 'Course.organization'
@@ -48,12 +46,10 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['freeform_data.Organization'], null=True, blank=True),
                       keep_default=False)
 
-
         # Changing field 'UserProfile.user'
         db.alter_column('freeform_data_userprofile', 'user_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True, null=True))
         # Removing M2M table for field users on 'Organization'
         db.delete_table('freeform_data_organization_users')
-
 
     models = {
         'auth.group': {

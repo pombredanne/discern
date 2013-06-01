@@ -129,7 +129,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('freeform_data', ['GraderGroup'])
 
-
     def backwards(self, orm):
         # Deleting model 'Organization'
         db.delete_table('freeform_data_organization')
@@ -166,7 +165,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'GraderGroup'
         db.delete_table('freeform_data_gradergroup')
-
 
     models = {
         'auth.group': {

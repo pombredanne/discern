@@ -6,7 +6,7 @@ from urllib import unquote
 from django.contrib.gis.db.models import GeometryField
 try:
     import json as simplejson
-except ImportError: # < Python 2.6
+except ImportError:  # < Python 2.6
     from django.utils import simplejson
 from django.contrib.gis.geos import GEOSGeometry
 
@@ -59,7 +59,7 @@ class ModelResource(resources.ModelResource):
         return super(ModelResource, cls).api_field_from_django_field(f, default)
 
     def filter_value_to_python(self, value, field_name, filters, filter_expr,
-            filter_type):
+                               filter_type):
         value = super(ModelResource, self).filter_value_to_python(
             value, field_name, filters, filter_expr, filter_type)
 

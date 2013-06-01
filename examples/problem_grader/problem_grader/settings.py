@@ -21,7 +21,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'db/grader.db',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
@@ -38,11 +38,11 @@ CACHES = {
     }
 }
 
-#Avoid clashes with api by changing these
+# Avoid clashes with api by changing these
 SESSION_COOKIE_NAME = "problemgradersessionid"
 CSRF_COOKIE_NAME = "problemgradercsrftoken"
 
-#Figure out where the API is!
+# Figure out where the API is!
 API_URL_BASE = "http://127.0.0.1:7999/"
 API_URL_INTERMEDIATE = "essay_site/api/v1/"
 FULL_API_START = API_URL_BASE + API_URL_INTERMEDIATE
@@ -86,7 +86,7 @@ MEDIA_URL = ''
 
 STATIC_ROOT = os.path.abspath(REPO_PATH / "staticfiles")
 
-#Make the static root dir if it does not exist
+# Make the static root dir if it does not exist
 if not os.path.isdir(STATIC_ROOT):
     os.mkdir(STATIC_ROOT)
 
@@ -105,42 +105,42 @@ STATICFILES_DIRS = (
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 PIPELINE_JS = {
-    'util' : {
+    'util': {
         'source_filenames': [
             'js/jquery-1.9.1.js',
             'js/json2.js',
             'js/bootstrap.js',
             'js/jquery.cookie.js',
             'js/underscore.js',
-            ],
+        ],
         'output_filename': 'js/util.js',
-        },
-    'course' : {
+    },
+    'course': {
         'source_filenames': [
             'js/course.js',
         ],
         'output_filename': 'js/course.js',
     },
-    'problem' : {
+    'problem': {
         'source_filenames': [
             'js/problem.js',
-            ],
+        ],
         'output_filename': 'js/problem.js',
     },
-    'essay' : {
+    'essay': {
     'source_filenames': [
         'js/essay.js',
         'js/essay_nav.js'
-        ],
+    ],
     'output_filename': 'js/essay.js',
     },
-    'essaygrade' : {
+    'essaygrade': {
         'source_filenames': [
             'js/essaygrade.js',
             'js/essay_nav.js',
-            ],
+        ],
         'output_filename': 'js/essaygrade.js',
-        },
+    },
 }
 
 PIPELINE_CSS = {
@@ -149,15 +149,15 @@ PIPELINE_CSS = {
             'css/bootstrap.css',
             'css/bootstrap-responsive.css',
             'css/bootstrap-extensions.css',
-            ],
+        ],
         'output_filename': 'css/bootstrap.css',
-        },
-    'util_css' : {
+    },
+    'util_css': {
         'source_filenames': [
             'css/jquery-ui-1.10.2.custom.css',
-            ],
+        ],
         'output_filename': 'css/util_css.css',
-        }
+    }
 }
 
 
@@ -242,28 +242,28 @@ LOGGING = {
         'standard': {
             'format': '%(asctime)s %(levelname)s %(process)d '
                       '[%(name)s] %(filename)s:%(lineno)d - %(message)s',
-            },
+        },
         'syslog_format': {'format': syslog_format},
         'raw': {'format': '%(message)s'},
-        },
+    },
     'handlers': {
         'console': {
             'level': 'DEBUG' if DEBUG else 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'standard',
             'stream': sys.stdout,
-            },
+        },
         'null': {
             'level': 'DEBUG',
-            'class':'django.utils.log.NullHandler',
-            },
+            'class': 'django.utils.log.NullHandler',
         },
+    },
     'loggers': {
         'django.request': {
             'handlers': ['console'],
             'level': 'ERROR',
             'propagate': True,
-            },
+        },
         '': {
             'handlers': ['console'],
             'level': 'DEBUG',
@@ -272,7 +272,7 @@ LOGGING = {
         'django.db.backends': {
             'handlers': ['null'],  # Quiet by default!
             'propagate': False,
-            'level':'DEBUG',
-            },
-        }
+            'level': 'DEBUG',
+        },
+    }
 }

@@ -6,6 +6,7 @@ from models import Problem, Essay
 import logging
 log = logging.getLogger(__name__)
 
+
 class CustomFormValidation(FormValidation):
     """
     A validation class that uses a Django ``Form`` to validate the data.
@@ -38,14 +39,14 @@ class CustomFormValidation(FormValidation):
         not, a list of errors will be returned.
         """
 
-        #Get a problem object and the form data from the bundle
+        # Get a problem object and the form data from the bundle
         form_data, problem_obj = self.form_args(bundle)
 
-        #Ensure that the validation is being done only on the object that the user just manipulated
+        # Ensure that the validation is being done only on the object that the user just manipulated
         request_path = bundle.request.get_full_path()
         request_model_type = (request_path.split('/')[-3])
 
-        #Don't append the problem object if we are doing secondary validations
+        # Don't append the problem object if we are doing secondary validations
         if self.model_type in request_model_type:
             form_data['problem_object'] = problem_obj
 
@@ -90,15 +91,15 @@ class CustomFormValidation(FormValidation):
     def form_args(self, bundle):
         kwargs = super(CustomFormValidation, self).form_args(bundle)
 
-        #Try to find the problem object corresponding to the primary key values if needed
+        # Try to find the problem object corresponding to the primary key values if needed
         problem_obj = None
         for field in kwargs['data']:
-            #Essays have problem fields that can be scraped to get a problem object
-            if field=="problem" and self.model_type=="essay":
+            # Essays have problem fields that can be scraped to get a problem object
+            if field == "problem" and self.model_type == "essay":
                 problem_id = self.uri_to_pk(kwargs['data'][field])
                 problem_obj = model_to_dict(Problem.objects.get(id=problem_id))
-            #Essaygrades have essay fields that can be scraped to get a problem object
-            elif field=="essay" and self.model_type=="essaygrade":
+            # Essaygrades have essay fields that can be scraped to get a problem object
+            elif field == "essay" and self.model_type == "essaygrade":
                 essay_id = self.uri_to_pk(kwargs['data'][field])
                 essay_obj = Essay.objects.get(id=essay_id)
                 problem_obj = model_to_dict(essay_obj.problem)

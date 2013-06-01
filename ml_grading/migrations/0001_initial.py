@@ -30,11 +30,9 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('ml_grading', ['CreatedModel'])
 
-
     def backwards(self, orm):
         # Deleting model 'CreatedModel'
         db.delete_table('ml_grading_createdmodel')
-
 
     models = {
         'auth.group': {

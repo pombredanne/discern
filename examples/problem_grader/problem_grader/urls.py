@@ -13,10 +13,10 @@ urlpatterns = patterns('',
                        )
 
 if settings.DEBUG:
-    #urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT, show_indexes=True)
-    urlpatterns+= patterns('',
-                           url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
+    # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT, show_indexes=True)
+    urlpatterns += patterns('',
+                            url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
                                'document_root': settings.STATIC_ROOT,
-                               'show_indexes' : True,
+                               'show_indexes': True,
                                }),
-                           )
+                            )

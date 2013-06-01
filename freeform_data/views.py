@@ -4,7 +4,8 @@ import json
 from django.http import HttpResponse
 import logging
 
-log=logging.getLogger(__name__)
+log = logging.getLogger(__name__)
+
 
 @csrf_exempt
 def login(request):
@@ -23,7 +24,7 @@ def login(request):
     except:
         pass
 
-    if not p.has_key('username') or not p.has_key('password'):
+    if 'username' not in p or 'password' not in p:
         return error_response('Insufficient login info')
     if isinstance(p['username'], list):
         p['username'] = p['username'][0]
@@ -37,6 +38,7 @@ def login(request):
     else:
         return error_response('Incorrect login credentials.')
 
+
 def logout(request):
     """
     Uses django auth to handle a logout request
@@ -44,15 +46,19 @@ def logout(request):
     django.contrib.auth.logout(request)
     return success_response('Goodbye')
 
+
 def success_response(message):
     return generic_response(message, True)
+
 
 def error_response(message):
     return generic_response(message, False)
 
+
 def generic_response(message, success):
-    message = {'success' : success, 'message' : message}
+    message = {'success': success, 'message': message}
     return HttpResponse(json.dumps(message))
+
 
 def status(request):
     """

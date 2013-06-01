@@ -5,16 +5,16 @@ Deployment settings file
 from settings import *
 import json
 
-DEBUG=False
+DEBUG = False
 
-TIME_BETWEEN_INDEX_REBUILDS = 60 * 30 # seconds
+TIME_BETWEEN_INDEX_REBUILDS = 60 * 30  # seconds
 
-#Tastypie throttle settings
-THROTTLE_AT = 100 #Throttle requests after this number in below timeframe
-THROTTLE_TIMEFRAME= 60 * 60 #Timeframe in which to throttle N requests, seconds
-THROTTLE_EXPIRATION= 24 * 60 * 60 # When to remove throttle entries from cache, seconds
+# Tastypie throttle settings
+THROTTLE_AT = 100  # Throttle requests after this number in below timeframe
+THROTTLE_TIMEFRAME = 60 * 60  # Timeframe in which to throttle N requests, seconds
+THROTTLE_EXPIRATION = 24 * 60 * 60  # When to remove throttle entries from cache, seconds
 
-with open(os.path.join(ENV_ROOT,"env.json")) as env_file:
+with open(os.path.join(ENV_ROOT, "env.json")) as env_file:
     ENV_TOKENS = json.load(env_file)
 
 with open(os.path.join(ENV_ROOT, "auth.json")) as auth_file:
@@ -53,16 +53,16 @@ AWS_SES_REGION_NAME = ENV_TOKENS.get('AWS_SES_REGION_NAME', 'us-east-1')
 if AWS_SES_REGION_NAME is not None:
     AWS_SES_REGION_ENDPOINT = 'email.{0}.amazonaws.com'.format(AWS_SES_REGION_NAME)
 
-#Set this for django-analytical.  Because django-analytical enables the service if the key exists,
-#ensure that the settings value is only created if the key exists in the deployment settings.
+# Set this for django-analytical.  Because django-analytical enables the service if the key exists,
+# ensure that the settings value is only created if the key exists in the deployment settings.
 ga_key = AUTH_TOKENS.get("GOOGLE_ANALYTICS_PROPERTY_ID", "")
-if len(ga_key)>1:
+if len(ga_key) > 1:
     GOOGLE_ANALYTICS_PROPERTY_ID = ga_key
 
-#Try to set the domain for the current site
-#Needed to get the right site name for email activation
-#Comment out, as this is causing issues in deployment.
-#TODO: Move to a fixture
+# Try to set the domain for the current site
+# Needed to get the right site name for email activation
+# Comment out, as this is causing issues in deployment.
+# TODO: Move to a fixture
 """
 try:
     if DNS_HOSTNAME is not None:

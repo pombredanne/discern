@@ -6,6 +6,7 @@ from django.contrib.auth.models import User, SiteProfileNotAvailable
 import logging
 log = logging.getLogger(__name__)
 
+
 class UserAccessThrottle(CacheDBThrottle):
     """
     A throttling mechanism that uses the cache for actual throttling but
@@ -15,7 +16,7 @@ class UserAccessThrottle(CacheDBThrottle):
     build a statistics interface or a billing mechanism.
     """
     def __init__(self, throttle_at=150, timeframe=3600, expiration=None, model_type=None):
-        super(UserAccessThrottle, self).__init__(throttle_at,timeframe,expiration)
+        super(UserAccessThrottle, self).__init__(throttle_at, timeframe, expiration)
         self.model_type = model_type
 
     def should_be_throttled(self, identifier, **kwargs):
@@ -29,11 +30,11 @@ class UserAccessThrottle(CacheDBThrottle):
         the user should be throttled.
         """
 
-        #Generate a more granular id
+        # Generate a more granular id
         new_id, url, request_method = self.get_new_id(identifier, **kwargs)
         key = self.convert_identifier_to_key(new_id)
 
-        #See if we can get a user and adjust throttle limit
+        # See if we can get a user and adjust throttle limit
         user = self.get_user(identifier)
         throttle_at = self.get_rate_limit_for_user(user)
 
@@ -59,11 +60,11 @@ class UserAccessThrottle(CacheDBThrottle):
         kwargs - can contain request method and url
         """
 
-        #Generate a new id
+        # Generate a new id
         new_id, url, request_method = self.get_new_id(identifier, **kwargs)
         key = self.convert_identifier_to_key(new_id)
 
-        #Get times accessed and increment
+        # Get times accessed and increment
         times_accessed = cache.get(key, [])
         times_accessed.append(int(time.time()))
         cache.set(key, times_accessed, self.expiration)
@@ -86,7 +87,7 @@ class UserAccessThrottle(CacheDBThrottle):
         """
         url = kwargs.get('url', '')
         request_method = kwargs.get('request_method', '')
-        new_id = "{0}.{1}.{2}".format(identifier,url,request_method)
+        new_id = "{0}.{1}.{2}".format(identifier, url, request_method)
         return new_id, url, request_method
 
     def get_user(self, identifier):

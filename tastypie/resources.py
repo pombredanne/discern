@@ -6,7 +6,7 @@ import django
 from django.conf import settings
 try:
     from django.conf.urls import patterns, url
-except ImportError: # Django < 1.4
+except ImportError:  # Django < 1.4
     from django.conf.urls.defaults import patterns, url
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned, ValidationError
 from django.core.urlresolvers import NoReverseMatch, reverse, resolve, Resolver404, get_script_prefix
@@ -37,7 +37,7 @@ except NameError:
 # is safe to use the native python copy module.
 # The ``copy`` module became function-friendly in Python 2.5 and
 # ``copycompat`` was added in post 1.1.1 Django (r11901)..
-if sys.version_info >= (2,5):
+if sys.version_info >= (2, 5):
     try:
         from copy import deepcopy
     except ImportError:
@@ -364,8 +364,8 @@ class Resource(object):
 
         urls += self.base_urls()
         urlpatterns = patterns('',
-            *urls
-        )
+                               *urls
+                               )
         return urlpatterns
 
     def determine_format(self, request):
@@ -829,7 +829,7 @@ class Resource(object):
         chomped_uri = uri
 
         if prefix and chomped_uri.startswith(prefix):
-            chomped_uri = chomped_uri[len(prefix)-1:]
+            chomped_uri = chomped_uri[len(prefix) - 1:]
 
         try:
             view, args, kwargs = resolve(chomped_uri)
@@ -1934,7 +1934,7 @@ class ModelResource(Resource):
         return [self.fields[field_name].attribute]
 
     def filter_value_to_python(self, value, field_name, filters, filter_expr,
-            filter_type):
+                               filter_type):
         """
         Turn the string ``value`` into a python object.
         """
@@ -2328,7 +2328,7 @@ class ModelResource(Resource):
             if field_object.readonly:
                 continue
 
-            if field_object.blank and not bundle.data.has_key(field_name):
+            if field_object.blank and field_name not in bundle.data:
                 continue
 
             # Get the object.
@@ -2425,8 +2425,8 @@ class ModelResource(Resource):
                     request=bundle.request,
                     objects_saved=bundle.objects_saved
                 )
-                
-                #Only save related models if they're newly added.
+
+                # Only save related models if they're newly added.
                 if updated_related_bundle.obj._state.adding:
                     related_resource.save(updated_related_bundle)
                 related_objs.append(updated_related_bundle.obj)

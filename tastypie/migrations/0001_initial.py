@@ -29,7 +29,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('tastypie', ['ApiKey'])
 
-
     def backwards(self, orm):
 
         # Deleting model 'ApiAccess'
@@ -37,7 +36,6 @@ class Migration(SchemaMigration):
 
         # Deleting model 'ApiKey'
         db.delete_table('tastypie_apikey')
-
 
     models = {
         'auth.group': {

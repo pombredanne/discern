@@ -4,6 +4,7 @@ from django.utils import simplejson
 from django.core.serializers import json
 from tastypie.serializers import Serializer
 
+
 class CustomJSONSerializer(Serializer):
     def to_json(self, data, options=None):
         """

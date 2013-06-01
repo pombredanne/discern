@@ -2,8 +2,8 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from django.utils import timezone
 
-#from http://jamesmckay.net/2009/03/django-custom-managepy-commands-not-committing-transactions/
-#Fix issue where db data in manage.py commands is not refreshed at all once they start running
+# from http://jamesmckay.net/2009/03/django-custom-managepy-commands-not-committing-transactions/
+# Fix issue where db data in manage.py commands is not refreshed at all once they start running
 from django.db import transaction
 transaction.commit_unless_managed()
 
@@ -22,10 +22,10 @@ from django.contrib.auth.models import User
 
 log = logging.getLogger(__name__)
 
+
 class Command(BaseCommand):
     args = "<filename>"
     help = "Poll grading controller and send items to be graded to ml"
-
 
     def handle(self, *args, **options):
         """
@@ -34,7 +34,6 @@ class Command(BaseCommand):
 
         parser = SafeConfigParser()
         parser.read(args[0])
-
 
         print("Starting import...")
         print("Reading config from file {0}".format(args[0]))
@@ -52,16 +51,16 @@ class Command(BaseCommand):
         try:
             User.objects.create_user('vik', 'vik@edx.org', 'vik')
         except:
-            #User already exists, but doesn't matter to us
+            # User already exists, but doesn't matter to us
             pass
 
         user = User.objects.get(username='vik')
         organization, created = Organization.objects.get_or_create(
-            organization_name = "edX"
+            organization_name="edX"
         )
 
         course, created = Course.objects.get_or_create(
-            course_name = "edX101",
+            course_name="edX101",
         )
         if created:
             course.organizations.add(organization)
@@ -72,8 +71,8 @@ class Command(BaseCommand):
         course.save()
 
         problem, created = Problem.objects.get_or_create(
-            prompt = prompt,
-            name = name,
+            prompt=prompt,
+            name=name,
         )
         problem.courses.add(course)
         problem.save()
@@ -87,26 +86,26 @@ class Command(BaseCommand):
             grades.append(line_split[1:])
 
         max_scores = []
-        for i in xrange(0,len(grades[0])):
+        for i in xrange(0, len(grades[0])):
             scores_at_point = [g[i] for g in grades]
             max_scores.append(max(scores_at_point))
         problem.max_target_scores = json.dumps(max_scores)
         problem.save()
         for i in range(0, min(essay_limit, len(text))):
             essay = Essay(
-                problem = problem,
-                user =user,
-                essay_type = "train",
-                essay_text = text[i],
+                problem=problem,
+                user=user,
+                essay_type="train",
+                essay_text=text[i],
             )
 
             essay.save()
             score = EssayGrade(
                 target_scores=json.dumps(grades[i]),
                 feedback="",
-                grader_type = grader_type,
-                essay = essay,
-                success = True,
+                grader_type=grader_type,
+                essay=essay,
+                success=True,
             )
             score.save()
 

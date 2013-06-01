@@ -13,11 +13,9 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.IntegerField')(default=0),
                       keep_default=False)
 
-
     def backwards(self, orm):
         # Deleting field 'UserProfile.throttle_at'
         db.delete_column(u'freeform_data_userprofile', 'throttle_at')
-
 
     models = {
         u'auth.group': {

@@ -13,11 +13,9 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.related.ForeignKey')(to=orm['freeform_data.Organization'], null=True),
                       keep_default=False)
 
-
     def backwards(self, orm):
         # Deleting field 'Essay.organization'
         db.delete_column(u'freeform_data_essay', 'organization_id')
-
 
     models = {
         u'auth.group': {
