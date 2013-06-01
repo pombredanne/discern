@@ -4,7 +4,6 @@ from tastypie.models import create_api_key
 import json
 from django.db.models.signals import pre_delete, pre_save, post_save, post_delete
 from request_provider.signals import get_request
-from guardian.shortcuts import assign_perm
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import SiteProfileNotAvailable
@@ -203,6 +202,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         profile, created = UserProfile.objects.get_or_create(user=instance)
 
+
 def pre_delete_problem(sender, instance, **kwargs):
     """
     Deletes essays associated with a problem when it is deleted
@@ -265,20 +265,30 @@ def get_group_name(membership):
     group_name = "{0}_{1}".format(membership.organization.id,membership.role)
     return group_name
 
+def assign_guardian_perm(perm, user, obj):
+    from guardian.models import UserObjectPermission
+    from django.contrib.contenttypes.models import ContentType
+    perm = perm.split('.')[-1]
+    ctype = ContentType.objects.get_for_model(obj)
+    permission = Permission.objects.get(content_type=ctype, codename=perm)
+
+    kwargs = {'permission': permission, 'user': user, 'content_type' : ctype, 'object_pk' : obj.id}
+    obj_perm = UserObjectPermission(**kwargs)
+    obj_perm.save()
+    return obj_perm
+
 def add_creator_permissions(sender, instance, **kwargs):
-    try:
-        instance_name = instance.__class__.__name__.lower()
-        if isinstance(instance, User):
-            user = instance
-        elif isinstance(instance, UserProfile):
-            user=instance.user
-        else:
-            user = get_request().user
-        if instance_name in PERMISSION_MODELS:
-            for perm in PERMISSIONS:
-                assign_perm('{0}_{1}'.format(perm, instance_name), user, instance)
-    except:
-        pass
+    log.info("checking perms!")
+    instance_name = instance.__class__.__name__.lower()
+    if isinstance(instance, User):
+        user = instance
+    elif isinstance(instance, UserProfile):
+        user=instance.user
+    else:
+        user = get_request().user
+    if instance_name in PERMISSION_MODELS:
+        for perm in PERMISSIONS:
+            assign_guardian_perm('{0}_{1}'.format(perm, instance_name), user, instance)
 
 #Django signals called after models are handled
 pre_save.connect(remove_user_from_groups, sender=Membership)
