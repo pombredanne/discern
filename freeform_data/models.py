@@ -279,7 +279,6 @@ def assign_guardian_perm(perm, user, obj):
 
 def add_creator_permissions(sender, instance, **kwargs):
     try:
-        log.info("checking perms!")
         instance_name = instance.__class__.__name__.lower()
         if isinstance(instance, User):
             user = instance
