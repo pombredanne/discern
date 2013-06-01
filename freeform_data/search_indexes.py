@@ -1,5 +1,5 @@
 import datetime
-from haystack.indexes import *
+from haystack.indexes import SearchIndex, CharField, DateTimeField, BooleanField, DecimalField
 from haystack import site
 from models import Organization, Course, Problem, Essay, EssayGrade
 
