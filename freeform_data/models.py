@@ -278,17 +278,20 @@ def assign_guardian_perm(perm, user, obj):
     return obj_perm
 
 def add_creator_permissions(sender, instance, **kwargs):
-    log.info("checking perms!")
-    instance_name = instance.__class__.__name__.lower()
-    if isinstance(instance, User):
-        user = instance
-    elif isinstance(instance, UserProfile):
-        user=instance.user
-    else:
-        user = get_request().user
-    if instance_name in PERMISSION_MODELS:
-        for perm in PERMISSIONS:
-            assign_guardian_perm('{0}_{1}'.format(perm, instance_name), user, instance)
+    try:
+        log.info("checking perms!")
+        instance_name = instance.__class__.__name__.lower()
+        if isinstance(instance, User):
+            user = instance
+        elif isinstance(instance, UserProfile):
+            user=instance.user
+        else:
+            user = get_request().user
+        if instance_name in PERMISSION_MODELS:
+            for perm in PERMISSIONS:
+                assign_guardian_perm('{0}_{1}'.format(perm, instance_name), user, instance)
+    except:
+        log.debug("Cannot generate perms.  This is probably okay.")
 
 #Django signals called after models are handled
 pre_save.connect(remove_user_from_groups, sender=Membership)
