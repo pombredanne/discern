@@ -23,4 +23,5 @@ django-allauth==0.10.1
 python-memcached==1.48
 django-ses==0.4.1
 django-analytical==0.15.0
+mock==1.0.1
 
