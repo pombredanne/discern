@@ -211,7 +211,7 @@ class GenericTest(object):
         See if an object can be created and then updated
         """
         obj = model_registry[self.obj_type]()
-        result = self.c.put(object, json.dumps(self.obj), "application/json")
+        result = self.c.put(obj, json.dumps(self.obj), "application/json")
         self.assertEqual(result.status_code,202)
 
     def test_delete(self):
@@ -219,7 +219,7 @@ class GenericTest(object):
         See if an object can be created and then deleted
         """
         obj = model_registry[self.obj_type]()
-        result = self.c.delete(object)
+        result = self.c.delete(obj)
         self.assertEqual(result.status_code,204)
 
     def test_view_single(self):
@@ -227,7 +227,7 @@ class GenericTest(object):
         See if the detail view works for an object
         """
         obj = model_registry[self.obj_type]()
-        result = self.c.get(object,
+        result = self.c.get(obj,
                             data={'format' : 'json'}
         )
         self.assertEqual(result.status_code,200)
@@ -267,7 +267,7 @@ class ProblemTest(unittest.TestCase, GenericTest):
 
     def create_object(self):
         course_resource_uri = create_course()
-        self.object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1]), 'prompt' : "blah"}
+        self.obj = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1]), 'prompt' : "blah"}
 
 class EssayTest(unittest.TestCase, GenericTest):
     obj_type="essay"
@@ -277,7 +277,7 @@ class EssayTest(unittest.TestCase, GenericTest):
 
     def create_object(self):
         problem_resource_uri = create_problem()
-        self.object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : 'train'}
+        self.obj = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : 'train'}
 
 class EssayGradeTest(unittest.TestCase, GenericTest):
     obj_type="essaygrade"
@@ -287,7 +287,7 @@ class EssayGradeTest(unittest.TestCase, GenericTest):
 
     def create_object(self):
         essay_resource_uri = create_essay()
-        self.object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
+        self.obj = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
 
 class CreateUserTest(unittest.TestCase):
     obj_type = "createuser"
