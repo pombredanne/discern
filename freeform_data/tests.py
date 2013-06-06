@@ -52,33 +52,31 @@ def get_urls(resource_name):
     schema = reverse("api_get_schema", kwargs={'api_name': 'v1', 'resource_name': resource_name})
     return endpoint, schema
 
-
-def get_first_resource_uri(type):
+def get_first_resource_uri(obj_type):
     """
     Get the first resource uri of an object of a given type
     type - the type of resource as defined in the api, ie "organization"
     """
     # Create a client and login
     c = login()
-    # Get the urls needed
-    endpoint, schema = get_urls(type)
-    # Get the data on all models from the endpoint
-    data = c.get(endpoint, data={'format': 'json'})
-    # Grab a single object, and get the resource uri from it
-    object = json.loads(data.content)['objects'][0]
-    resource_uri = object['resource_uri']
+    #Get the urls needed
+    endpoint, schema = get_urls(obj_type)
+    #Get the data on all models from the endpoint
+    data = c.get(endpoint, data={'format' : 'json'})
+    #Grab a single object, and get the resource uri from it
+    obj = json.loads(data.content)['objects'][0]
+    resource_uri = obj['resource_uri']
     return resource_uri
 
-
-def create_object(type, object):
+def create_object(obj_type, obj):
     """
     Create an object of a given type if the data is given
     type - the type of resource as defined in the api, ie "organization"
     object - the data to post to the server to create the object of type
     """
     c = login()
-    endpoint, schema = get_urls(type)
-    result = c.post(endpoint, json.dumps(object), "application/json")
+    endpoint, schema = get_urls(obj_type)
+    result = c.post(endpoint, json.dumps(obj), "application/json")
     return result
 
 
@@ -96,7 +94,7 @@ def create_organization():
     Create an organization
     """
     Membership.objects.all().delete()
-    organization_object = {"name": "edX"}
+    organization_object =  {"name" : "edX"}
     result = create_object("organization", organization_object)
     organization_resource_uri = json.loads(result.content)['resource_uri']
     return organization_resource_uri
@@ -106,18 +104,17 @@ def create_course():
     """
     Create a course
     """
-    course_object = {'course_name': "edx_test"}
+    course_object = {'course_name' : "edx_test"}
     result = create_object("course", course_object)
     course_resource_uri = json.loads(result.content)['resource_uri']
     return course_resource_uri
-
 
 def create_problem():
     """
     Create a problem
     """
     course_resource_uri = create_course()
-    problem_object = {'courses': [course_resource_uri], 'max_target_scores': json.dumps([1, 1]), 'prompt': "blah"}
+    problem_object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1]), 'prompt' : "blah"}
     result = create_object("problem", problem_object)
     problem_resource_uri = json.loads(result.content)['resource_uri']
     return problem_resource_uri
@@ -128,7 +125,7 @@ def create_essay():
     Create an essay
     """
     problem_resource_uri = create_problem()
-    essay_object = {'problem': problem_resource_uri, 'essay_text': "This is a test essay!", 'essay_type': 'train'}
+    essay_object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : 'train'}
     result = create_object("essay", essay_object)
     essay_resource_uri = json.loads(result.content)['resource_uri']
     return essay_resource_uri
@@ -139,34 +136,32 @@ def create_essaygrade():
     Create an essaygrade
     """
     essay_resource_uri = create_essay()
-    essaygrade_object = {'essay': essay_resource_uri, 'target_scores': json.dumps([1, 1]), 'grader_type': "IN", 'feedback': "Was ok.", 'success': True}
+    essaygrade_object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
     result = create_object("essaygrade", essaygrade_object)
     essaygrade_resource_uri = json.loads(result.content)['resource_uri']
     return essaygrade_resource_uri
 
 model_registry = {
-    'course': create_course,
-    'problem': create_problem,
-    'essay': create_essay,
-    'organization': create_organization,
-    'essaygrade': create_essaygrade,
+    'course' : create_course,
+    'problem' : create_problem,
+    'essay' : create_essay,
+    'organization' : create_organization,
+    'essaygrade' : create_essaygrade,
 }
 
-
-def create_ml_problem_and_essays(type, count):
+def create_ml_problem_and_essays(obj_type, count):
     problem_resource_uri = create_problem()
-    create_ml_essays_only(type, count, problem_resource_uri)
+    create_ml_essays_only(obj_type,count,problem_resource_uri)
     return problem_resource_uri
 
-
-def create_ml_essays_only(type, count, problem_resource_uri):
+def create_ml_essays_only(obj_type,count,problem_resource_uri):
     essay_list = []
-    for i in xrange(0, count):
-        essay_object = {'problem': problem_resource_uri, 'essay_text': "This is a test essay!", 'essay_type': type}
+    for i in xrange(0,count):
+        essay_object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : obj_type}
         result = create_object("essay", essay_object)
         essay_resource_uri = json.loads(result.content)['resource_uri']
         essay_list.append(essay_resource_uri)
-        essaygrade_object = {'essay': essay_resource_uri, 'target_scores': json.dumps([1, 1]), 'grader_type': "IN", 'feedback': "Was ok.", 'success': True}
+        essaygrade_object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
         create_object("essaygrade", essaygrade_object)
     return essay_list
 
@@ -174,8 +169,8 @@ def create_ml_essays_only(type, count, problem_resource_uri):
 def lookup_object(resource_uri):
     c = login()
     result = c.get(resource_uri,
-                   data={'format': 'json'}
-                   )
+                        data={'format' : 'json'}
+    )
     return json.loads(result.content)
 
 
@@ -183,8 +178,8 @@ class GenericTest(object):
     """
     Base class that other model tests inherit from.
     """
-    type = "generic"
-    object = {'hello': 'world'}
+    obj_type = "generic"
+    obj = {'hello' : 'world'}
 
     def generic_setup(self):
         """
@@ -192,77 +187,76 @@ class GenericTest(object):
         """
         run_setup()
         self.c = login()
-        self.endpoint, self.schema = get_urls(self.type)
+        self.endpoint, self.schema = get_urls(self.obj_type)
 
     def test_schema(self):
         """
         See if the schema can be downloaded
         """
         result = self.c.get(self.schema,
-                            data={'format': 'json'}
-                            )
+                            data={'format' : 'json'}
+        )
 
-        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.status_code,200)
 
     def test_endpoint(self):
         """
         See if the GET method can be used with the endpoint
         """
         result = self.c.get(self.endpoint,
-                            data={'format': 'json'}
-                            )
+                            data={'format' : 'json'}
+        )
 
-        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.status_code,200)
 
     def test_create(self):
         """
         See if POST can be used with the endpoint
         """
-        result = self.c.post(self.endpoint, json.dumps(self.object), "application/json")
-        self.assertEqual(result.status_code, 201)
+        result = self.c.post(self.endpoint, json.dumps(self.obj), "application/json")
+        self.assertEqual(result.status_code,201)
 
     def test_update(self):
         """
         See if an object can be created and then updated
         """
-        object = model_registry[self.type]()
-        result = self.c.put(object, json.dumps(self.object), "application/json")
-        self.assertEqual(result.status_code, 202)
+        obj = model_registry[self.obj_type]()
+        result = self.c.put(object, json.dumps(self.obj), "application/json")
+        self.assertEqual(result.status_code,202)
 
     def test_delete(self):
         """
         See if an object can be created and then deleted
         """
-        object = model_registry[self.type]()
+        obj = model_registry[self.obj_type]()
         result = self.c.delete(object)
-        self.assertEqual(result.status_code, 204)
+        self.assertEqual(result.status_code,204)
 
     def test_view_single(self):
         """
         See if the detail view works for an object
         """
-        object = model_registry[self.type]()
+        obj = model_registry[self.obj_type]()
         result = self.c.get(object,
-                            data={'format': 'json'}
-                            )
-        self.assertEqual(result.status_code, 200)
+                            data={'format' : 'json'}
+        )
+        self.assertEqual(result.status_code,200)
 
     def test_search(self):
         """
         Test if we can search in a given endpoint
         """
-        # Refresh haystack index
+        #Refresh haystack index
         call_command('update_index', interactive=False)
-        object = model_registry[self.type]()
+        obj = model_registry[self.obj_type]()
         result = self.c.get(self.endpoint + "search/",
-                            data={'format': 'json'}
-                            )
-        self.assertEqual(result.status_code, 200)
-
+                            data={'format' : 'json'}
+        )
+        self.assertEqual(result.status_code,200)
 
 class OrganizationTest(unittest.TestCase, GenericTest):
-    type = "organization"
-    object = {"name": "edX"}
+    obj_type="organization"
+    obj = {"name" : "edX"}
 
     def setUp(self):
         Membership.objects.all().delete()
@@ -270,15 +264,14 @@ class OrganizationTest(unittest.TestCase, GenericTest):
 
 
 class CourseTest(unittest.TestCase, GenericTest):
-    type = "course"
-    object = {'course_name': "edx_test"}
-
+    obj_type="course"
+    obj = {'course_name' : "edx_test"}
     def setUp(self):
         self.generic_setup()
 
 
 class ProblemTest(unittest.TestCase, GenericTest):
-    type = "problem"
+    obj_type="problem"
 
     def setUp(self):
         self.generic_setup()
@@ -286,42 +279,36 @@ class ProblemTest(unittest.TestCase, GenericTest):
 
     def create_object(self):
         course_resource_uri = create_course()
-        self.object = {'courses': [course_resource_uri], 'max_target_scores': json.dumps([1, 1]), 'prompt': "blah"}
-
+        self.object = {'courses' : [course_resource_uri], 'max_target_scores' : json.dumps([1,1]), 'prompt' : "blah"}
 
 class EssayTest(unittest.TestCase, GenericTest):
-    type = "essay"
-
+    obj_type="essay"
     def setUp(self):
         self.generic_setup()
         self.create_object()
 
     def create_object(self):
         problem_resource_uri = create_problem()
-        self.object = {'problem': problem_resource_uri, 'essay_text': "This is a test essay!", 'essay_type': 'train'}
-
+        self.object = {'problem' : problem_resource_uri, 'essay_text' : "This is a test essay!", 'essay_type' : 'train'}
 
 class EssayGradeTest(unittest.TestCase, GenericTest):
-    type = "essaygrade"
-
+    obj_type="essaygrade"
     def setUp(self):
         self.generic_setup()
         self.create_object()
 
     def create_object(self):
         essay_resource_uri = create_essay()
-        self.object = {'essay': essay_resource_uri, 'target_scores': json.dumps([1, 1]), 'grader_type': "IN", 'feedback': "Was ok.", 'success': True}
-
+        self.object = {'essay' : essay_resource_uri, 'target_scores' : json.dumps([1,1]), 'grader_type' : "IN", 'feedback' : "Was ok.", 'success' : True}
 
 class CreateUserTest(unittest.TestCase):
-    type = "createuser"
-
+    obj_type = "createuser"
     def setUp(self):
         """
         This is a special model to create users, so it doesn't inherit from generic
         """
         self.c = login()
-        self.endpoint, self.schema = get_urls(self.type)
+        self.endpoint, self.schema = get_urls(self.obj_type)
         self.post_data = {
             'username': 'test1',
             'password': 'test1',
