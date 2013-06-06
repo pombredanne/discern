@@ -4,10 +4,10 @@ from tastypie.models import create_api_key
 import json
 from django.db.models.signals import pre_delete, pre_save, post_save, post_delete
 from request_provider.signals import get_request
-from guardian.shortcuts import assign_perm
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import SiteProfileNotAvailable
+from guardian.shortcuts import assign_perm
 
 import logging
 log = logging.getLogger(__name__)
@@ -296,7 +296,7 @@ def add_creator_permissions(sender, instance, **kwargs):
             for perm in PERMISSIONS:
                 assign_perm('{0}_{1}'.format(perm, instance_name), user, instance)
     except:
-        pass
+        log.debug("Cannot generate perms.  This is probably okay.")
 
 # Django signals called after models are handled
 pre_save.connect(remove_user_from_groups, sender=Membership)
