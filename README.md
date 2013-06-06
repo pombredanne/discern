@@ -20,8 +20,11 @@ Examples and getting started
 Please see docs/installation for installation information.  Examples can be found in docs/examples.  A built version of these can be found at [ReadtheDocs](http://discern.readthedocs.org/en/latest/), or you can feel free to clone the repo and build these yourself.
 
 How to Contribute
------------------------
-Contributions are very welcome.  The easiest way is to fork this repo, and then make a pull request from your fork.
+-----------------
+Contributions are very welcome. The easiest way is to fork this repo, and then
+make a pull request from your fork. The first time you make a pull request, you
+may be asked to sign a Contributor Agreement.
+
 
 The current backlog is in the [issues section](http://github.com/edx/discern/issues?labels=&page=1&state=open).
 Please feel free to open new issues or work on existing ones.
