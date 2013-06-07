@@ -16,7 +16,7 @@ Overview
    overview/goals
    overview/contributing
 
-Installation and Usage
+Installation
 ---------------------------------
 .. toctree::
    :maxdepth: 1
@@ -24,9 +24,15 @@ Installation and Usage
    installation/installation_overview
    installation/vagrant-ansible-install
    installation/install_notes
-   installation/usage
 
-Examples
+Usage Guides
+-----------------------------------
+.. toctree::
+   :maxdepth: 1
+
+   usage/usage
+
+Example Code
 ---------------------------------
 .. toctree::
     :maxdepth: 1
@@ -36,7 +42,14 @@ Examples
     examples/login
     examples/query_organization
     examples/create_related_model
-    examples/example_application
+
+Example Applications
+---------------------------------
+.. toctree::
+    :maxdepth: 1
+
+    example_applications/problem_grader
+
 
 API
 ---------------------------------
