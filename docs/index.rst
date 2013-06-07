@@ -36,6 +36,7 @@ Examples
     examples/login
     examples/query_organization
     examples/create_related_model
+    examples/example_application
 
 API
 ---------------------------------

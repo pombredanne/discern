@@ -118,6 +118,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     data = {
         'username' : instance.username,
         'password' : random_pass,
+        'email' : instance.email
         }
 
     headers = {'content-type': 'application/json'}

@@ -1,4 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.translation import ugettext, ugettext_lazy as _
+from django.forms import EmailField
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -10,17 +12,32 @@ import helpers
 
 log = logging.getLogger(__name__)
 
+class UserCreationEmailForm(UserCreationForm):
+    email = EmailField(label=_("Email Address"), max_length=30,
+                                help_text=_("Required. 30 characters or fewer. Letters, digits and "
+                                            "@/./+/-/_ only."),
+                                error_messages={
+                                    'invalid': _("This value may contain only letters, numbers and "
+                                                 "@/./+/-/_ characters.")})
+    def save(self, commit=True):
+        user = super(UserCreationEmailForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+        return user
+
+
 def register(request):
     """
     Register a new user for a given request
     """
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserCreationEmailForm(request.POST)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect("/grader/")
     else:
-        form = UserCreationForm()
+        form = UserCreationEmailForm()
     return render_to_response("registration/register.html", RequestContext(request,{
         'form': form,
         }))
