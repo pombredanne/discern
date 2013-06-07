@@ -22,7 +22,7 @@ if settings.FOUND_ML:
     from ease import create
 else:
     import mock_ml_grading
-    log.info("Could not find ML grading package (EASE).")
+    log.warn("Could not find ML grading package (EASE). Using mock interface.")
     create = Mock(create=mock_ml_grading.create)
 
 MAX_ESSAYS_TO_TRAIN_WITH = 1000
