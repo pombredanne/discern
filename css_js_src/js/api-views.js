@@ -14,6 +14,7 @@ ListView = Backbone.View.extend({
     initialize: function(){
         _.bindAll(this, "renderItem", "loadResults", "addItemForm", "saveItem", "previous", "next", "render");
         this.itemList = new this.collection;
+        this.loadResults();
     },
 
     renderItem: function(model){
@@ -23,7 +24,6 @@ ListView = Backbone.View.extend({
     },
 
     render: function(){
-        this.loadResults();
         $(this.el).data('adding', false)
     },
 
