@@ -219,6 +219,7 @@ class SlumberModelDiscovery(object):
         """
         Get and load the api schema
         """
+        log.info(self.schema_url)
         schema = requests.get(self.schema_url, params=self.api_auth)
         return json.loads(schema.content)
 
