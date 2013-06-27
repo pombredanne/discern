@@ -14,6 +14,7 @@ ListView = Backbone.View.extend({
     initialize: function(){
         _.bindAll(this, "renderItem", "loadResults", "addItemForm", "saveItem", "previous", "next", "render");
         this.itemList = new this.collection;
+        this.loadResults();
     },
 
     renderItem: function(model){
@@ -23,7 +24,6 @@ ListView = Backbone.View.extend({
     },
 
     render: function(){
-        this.loadResults();
         $(this.el).data('adding', false)
     },
 
@@ -67,11 +67,10 @@ ListView = Backbone.View.extend({
     saveItem: function() {
         var update_elements = $(this.el).children('#item-add').children('.new-item');
         var new_item = new this.item;
-        new_item.add(update_elements);
+        new_item.add(update_elements, this);
         this.itemList.add(new_item);
         $(this.el).children("#item-add").remove();
         $(this.el).data('adding', false);
-        this.renderItem(new_item.model);
     },
     previous: function() {
         this.itemList.previousPage();
@@ -153,11 +152,11 @@ ItemView = Backbone.View.extend({
         }
         return update_dict;
     },
-    add: function(update_elements) {
+    add: function(update_elements, that) {
         var update_dict = this.update_base(update_elements);
         this.model = new this.modeltype;
         this.model.save(update_dict,{
-            success: function() {},
+            success: function(model, response, options) { that.renderItem(model)},
             wait: false
         });
     },

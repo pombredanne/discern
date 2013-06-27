@@ -1,7 +1,6 @@
 /*
  * Backbone-tastypie model generator
- * Created by Marco Montanari
- * released under 3 clause BSD
+ * Adapted from code by Marco Montanari released under 3 clause BSD
  */
 
 var PaginatedCollection = Backbone.Collection.extend({
@@ -119,14 +118,49 @@ var PaginatedView = Backbone.View.extend({
     }
 });
 
-(function( undefined ) {
+
+// backbone will be used to asynchronously fetch models. While it is fetching them,
+// the name of the model and its container are not known until backbone completely 
+// loads the models. The modelReadyObj will be used to define the callback.
+function ModelMonitor () {
+	this.has_callback = false; // the schema_callback is defined by a view. 
+	this.pending = false; // schema loaded event occurs before has_callback. 
+	
+	this.callback_defined = function() {
+		this.has_callback=true; 
+		if (this.pending) {
+			this.schema_callback(); 
+			this.pending=false;
+		}
+	};
+	this.initialize = function () {
+		_.extend(modelReadyObj, Backbone.Events);
+		this.once("schema:loaded", modelReadyObj.createView);
+		this.has_callback=false;
+		this.pending=false;
+	};
+	this.createView =  function(ev) {
+		if (this.has_callback) {
+			this.schema_callback();
+			this.pending=false;
+		} else {
+			this.pending=true;
+		}
+	};
+	this.schema_callback = function(ev) {}; // stub. 
+};
+modelReadyObj = new ModelMonitor(); 
+modelReadyObj.initialize();
+
+(function( undefined ) { 
 
     Backbone.SchemaUrl = "";
     Backbone.LoadModelsFromUrl = function(url, models){
         Backbone.SchemaUrl =url;
         $.getJSON(Backbone.SchemaUrl , function(data){
-            Backbone.LoadModels(data, models)
-            _schema_loaded = true
+            Backbone.LoadModels(data, models);
+            // modelReadyObj defined by specific view. look in the view directory
+            modelReadyObj.trigger("schema:loaded");
         });
     }
 

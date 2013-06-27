@@ -157,38 +157,38 @@ Here is the output::
 
 	$ python monitor_essay_processing.py 
 	Scores for essay /essay_site/api/v1/essay/1/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [651], type: IN 
-		 confidence: 0, score: [654], type: ML 
+		 confidence: 1, score: [874], type: IN 
+		 confidence: 0.93996137, score: [910], type: ML 
 	Scores for essay /essay_site/api/v1/essay/2/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [276], type: IN 
-		 confidence: 0, score: [285], type: ML 
+		 confidence: 1, score: [151], type: IN 
+		 confidence: 0.809622138, score: [234], type: ML 
 	Scores for essay /essay_site/api/v1/essay/3/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [97], type: IN 
-		 confidence: 0, score: [243], type: ML 
+		 confidence: 1, score: [325], type: IN 
+		 confidence: 0.953485473, score: [354], type: ML 
 	Scores for essay /essay_site/api/v1/essay/4/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [858], type: IN 
-		 confidence: 0, score: [741], type: ML 
+		 confidence: 1, score: [98], type: IN 
+		 confidence: 0.908300741, score: [92], type: ML 
 	Scores for essay /essay_site/api/v1/essay/5/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [408], type: IN 
-		 confidence: 0, score: [243], type: ML 
+		 confidence: 1, score: [1404], type: IN 
+		 confidence: 0.980497863, score: [1115], type: ML 
 	Scores for essay /essay_site/api/v1/essay/6/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [137], type: IN 
-		 confidence: 0, score: [243], type: ML 
+		 confidence: 1, score: [539], type: IN 
+		 confidence: 0.993892782, score: [485], type: ML 
 	Scores for essay /essay_site/api/v1/essay/7/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [132], type: IN 
-		 confidence: 0, score: [243], type: ML 
+		 confidence: 1, score: [160], type: IN 
+		 confidence: 0.774079147, score: [200], type: ML 
 	Scores for essay /essay_site/api/v1/essay/8/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [502], type: IN 
-		 confidence: 0, score: [538], type: ML 
+		 confidence: 1, score: [29], type: IN 
+		 confidence: 0.939284534, score: [18], type: ML 
 	Scores for essay /essay_site/api/v1/essay/9/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [4], type: IN 
-		 confidence: 0, score: [40], type: ML 
+		 confidence: 1, score: [27], type: IN 
+		 confidence: 0.622490266, score: [106], type: ML 
 	Scores for essay /essay_site/api/v1/essay/10/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [525], type: IN 
-		 confidence: 0, score: [243], type: ML 
+		 confidence: 1, score: [25], type: IN 
+		 confidence: 0.530272811, score: [61], type: ML 
 	Scores for essay /essay_site/api/v1/essay/11/, problem /essay_site/api/v1/problem/1/
-		 confidence: 1, score: [142], type: IN 
-		 confidence: 0, score: [243], type: ML 
+		 confidence: 1, score: [43], type: IN 
+		 confidence: 0.586504779, score: [72], type: ML
 
 The *IN* type is the score we provided to the Discern Server. The *ML* type is the score provided by ease. 
 
