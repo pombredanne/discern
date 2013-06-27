@@ -1,6 +1,9 @@
+{% load analytical %}
 <!DOCTYPE html>
 <html>
     <head>
+        {% analytical_head_top %}
+        {% analytical_head_bottom %}
         {% load compressed %}
         {% compressed_css 'bootstrap' %}
         {% compressed_css 'util_css' %}
@@ -11,6 +14,8 @@
         <meta name="csrf-token" content="{{csrf_token}}">
     </head>
     <body>
+    {% analytical_body_top %}
+    {% analytical_body_bottom %}
     {%  verbatim %}
         <script type="text/template" id="generic-item-add-template">
             <div id="item-add">

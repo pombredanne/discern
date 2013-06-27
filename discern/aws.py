@@ -53,6 +53,12 @@ AWS_SES_REGION_NAME = ENV_TOKENS.get('AWS_SES_REGION_NAME', 'us-east-1')
 if AWS_SES_REGION_NAME is not None:
     AWS_SES_REGION_ENDPOINT = 'email.{0}.amazonaws.com'.format(AWS_SES_REGION_NAME)
 
+#Set this for django-analytical.  Because django-analytical enables the service if the key exists,
+#ensure that the settings value is only created if the key exists in the deployment settings.
+ga_key = AUTH_TOKENS.get("GOOGLE_ANALYTICS_PROPERTY_ID", "")
+if len(ga_key)>1:
+    GOOGLE_ANALYTICS_PROPERTY_ID = ga_key
+
 #Try to set the domain for the current site
 #Needed to get the right site name for email activation
 #Comment out, as this is causing issues in deployment.

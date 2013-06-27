@@ -1,10 +1,12 @@
 Discern
 ====================
 
-Questions?
+Questions? (Mailing List/IRC Channel)
 ---------------------
-Feel free to open an issue in the issue tracker, or use [this link](http://webchat.freenode.net/?channels=#edxml) to access an IRC chat room for real time
-communication with some of the edX developers.  Alternatively, you can use your own IRC chat client and point it at freenode(chat.freenode.net).  The channel is #edxml.
+Feel free to open an issue in the issue tracker, or use [this link](http://webchat.freenode.net/?channels=#edx-discern) to access an IRC chat room for real time
+communication with some of the edX developers.  Alternatively, you can use your own IRC chat client and point it at freenode(chat.freenode.net).  The channel is #edx-discern.
+
+We also have a [mailing list](https://groups.google.com/forum/#!forum/edx-discern).  Feel free to ask questions and discuss the code there.  If you find an issue (unless it is a security issue, see below), please mention it on our issue tracker.
 
 Overview
 ---------------------
@@ -20,8 +22,11 @@ Examples and getting started
 Please see docs/installation for installation information.  Examples can be found in docs/examples.  A built version of these can be found at [ReadtheDocs](http://discern.readthedocs.org/en/latest/), or you can feel free to clone the repo and build these yourself.
 
 How to Contribute
------------------------
-Contributions are very welcome.  The easiest way is to fork this repo, and then make a pull request from your fork.
+-----------------
+Contributions are very welcome. The easiest way is to fork this repo, and then
+make a pull request from your fork. The first time you make a pull request, you
+may be asked to sign a Contributor Agreement.
+
 
 The current backlog is in the [issues section](http://github.com/edx/discern/issues?labels=&page=1&state=open).
 Please feel free to open new issues or work on existing ones.
@@ -32,3 +37,7 @@ Please look in the docs folder for more detailed documentation.  There is a READ
 and view the docs.
 
 You can also see the latest documentation at [ReadtheDocs](http://discern.readthedocs.org/en/latest/) .
+
+Reporting Security Issues
+--------------------------
+Please do not report security issues in public. Please email security@edx.org.

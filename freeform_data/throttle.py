@@ -1,8 +1,10 @@
 from tastypie.throttle import CacheDBThrottle
 import time
 from django.core.cache import cache
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, SiteProfileNotAvailable
 
+import logging
+log = logging.getLogger(__name__)
 
 class UserAccessThrottle(CacheDBThrottle):
     """
@@ -105,7 +107,12 @@ class UserAccessThrottle(CacheDBThrottle):
         user - a user object
         """
         throttle_at = self.throttle_at
-        if user is not None and user.profile is not None:
+        if user is not None:
+            try:
+                profile = user.profile
+            except SiteProfileNotAvailable:
+                log.warn("No user profile available for {0}".format(user.username))
+                return throttle_at
             if user.profile.throttle_at > throttle_at:
                 throttle_at = user.throttle_at
         return throttle_at

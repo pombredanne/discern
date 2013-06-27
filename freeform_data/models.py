@@ -4,9 +4,10 @@ from tastypie.models import create_api_key
 import json
 from django.db.models.signals import pre_delete, pre_save, post_save, post_delete
 from request_provider.signals import get_request
-from guardian.shortcuts import assign_perm
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth.models import SiteProfileNotAvailable
+from guardian.shortcuts import assign_perm
 
 import logging
 log=logging.getLogger(__name__)
@@ -202,6 +203,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         profile, created = UserProfile.objects.get_or_create(user=instance)
 
+
 def pre_delete_problem(sender, instance, **kwargs):
     """
     Deletes essays associated with a problem when it is deleted
@@ -230,7 +232,11 @@ def pre_delete_user(sender,instance,**kwargs):
     """
     Removes the user's profile and removes foreign key relations from objects
     """
-    user_profile = instance.profile
+    try:
+        user_profile = instance.profile
+    except SiteProfileNotAvailable:
+        log.error("Could not get profile for user {0}".format(instance.username))
+        return
     essays = instance.essay_set.all()
     essay_grades = instance.essaygrade_set.all()
     user_profile.delete()
@@ -273,7 +279,7 @@ def add_creator_permissions(sender, instance, **kwargs):
             for perm in PERMISSIONS:
                 assign_perm('{0}_{1}'.format(perm, instance_name), user, instance)
     except:
-        pass
+        log.debug("Cannot generate perms.  This is probably okay.")
 
 #Django signals called after models are handled
 pre_save.connect(remove_user_from_groups, sender=Membership)

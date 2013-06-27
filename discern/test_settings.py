@@ -32,3 +32,6 @@ HAYSTACK_WHOOSH_PATH = os.path.join(ENV_ROOT,"whoosh_api_index_test")
 
 #Model settings
 MEMBERSHIP_LIMIT=50 #For testing purposes, relax membership limits
+
+#Some errors only pop up with debug as false
+DEBUG=False

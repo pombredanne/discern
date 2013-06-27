@@ -28,6 +28,7 @@ Getting started - the plan
 
 Discern allows anyone to use machine learning based automated textual classification as an API service. You would generally want text that is associated with one or more *scores*. These *scores* can be anything. One example would be a corpus of essays that are scored. Another example would be `reddit <http://www.reddit.com/>`_ comments/posts, which are associated with upvotes/downvotes, which are a *score*. Another example would be news articles and stock prices before/after the news articles were released.  This tutorial will use reddit. 
 
+Once you create a user, you will be able to interact with the various API resources.  I will get into how they are organized below.
 We will use the python `request module <http://docs.python-requests.org/en/latest/>`_ to interact with our Discern server. For our examples,the response will be in `JSON <http://en.wikipedia.org/wiki/JSON>`_. To access reddit, the examples use `PRAW: The Python Reddit Api Wrapper <https://github.com/praw-dev/praw>`_.
 
 The example code is broken down into small programs. Each will include this python module. 
@@ -40,7 +41,7 @@ The basic outline for this tutorial is:
 
 #. Becoming familiar with the API and logging into Discern. 
 #. Created an organization object and a course object
-#. Add 10 essay objects and associate them with the problem.
+#. Add 10 essay objects and associate them with the problem. (note that although we are using 10 essay objects, higher accuracy will be achieved by using more)
 #. Add 10 essay grade objects that are instructor scored and associate each one with an essay.
 #. A model will now be created, and from now on, each additional essay you add will automatically have an essay grade object associated with it that contains the machine score.
 
@@ -80,15 +81,15 @@ The last status code from the output was 401 because we aren't logged in. To pro
 
 Alternatively, if you want a UI to interactively play around with these APIs, the POSTMAN add-on for Chrome is highly recommended. The endpoint is http://127.0.0.1:7999/essay_site/api/v1/createuser/. Just POST a JSON data dictionary containing the keys username and password (i.e., *{"username" : "test", "password" : "test"}* ).
 
-Later in this tutorial, we will need to establish relationships between a course and its organization. This code segment enumates the schema for course. 
+Later in this tutorial, we will need to establish relationships between a course and its organization. This code segment enumerates the schema for course.
 
-.. literalinclude:: ../examples/enumate_schema.py
+.. literalinclude:: ../examples/enumerate_schema.py
    :language: python
    :linenos:
 
 The resulting output is...::
 
-	$ python enumate_schema.py 
+	$ python enumerate_schema.py
 	Name: course_name 
 		 Can be blank: False 
 		 Type: string 
@@ -190,3 +191,16 @@ Here is the output::
 		 confidence: 0.586504779, score: [72], type: ML
 
 The *IN* type is the score we provided to the Discern Server. The *ML* type is the score provided by ease. 
+
+Next Steps
+---------------------------------------
+
+We now know how to add essays to a problem object and score some, after which automatic scoring is enabled.
+
+Some things that we can try next are:
+
+#. Adding more essays with **essay_type** "train" and scoring them by adding essaygrades.  This will make our models more accurate.
+#. Add in essays with **essay_type** "test" in order for the machine to automatically score them. ("test" indicates that the essays will not be used as data to train the machine learning model).
+#. Evaluate the accuracy of the scoring by comparing the *ML* scores to the *IN* scores.
+#. Get the essays re-scored by setting the **has_been_ml_graded** field on the essays to false.  This will cause the system to add a new essaygrade object to them that is *ML* scored.
+#. And, most importantly, try this with an alternative data source, and see what happens! We will be very interested to hear your results.

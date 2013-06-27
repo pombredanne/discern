@@ -1,29 +1,37 @@
-from tastypie.resources import ModelResource, Resource
-from freeform_data.models import Organization, UserProfile, Course, Problem, Essay, EssayGrade, Membership, UserRoles
-from django.contrib.auth.models import User
-from tastypie.authorization import Authorization, DjangoAuthorization
-from tastypie.authentication import Authentication, ApiKeyAuthentication, BasicAuthentication, MultiAuthentication
-from tastypie import fields
-from django.conf.urls import url
-from tastypie.utils import trailing_slash
-from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
-from tastypie.http import HttpGone, HttpMultipleChoices
-from django.db.models import Q
-from tastypie.serializers import Serializer
-from django.db import IntegrityError
-from tastypie.exceptions import BadRequest
-from guardian_auth import GuardianAuthorization
 import logging
-from haystack.query import SearchQuerySet
+
+from django.contrib.auth.models import User
+from django.conf.urls import url
+from django.conf import settings
 from django.core.paginator import Paginator, InvalidPage
+from django.db import IntegrityError
 from django.http import Http404
+
+from tastypie.resources import ModelResource
+from tastypie.authorization import Authorization
+from tastypie.authentication import Authentication, ApiKeyAuthentication, MultiAuthentication
+
+from tastypie import fields
+from tastypie.utils import trailing_slash
+from tastypie.serializers import Serializer
+from tastypie.exceptions import BadRequest
+from tastypie_validators import CustomFormValidation
+
+from guardian_auth import GuardianAuthorization
+from haystack.query import SearchQuerySet
+
+from freeform_data.models import Organization, UserProfile, Course, Problem, Essay, EssayGrade, Membership, UserRoles
+
 from collections import Iterator
 from throttle import UserAccessThrottle
-from django.conf import settings
-from tastypie_validators import CustomFormValidation
-from forms import ProblemForm, EssayForm, EssayGradeForm
+from forms import ProblemForm, EssayForm, EssayGradeForm, UserForm
 
-log=logging.getLogger(__name__)
+from django.forms.util import ErrorDict
+
+from allauth.account.forms import SignupForm
+from allauth.account.views import complete_signup
+
+log = logging.getLogger(__name__)
 
 
 class SessionAuthentication(Authentication):
@@ -171,16 +179,39 @@ class CreateUserResource(ModelResource):
         #No authentication for create user, or authorization.  Anyone can create.
         authentication = Authentication()
         authorization = Authorization()
-        fields = ['username']
+        fields = ['username', 'email']
         resource_name = "createuser"
         always_return_data = True
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
-        username, password = bundle.data['username'], bundle.data['password']
+        #Validate that the needed fields exist
+        validator = CustomFormValidation(form_class=UserForm, model_type=self._meta.resource_name)
+        errors = validator.is_valid(bundle)
+        if isinstance(errors, ErrorDict):
+            raise BadRequest(errors.as_text())
+        #Extract needed fields
+        username, password, email = bundle.data['username'], bundle.data['password'], bundle.data['email']
+        data_dict = {'username' : username, 'email' : email, 'password' : password, 'password1' : password, 'password2' : password}
+        #Pass the fields to django-allauth.  We want to use its email verification setup.
+        signup_form = SignupForm()
+        signup_form.cleaned_data = data_dict
         try:
-            bundle.obj = User.objects.create_user(username, '', password)
+            try:
+                user = signup_form.save(bundle.request)
+                profile, created = UserProfile.objects.get_or_create(user=user)
+            except AssertionError:
+                #If this fails, the user has a non-unique email address.
+                user = User.objects.get(username=username)
+                user.delete()
+                raise BadRequest("Email address has already been used, try another.")
+
+            #Need this so that the object is added to the bundle and exists during the dehydrate cycle.
+            html = complete_signup(bundle.request, user, "")
+            bundle.obj = user
         except IntegrityError:
-            raise BadRequest('That username already exists')
+            raise BadRequest("Username is already taken, try another.")
+
         return bundle
 
     def dehydrate(self, bundle):
@@ -199,9 +230,9 @@ class OrganizationResource(SearchModelResource):
     essays = fields.ToManyField('freeform_data.api.EssayResource', 'essay_set', null=True)
     #This maps the organization users to the users model via membership
     user_query = lambda bundle: bundle.obj.users.through.objects.all() or bundle.obj.users
-    users = fields.ToManyField("freeform_data.api.MembershipResource", attribute=user_query, null=True, related_name="organizations")
+    users = fields.ToManyField("freeform_data.api.MembershipResource", attribute=user_query, null=True)
     #Also show members in the organization (useful for getting role)
-    memberships = fields.ToManyField("freeform_data.api.MembershipResource", 'membership_set', null=True, related_name="organization")
+    memberships = fields.ToManyField("freeform_data.api.MembershipResource", 'membership_set', null=True)
     class Meta:
         queryset = Organization.objects.all()
         resource_name = 'organization'
@@ -211,6 +242,7 @@ class OrganizationResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Organization
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         bundle = super(OrganizationResource, self).obj_create(bundle)
@@ -252,6 +284,7 @@ class UserProfileResource(SearchModelResource):
         always_return_data = True
         model_type = UserProfile
         excludes = ['throttle_at']
+        throttle = default_throttling()
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(UserProfileResource, self).obj_create(bundle,user=bundle.request.user)
@@ -264,8 +297,8 @@ class UserResource(SearchModelResource):
     essays = fields.ToManyField('freeform_data.api.EssayResource', 'essay_set', null=True, related_name='user')
     courses = fields.ToManyField('freeform_data.api.CourseResource', 'course_set', null=True)
     userprofile = fields.ToOneField('freeform_data.api.UserProfileResource', 'userprofile', related_name='user')
-    organizations = fields.ToManyField('freeform_data.api.OrganizationResource', 'organization_set', null=True, related_name="users")
-    memberships = fields.ToManyField("freeform_data.api.MembershipResource", 'membership_set', null=True, related_name="user")
+    organizations = fields.ToManyField('freeform_data.api.OrganizationResource', 'organization_set', null=True)
+    memberships = fields.ToManyField("freeform_data.api.MembershipResource", 'membership_set', null=True)
     class Meta:
         queryset = User.objects.all()
         resource_name = 'user'
@@ -276,6 +309,7 @@ class UserResource(SearchModelResource):
         always_return_data = True
         model_type = User
         excludes = ['password']
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         return super(UserResource, self).obj_create(bundle)
@@ -288,8 +322,8 @@ class MembershipResource(SearchModelResource):
     """
     Encapsulates the Membership Model
     """
-    user = fields.ToOneField('freeform_data.api.UserResource', 'user', related_name="memberships")
-    organization = fields.ToOneField('freeform_data.api.OrganizationResource', 'organization', related_name="memberships")
+    user = fields.ToOneField('freeform_data.api.UserResource', 'user')
+    organization = fields.ToOneField('freeform_data.api.OrganizationResource', 'organization')
     class Meta:
         queryset = Membership.objects.all()
         resource_name = 'membership'
@@ -299,6 +333,7 @@ class MembershipResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Membership
+        throttle = default_throttling()
 
     def obj_create(self, bundle, request=None, **kwargs):
         return super(MembershipResource, self).obj_create(bundle,user=bundle.request.user)
@@ -319,6 +354,7 @@ class CourseResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Course
+        throttle = default_throttling()
 
     def obj_create(self, bundle, **kwargs):
         return super(CourseResource, self).obj_create(bundle, user=bundle.request.user)
@@ -338,6 +374,7 @@ class ProblemResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = Problem
+        throttle = default_throttling()
         validation = CustomFormValidation(form_class=ProblemForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):
@@ -384,6 +421,7 @@ class EssayGradeResource(SearchModelResource):
         authentication = default_authentication()
         always_return_data = True
         model_type = EssayGrade
+        throttle = default_throttling()
         validation = CustomFormValidation(form_class=EssayGradeForm, model_type=resource_name)
 
     def obj_create(self, bundle, **kwargs):

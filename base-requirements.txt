@@ -8,11 +8,10 @@ south==0.7.6
 django-celery==3.0.11
 celery-with-redis==3.0
 gunicorn==0.17.2
-requests==1.1.0
 dogstatsd-python==0.2
 boto==2.6.0
 django-pipeline==1.3.6
-django-guardian==1.1.0.beta
+django-guardian==1.1
 django-request-provider==1.0.2
 django-haystack==1.2.7
 Whoosh==2.4.1
@@ -22,3 +21,6 @@ path.py==3.1
 django-allauth==0.10.1
 python-memcached==1.48
 django-ses==0.4.1
+django-analytical==0.15.0
+mock==1.0.1
+
