@@ -1,7 +1,6 @@
 /*
  * Backbone-tastypie model generator
- * Created by Marco Montanari
- * released under 3 clause BSD
+ * Adapted from code by Marco Montanari released under 3 clause BSD
  */
 
 var PaginatedCollection = Backbone.Collection.extend({
