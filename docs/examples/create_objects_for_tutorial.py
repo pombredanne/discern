@@ -40,6 +40,6 @@ if course_response.status_code >= 400:
 
 course_uri = course_object['resource_uri']
 
-print ("We will be uses the URI for these objects in other scripts. Please make a note")
+print ("We will be using the URI for these objects in other scripts. Please make a note")
 print ("org URI: {0} ".format(organization_resource_uri))
 print ("course URI: {0} ".format(course_uri))
