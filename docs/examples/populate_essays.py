@@ -6,6 +6,10 @@ Here we create an institution(i.e., Reddit).
 from common_settings import *
 import praw # Python Reddit API Wrapper
 
+# TODO: update these two variables with your results from running create_objects_for_tutorial.py
+ORG_ID = ''
+COURSE_ID = ''
+
 # boilerplate login code
 session = requests.session()
 response = login_to_discern(session)
@@ -69,9 +73,8 @@ r = praw.Reddit(user_agent='Discern Tutorial')
 submissions = r.get_subreddit('movies').get_hot(limit=1)
 movie = submissions.next()
 
-# TODO: update these two varibles with your results from running create_objects_for_tutorial.py
-org_uri = '/essay_site/api/v1/organization/6/'
-course_uri = '/essay_site/api/v1/course/28/'
+org_uri = '/essay_site/api/v1/organization/{0}/'.format(ORG_ID)
+course_uri = '/essay_site/api/v1/course/{0}/'.format(COURSE_ID)
 
 problem_uri = add_problem(movie.title, course_uri)
 
