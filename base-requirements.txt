@@ -5,6 +5,7 @@ pyyaml==3.10
 uuid==1.30
 django-tastypie==0.9.15
 south==0.7.6
+celery==3.0.19
 django-celery==3.0.11
 celery-with-redis==3.0
 gunicorn==0.17.2
